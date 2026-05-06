@@ -12,7 +12,7 @@ import { Settings } from './pages/Settings';
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route path="/landing" element={<Landing />} />
         <Route element={<Layout />}>

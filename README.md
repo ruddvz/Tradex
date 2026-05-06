@@ -214,6 +214,29 @@ npm run dev
 
 ---
 
+## GitHub Pages & Desktop PWA
+
+Static demo deploy from **`frontend/`** via GitHub Actions so you can share the UI and **install it as a desktop PWA** (Chrome / Edge).
+
+1. **Repository → Settings → Pages**: under **Build and deployment**, set **Source** to **GitHub Actions**.
+2. Every push to **`main`** runs `.github/workflows/pages.yml`, which builds with `npm ci` / `npm run build` inside **`frontend/`** and publishes **`frontend/dist`**.
+3. Open **`https://<owner>.github.io/Tradex/`** (replace `<owner>` with your GitHub user or organization).
+
+**Install as app:** open that URL in Chrome or Edge → **Install** in the address bar or browser menu. The installed window uses `display: standalone`.
+
+Local production build (matches CI):
+
+```bash
+cd frontend
+npm ci
+npm run build
+```
+
+`vite.config.ts` sets `base` to `/Tradex/` only for **production** builds so asset URLs work on GitHub project Pages; `npm run dev` keeps `base: '/'` at `http://localhost:5173/`.
+
+
+---
+
 ## Environment Variables
 
 Create `backend/.env`:
