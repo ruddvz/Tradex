@@ -9,3 +9,7 @@ __pycache__/
 
 # Source archive for Claude Company OS (tree lives under .claude/)
 claude-company-os 2.zip
+
+# gcode harness — binaries and local build cache (install via scripts/setup-gcode.sh)
+scripts/bin/
+.gcode/build.log
