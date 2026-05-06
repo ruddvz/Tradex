@@ -1,5 +1,5 @@
 """
-FastAPI route handlers for ProJournX API v1.
+FastAPI route handlers for Tradex API v1.
 """
 from fastapi import APIRouter, HTTPException, Query
 from typing import List, Optional

@@ -20,7 +20,7 @@ const stats = [
 ];
 
 const testimonials = [
-  { name: 'Alex R.', role: 'Prop Firm Trader', text: 'ProJournX helped me pass my FTMO challenge by keeping my drawdown in check. The analytics are exceptional.', rating: 5, pnl: '+$8,200' },
+  { name: 'Alex R.', role: 'Prop Firm Trader', text: 'Tradex helped me pass my FTMO challenge by keeping my drawdown in check. The analytics are exceptional.', rating: 5, pnl: '+$8,200' },
   { name: 'Sarah M.', role: 'Forex Trader', text: 'The AI insights revealed I was trading at the wrong time of day. Win rate jumped 15% in one month.', rating: 5, pnl: '+$5,400' },
   { name: 'James K.', role: 'Gold Trader', text: 'Best trading journal I\'ve used. The XAUUSD playbook feature alone is worth the subscription.', rating: 5, pnl: '+$12,100' },
 ];
@@ -37,7 +37,7 @@ export function Landing() {
             <div className="w-8 h-8 rounded-xl bg-gradient-brand flex items-center justify-center shadow-glow-sm">
               <TrendingUp className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-white">ProJournX</span>
+            <span className="font-bold text-white">Tradex</span>
             <span className="text-xs text-brand-400 hidden sm:block">Trader's Performance Lab</span>
           </div>
           <div className="flex items-center gap-3">
@@ -104,7 +104,7 @@ export function Landing() {
               <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
               <div className="w-2.5 h-2.5 rounded-full bg-amber-500" />
               <div className="w-2.5 h-2.5 rounded-full bg-brand-500" />
-              <span className="ml-2 text-xs text-slate-500">app.projournx.com/dashboard</span>
+              <span className="ml-2 text-xs text-slate-500">app.tradex.com/dashboard</span>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
               {[
@@ -258,7 +258,7 @@ export function Landing() {
             <div className="w-5 h-5 rounded-lg bg-gradient-brand flex items-center justify-center">
               <TrendingUp className="w-3 h-3 text-white" />
             </div>
-            <span className="text-slate-400 font-medium">ProJournX</span>
+            <span className="text-slate-400 font-medium">Tradex</span>
             <span>© 2026 Trader's Performance Lab</span>
           </div>
           <div className="flex gap-4">

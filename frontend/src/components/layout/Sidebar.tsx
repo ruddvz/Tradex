@@ -34,7 +34,7 @@ export function Sidebar() {
         </div>
         {sidebarOpen && (
           <div className="animate-fade-in min-w-0">
-            <div className="font-bold text-white text-sm leading-tight">ProJournX</div>
+            <div className="font-bold text-white text-sm leading-tight">Tradex</div>
             <div className="text-xs text-brand-400">Trader's Lab</div>
           </div>
         )}

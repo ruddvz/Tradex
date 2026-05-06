@@ -5,7 +5,7 @@ from typing import List, Dict, Any, Optional
 import json
 
 
-SYSTEM_PROMPT = """You are an expert trading performance analyst AI embedded in ProJournX, 
+SYSTEM_PROMPT = """You are an expert trading performance analyst AI embedded in Tradex, 
 a professional trading journal platform. You analyze traders' performance data and provide 
 actionable insights to improve consistency, identify patterns, and flag psychological issues.
 

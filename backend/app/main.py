@@ -1,5 +1,5 @@
 """
-ProJournX Backend API
+Tradex Backend API
 AI-Powered Trading Journal Platform
 """
 from fastapi import FastAPI
@@ -10,7 +10,7 @@ from .core.config import settings
 from .api.v1.routes import router
 
 app = FastAPI(
-    title="ProJournX API",
+    title="Tradex API",
     description="AI-Powered Trading Journal Platform — Forex, Gold, Indices & Stocks",
     version="1.0.0",
     docs_url="/docs",
@@ -33,7 +33,7 @@ app.include_router(router)
 @app.get("/")
 async def root():
     return {
-        "name": "ProJournX API",
+        "name": "Tradex API",
         "version": "1.0.0",
         "description": "AI-Powered Trading Journal Platform",
         "docs": "/docs",

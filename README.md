@@ -1,4 +1,4 @@
-# ProJournX — AI-Powered Trading Journal Platform
+# Tradex — AI-Powered Trading Journal Platform
 
 > **Trader's Performance Lab** · Your trades, journaled. Your edge, revealed.
 
@@ -102,7 +102,7 @@ A full-stack, production-ready trading journal platform built for Forex, Gold (X
 ## Architecture
 
 ```
-projournx/
+tradex/
 ├── frontend/                    # React SPA
 │   ├── src/
 │   │   ├── components/
@@ -164,7 +164,7 @@ projournx/
 ```bash
 # Clone the repo
 git clone <repo-url>
-cd projournx/frontend
+cd tradex/frontend
 
 # Install dependencies
 npm install
@@ -221,7 +221,7 @@ Create `backend/.env`:
 ```env
 # Required
 SECRET_KEY=your-secure-secret-key-minimum-32-chars
-DATABASE_URL=postgresql://postgres:password@localhost:5432/projournx
+DATABASE_URL=postgresql://postgres:password@localhost:5432/tradex
 
 # Optional — AI insights
 OPENAI_API_KEY=sk-...
@@ -313,7 +313,7 @@ POST /sync/mt5                  Sync trades from MT5 terminal
 
 ## MT5 Integration
 
-ProJournX connects to MetaTrader 5 using the `MetaTrader5` Python package. The sync service:
+Tradex connects to MetaTrader 5 using the `MetaTrader5` Python package. The sync service:
 
 1. Connects to your broker's MT5 server
 2. Fetches closed deal history for the specified date range
@@ -391,7 +391,7 @@ Components:
 
 ## Prop Firm Challenge Tracking
 
-ProJournX supports FTMO-style challenges with:
+Tradex supports FTMO-style challenges with:
 
 | Feature | Details |
 |---------|---------|
@@ -442,7 +442,7 @@ ProJournX supports FTMO-style challenges with:
 
 ```bash
 # Fork and clone
-git clone https://github.com/yourusername/projournx.git
+git clone https://github.com/yourusername/tradex.git
 
 # Create feature branch
 git checkout -b feature/my-feature
@@ -466,7 +466,7 @@ MIT License — Free to use, modify, and distribute.
 
 ## Disclaimer
 
-ProJournX is a trading analysis tool. Past performance does not guarantee future results. Trading carries substantial risk of loss. Always use proper risk management and never risk more than you can afford to lose.
+Tradex is a trading analysis tool. Past performance does not guarantee future results. Trading carries substantial risk of loss. Always use proper risk management and never risk more than you can afford to lose.
 
 ---
 

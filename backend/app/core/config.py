@@ -4,7 +4,7 @@ from typing import Optional
 
 class Settings(BaseSettings):
     # App
-    APP_NAME: str = "ProJournX API"
+    APP_NAME: str = "Tradex API"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
     SECRET_KEY: str = "your-secret-key-change-in-production"
@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
 
     # Database
-    DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/projournx"
+    DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/tradex"
 
     # Redis
     REDIS_URL: str = "redis://localhost:6379"

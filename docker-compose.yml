@@ -4,9 +4,9 @@ services:
   # ── PostgreSQL Database ──────────────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
-    container_name: projournx-db
+    container_name: tradex-db
     environment:
-      POSTGRES_DB: projournx
+      POSTGRES_DB: tradex
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
     ports:
@@ -22,7 +22,7 @@ services:
   # ── Redis Cache ──────────────────────────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: projournx-redis
+    container_name: tradex-redis
     ports:
       - "6379:6379"
     volumes:
@@ -38,9 +38,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: projournx-api
+    container_name: tradex-api
     environment:
-      DATABASE_URL: postgresql://postgres:password@postgres:5432/projournx
+      DATABASE_URL: postgresql://postgres:password@postgres:5432/tradex
       REDIS_URL: redis://redis:6379
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production-32-chars-min}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
@@ -63,7 +63,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: projournx-ui
+    container_name: tradex-ui
     ports:
       - "80:80"
     depends_on:
