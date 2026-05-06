@@ -1,0 +1,82 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          50:  '#f0fdf9',
+          100: '#ccfbee',
+          200: '#99f6dc',
+          300: '#5fecc5',
+          400: '#2dd9ac',
+          500: '#10b981',
+          600: '#059669',
+          700: '#047857',
+          800: '#065f46',
+          900: '#064e3b',
+        },
+        dark: {
+          50:  '#f8fafc',
+          100: '#1e2530',
+          200: '#171d27',
+          300: '#131921',
+          400: '#0f141c',
+          500: '#0b0f16',
+          600: '#080c12',
+          700: '#05080d',
+          800: '#030508',
+          900: '#010203',
+        },
+        surface: {
+          DEFAULT: '#1a2035',
+          light:   '#1e2745',
+          dark:    '#141b2d',
+          border:  '#2a3550',
+        },
+        profit: '#10b981',
+        loss:   '#ef4444',
+        warn:   '#f59e0b',
+        info:   '#3b82f6',
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-brand':  'linear-gradient(135deg, #10b981, #3b82f6)',
+        'gradient-dark':   'linear-gradient(135deg, #1a2035, #0b0f16)',
+        'glow-profit':     'radial-gradient(ellipse at center, rgba(16,185,129,0.15) 0%, transparent 70%)',
+        'glow-loss':       'radial-gradient(ellipse at center, rgba(239,68,68,0.15) 0%, transparent 70%)',
+      },
+      boxShadow: {
+        'glow-sm':     '0 0 10px rgba(16,185,129,0.2)',
+        'glow':        '0 0 20px rgba(16,185,129,0.3)',
+        'glow-lg':     '0 0 40px rgba(16,185,129,0.4)',
+        'glow-blue':   '0 0 20px rgba(59,130,246,0.3)',
+        'card':        '0 4px 20px rgba(0,0,0,0.4)',
+        'card-hover':  '0 8px 30px rgba(0,0,0,0.5)',
+      },
+      animation: {
+        'fade-in':     'fadeIn 0.3s ease-in-out',
+        'slide-up':    'slideUp 0.4s ease-out',
+        'slide-right': 'slideRight 0.3s ease-out',
+        'pulse-slow':  'pulse 3s ease-in-out infinite',
+        'float':       'float 6s ease-in-out infinite',
+        'shimmer':     'shimmer 2s linear infinite',
+      },
+      keyframes: {
+        fadeIn:    { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+        slideUp:   { '0%': { transform: 'translateY(20px)', opacity: '0' }, '100%': { transform: 'translateY(0)', opacity: '1' } },
+        slideRight:{ '0%': { transform: 'translateX(-20px)', opacity: '0' }, '100%': { transform: 'translateX(0)', opacity: '1' } },
+        float:     { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+        shimmer:   { '0%': { backgroundPosition: '-200% 0' }, '100%': { backgroundPosition: '200% 0' } },
+      },
+    },
+  },
+  plugins: [],
+}
