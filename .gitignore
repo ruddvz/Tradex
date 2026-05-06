@@ -4,3 +4,6 @@ dist
 *.log
 .env
 .env.*
+
+# Source archive for Claude Company OS (tree lives under .claude/)
+claude-company-os 2.zip
