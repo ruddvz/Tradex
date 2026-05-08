@@ -35,7 +35,7 @@
 ## Log (newest first)
 
 ## 2026-05-08 — cursor/plan0-final-polish-07ef — Plan0: lazy routes, route fallback, mobile nav a11y
-- Commit: (see git log)
+- Commit: 2818932 (feat(frontend): Plan0 completion — lazy routes, suspense boundaries, nav a11y)
 - Files touched: `frontend/src/App.tsx`, `frontend/src/components/layout/{Layout,MobileNav,RouteFallback}.tsx`, `planning/Plan0-AUDIT.md`, `planning/CHANGELOG.md`
 - Tests added / changed: 0
 - Build: pass (`npm run lint`, `npm run build` — no oversized single chunk warning; lazy splits Recharts/pages)
