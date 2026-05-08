@@ -35,7 +35,7 @@
 ## Log (newest first)
 
 ## 2026-05-08 — cursor/phase1-db-persistence-07ef — slice 1.2: PostgreSQL trades, notebook, challenges
-- Commit: (see git log)
+- Commit: bc49109 (feat(api): persist trades, notebook, challenges in PostgreSQL (slice 1.2))
 - Files touched: `backend/app/api/v1/routes.py`, `backend/app/database.py`, `backend/app/models/trade.py`, `backend/app/models/notebook.py`, `backend/app/models/challenge.py`, `backend/app/services/trade_codec.py`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `planning/COMMITS-ON-MAIN.md`, `NEXT_STEPS.md`
 - Tests added / changed: 0 (manual TestClient + SQLite)
 - Build: pass (backend import + CRUD smoke)
