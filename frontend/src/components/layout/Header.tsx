@@ -17,7 +17,7 @@ interface HeaderProps {
 }
 
 export function Header({ title, subtitle, action, onAddTrade }: HeaderProps) {
-  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, syncTrades, aiInsights } =
+  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, openMt5SyncModal, aiInsights } =
     useStore();
 
   return (
@@ -57,7 +57,7 @@ export function Header({ title, subtitle, action, onAddTrade }: HeaderProps) {
       {/* Sync button */}
       <button
         type="button"
-        onClick={() => syncTrades()}
+        onClick={() => openMt5SyncModal()}
         disabled={isSyncing}
         className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white transition-colors border border-surface-border"
         title="Sync MT5"

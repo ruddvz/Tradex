@@ -19,6 +19,8 @@ export interface Trade {
   notes: string;
   tags: string[];
   screenshot?: string;
+  screenshotBeforeUrl?: string;
+  screenshotAfterUrl?: string;
   duration: number; // minutes
   commission: number;
   swap: number;

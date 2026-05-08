@@ -6,10 +6,9 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ## Current State (Already Done)
 
-- React frontend with 8 pages (dashboard still fed by `mockData.ts` until API wiring in Phase 1)
-- FastAPI backend with trade CRUD, analytics engine, AI insights, MT5 sync service
-- **JWT auth:** `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `GET /api/v1/auth/me`; other `/api/v1/*` routes require `Authorization: Bearer` except `GET /health`
-- `users` table in PostgreSQL (password hashing via **bcrypt**); trades/notebook/challenges still **in-memory per user** until DB persistence lands
+- React: **`Mt5SyncModal`** opened from header/sidebar sync; Zustand **`syncTrades`** posts JSON to **`POST /api/v1/sync/mt5`** and refreshes trades via **`GET /api/v1/trades`** when JWT present (`frontend/src/lib/auth.ts` → `tradex_access_token`)
+- FastAPI: **`GET`/`PUT /api/v1/settings/mt5`** — MT5 trading password stored encrypted (**Fernet**, key from `SECRET_KEY`); **`POST /api/v1/sync/mt5`** accepts JSON body and merges with saved credentials; without a live MT5 terminal, demo sample trades are still imported
+- **JWT auth** as before; trades/notebook/challenges remain **in-memory per user** until Phase 1.2 persistence
 
 ---
 
@@ -72,18 +71,9 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ### Tasks
 
-1. **Frontend: connect sync button to API**
-   - The sync button is in `frontend/src/components/layout/Sidebar.tsx` and `Header.tsx`
-   - Currently calls `syncTrades()` from the Zustand store which just fakes a 2-second delay
-   - Replace with a real `fetch('/api/v1/sync/mt5', { method: 'POST', body: ... })`
-   - Show a modal first asking for MT5 login, password, server (or read from Settings)
-   - After sync, refresh the trades list from the API
+1. **Frontend: connect sync button to API** ✓ *(Phase 3 — `openMt5SyncModal`, `components/mt5/Mt5SyncModal.tsx`, store `syncTrades` + `refreshTradesFromApi`)*
 
-2. **Settings page: save MT5 credentials**
-   - The settings page is at `frontend/src/pages/Settings.tsx`
-   - Add a form to save MT5 server, login number, password to the backend
-   - Store encrypted in the user's database record
-   - Add `PUT /api/v1/settings/mt5` endpoint
+2. **Settings page: save MT5 credentials** ✓ *(encrypted `mt5_password_encrypted` on `User`; `GET`/`PUT /api/v1/settings/mt5`)*
 
 ---
 

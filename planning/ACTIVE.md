@@ -8,24 +8,24 @@
 
 ## 👉 NEXT UP: **[1.2]** — Persist trades, notebook, and challenges in PostgreSQL
 
-Replace in-memory `_trades`, `_notebook`, `_challenges` in `routes.py` with SQLAlchemy queries against `Trade`, `NotebookEntry`, and `PropChallenge` models. Wire `get_db` for all CRUD.
+Replace in-memory `_trades`, `_notebook`, `_challenges` in `routes.py` with SQLAlchemy queries. Phase 3 MT5 sync is wired; synced trades still land in the in-memory store until this slice ships.
 
-**Context:** `NEXT_STEPS.md` Phase 1 task 2, `backend/app/api/v1/routes.py`, `backend/app/models/trade.py`
-**Blocked by:** nothing (requires running PostgreSQL + Alembic or `create_all` for new tables)
+**Context:** `NEXT_STEPS.md` Phase 1 task 2, `backend/app/api/v1/routes.py`
+**Blocked by:** nothing (requires PostgreSQL / SQLite `DATABASE_URL`)
 
 ---
 
 ## 🎯 Current Sprint / Phase
 
-**Phase:** Phase 1 — Auth and persistent data
-**Goal:** Multi-user app with PostgreSQL-backed trades and login/signup UI
-**Target:** Complete Phase 1 checkboxes in NEXT_STEPS.md
+**Phase:** Phase 1 — persistent data (next)  
+**Shipped:** Phase 3 — MT5 sync UI + settings API ✓
 
 ### Open Slices
 - [ ] **1.2** Wire trades/notebook/challenges to DB
 - [ ] **1.3** Auth UI + App routing guard + logout in Settings
 
 ### Recently Done
+- [x] **3.1–3.2** MT5 — `POST /sync/mt5` JSON body, `GET`/`PUT /settings/mt5`, Fernet password storage, `Mt5SyncModal`, Settings form, `refreshTradesFromApi`, `lib/auth.ts`
 - [x] **1.1** JWT auth (`/auth/register`, `/auth/login`, `/auth/me`), `User` model + `users` table, `HTTPBearer` protection, per-user in-memory stores until 1.2
 - [x] **0.1** Claude Company OS files imported from archive
 - [x] **0.2** Company OS configured for Tradex (skills + planning)

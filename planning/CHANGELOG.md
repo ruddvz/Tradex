@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/phase3-mt5-sync-07ef — slices 3.1 + 3.2: MT5 sync API, saved credentials, modal + Settings
+- Commit: (see git log)
+- Files touched: `backend/app/core/mt5_crypto.py`, `backend/app/models/user.py`, `backend/app/database.py`, `backend/app/api/v1/routes.py`, `frontend/src/lib/{auth,mapApiTrade}.ts`, `frontend/src/store/useStore.ts`, `frontend/src/components/mt5/Mt5SyncModal.tsx`, `frontend/src/components/layout/{Layout,Header,Sidebar}.tsx`, `frontend/src/pages/Settings.tsx`, `frontend/src/types/index.ts`, `NEXT_STEPS.md`, `planning/{EXECUTION-PLAN,ACTIVE,CHANGELOG}.md`
+- Tests added / changed: 0 (manual: TestClient sync + settings on SQLite)
+- Build: pass (`npm run lint`, `npm run build`; backend import + TestClient)
+- Status: done
+- Next up: **1.2** — SQLAlchemy persistence for trades, notebook, challenges (Phase 3 writes synced trades to in-memory `_trades` until then)
+- Notes: `POST /sync/mt5` no longer takes credentials in query strings (JSON body). Fernet key derived from `SECRET_KEY`. `init_db()` runs lightweight `ALTER TABLE` for `users` MT5 columns on existing SQLite/Postgres DBs. Frontend adds `tradex_access_token` helpers for Bearer calls.
+
 ## 2026-05-08 — cursor/plan0-final-polish-07ef — Plan0: lazy routes, route fallback, mobile nav a11y
 - Commit: 2818932 (feat(frontend): Plan0 completion — lazy routes, suspense boundaries, nav a11y)
 - Files touched: `frontend/src/App.tsx`, `frontend/src/components/layout/{Layout,MobileNav,RouteFallback}.tsx`, `planning/Plan0-AUDIT.md`, `planning/CHANGELOG.md`
