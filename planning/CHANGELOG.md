@@ -35,7 +35,7 @@
 ## Log (newest first)
 
 ## 2026-05-08 — cursor/phase0-architecture-docs-07ef — merge Plan0 UI + PHASE0-INVENTORY (single source of truth)
-- Commit: (see git log — merge commit)
+- Commit: cf5dbc6 (Merge branch cursor/plan0-pixel-perfect-ui-66d8 into phase0 consolidation)
 - Files touched: merge `origin/cursor/plan0-pixel-perfect-ui-66d8` (frontend Plan0 implementation + `planning/Plan0-AUDIT.md`), `planning/PHASE0-INVENTORY.md`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md` (conflict resolution)
 - Tests added / changed: 0
 - Build: pass (`npm ci && npm run build` in `frontend/`)
