@@ -35,7 +35,7 @@
 ## Log (newest first)
 
 ## 2026-05-08 — main — merge Phase 3 MT5 into Phase 2 stack (`main`)
-- Commit: (see git log — merge commit after resolving `routes.py`, Settings, planning docs)
+- Commit: 6dbe9ca (Merge branch 'cursor/phase3-mt5-sync-07ef' into main)
 - Files touched: unified `POST /sync/mt5` with JSON credentials + PostgreSQL inserts via `trade_from_mt5_dict` (not in-memory `_trades`); `GET`/`PUT /settings/mt5`; conflict resolutions across listed paths
 - Tests added / changed: 0
 - Build: pass (`npm run lint`, `npm run build`; backend import smoke)
