@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, ScrollRestoration } from 'react-router-dom';
-import { Layout } from './components/layout/Layout';
+import { ProtectedLayout } from './components/auth/ProtectedLayout';
 import { RouteFallback } from './components/layout/RouteFallback';
 import { ToastProvider } from './components/ui/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -8,6 +8,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 const Landing = lazy(() =>
   import('./pages/Landing').then((m) => ({ default: m.Landing }))
 );
+const Auth = lazy(() => import('./pages/Auth').then((m) => ({ default: m.Auth })));
 const Dashboard = lazy(() =>
   import('./pages/Dashboard').then((m) => ({ default: m.Dashboard }))
 );
@@ -48,7 +49,15 @@ export default function App() {
                 </Suspense>
               }
             />
-            <Route element={<Layout />}>
+            <Route
+              path="/auth"
+              element={
+                <Suspense fallback={<RouteFallback />}>
+                  <Auth />
+                </Suspense>
+              }
+            />
+            <Route element={<ProtectedLayout />}>
               <Route path="/" element={<Dashboard />} />
               <Route path="/journal" element={<Journal />} />
               <Route path="/playbooks" element={<Playbooks />} />

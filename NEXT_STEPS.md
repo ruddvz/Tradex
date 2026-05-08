@@ -6,7 +6,7 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ## Current State (Already Done)
 
-- React frontend with 8 pages (dashboard still fed by `mockData.ts` until slice **1.3**)
+- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded app shell (**slice 1.3**); journal widgets still use **`mockData.ts`** until wired to `fetch` + Bearer (**future slice**)
 - FastAPI: JWT (**slice 1.1**), persisted trades / notebook / challenges in PostgreSQL (**slice 1.2**), analytics, AI insights, MT5 sync
 - **`Authorization: Bearer`** on `/api/v1/*` except `GET /health` and `POST /auth/register` / `POST /auth/login`
 
@@ -28,12 +28,7 @@ This document describes what to build next on the Tradex trading journal platfor
    - `get_db` / engine: **`backend/app/database.py`** ✓ *(NEXT_STEPS previously suggested `core/database.py`; canonical path is `app/database.py`)*
    - File to edit: `backend/app/api/v1/routes.py`
 
-3. **Add login/signup UI to frontend**
-   - Create `frontend/src/pages/Auth.tsx` with two tabs: Sign In / Sign Up
-   - Use same dark design system (see `frontend/src/index.css` for classes like `.card`, `.input`, `.btn-primary`)
-   - On successful login, store JWT in localStorage and redirect to `/`
-   - Add an auth check in `frontend/src/App.tsx` — if no token, redirect to `/auth`
-   - Add logout button to the Settings page
+3. **Add login/signup UI to frontend** ✓ *(slice 1.3 — `Auth.tsx`, `ProtectedLayout`, `lib/auth.ts`, Settings sign out, Vite `/api` proxy)*
 
 ---
 

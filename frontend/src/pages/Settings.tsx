@@ -1,10 +1,12 @@
 import { Link, Shield, Bell, Database, User, CheckCircle2, RefreshCw, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { useToast } from '../components/ui/Toast';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
 import { clsx } from 'clsx';
 import { useState } from 'react';
+import { clearToken } from '../lib/auth';
 
 const brokers = [
   { name: 'Exness', logo: 'EX', connected: true },
@@ -15,6 +17,7 @@ const brokers = [
 ];
 
 export function Settings() {
+  const navigate = useNavigate();
   const { account, syncTrades, isSyncing } = useStore();
   const { showToast } = useToast();
   const [notifications, setNotifications] = useState({ email: true, push: true, drawdownAlerts: true, dailyReport: false });
@@ -71,6 +74,17 @@ export function Settings() {
               onClick={() => showToast('Settings saved successfully')}
             >
               Save Changes
+            </button>
+            <button
+              type="button"
+              className="btn-secondary mt-3 w-full sm:w-auto"
+              onClick={() => {
+                clearToken();
+                showToast('Signed out');
+                navigate('/auth', { replace: true });
+              }}
+            >
+              Sign out
             </button>
           </div>
 

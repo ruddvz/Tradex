@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/phase1-db-persistence-07ef — slice 1.3: Auth UI, protected shell, Settings sign out
+- Commit: (see git log)
+- Files touched: `frontend/src/App.tsx`, `frontend/src/pages/Auth.tsx`, `frontend/src/components/auth/ProtectedLayout.tsx`, `frontend/src/lib/auth.ts`, `frontend/src/pages/Settings.tsx`, `frontend/vite.config.ts`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `NEXT_STEPS.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **2.1** — Trade screenshot upload (backend) per `EXECUTION-PLAN` / `NEXT_STEPS.md` Phase 2
+- Notes: Vite `server.proxy` sends `/api` → `http://127.0.0.1:8000` in dev. Token key `tradex_access_token`. Dashboard still uses `mockData` until API client wiring.
+
 ## 2026-05-08 — cursor/phase1-db-persistence-07ef — slice 1.2: PostgreSQL trades, notebook, challenges
 - Commit: bc49109 (feat(api): persist trades, notebook, challenges in PostgreSQL (slice 1.2))
 - Files touched: `backend/app/api/v1/routes.py`, `backend/app/database.py`, `backend/app/models/trade.py`, `backend/app/models/notebook.py`, `backend/app/models/challenge.py`, `backend/app/services/trade_codec.py`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `planning/COMMITS-ON-MAIN.md`, `NEXT_STEPS.md`

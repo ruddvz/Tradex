@@ -34,7 +34,7 @@
 
 - [x] **1.1** JWT auth endpoints + `User` model + `get_current_user`
 - [x] **1.2** Replace in-memory stores with SQLAlchemy queries
-- [ ] **1.3** Login/signup UI + `App.tsx` guard + Settings logout
+- [x] **1.3** Login/signup UI + `App.tsx` guard + Settings logout
 
 ---
 
