@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/fix-data-router-scroll-restoration-bcd4 — fix: use data router for ScrollRestoration
+- Commit: (see git log)
+- Files touched: `frontend/src/App.tsx`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
+- Notes: `ScrollRestoration` in React Router v7 uses `useMatches` and requires `createBrowserRouter` + `RouterProvider`, not `BrowserRouter`. Root layout wraps `ScrollRestoration` + `Outlet`; protected shell is a pathless parent with `index` for dashboard.
+
 ## 2026-05-08 — main — merge Phase 3 MT5 into Phase 2 stack (`main`)
 - Commit: 6dbe9ca (Merge branch 'cursor/phase3-mt5-sync-07ef' into main)
 - Files touched: unified `POST /sync/mt5` with JSON credentials + PostgreSQL inserts via `trade_from_mt5_dict` (not in-memory `_trades`); `GET`/`PUT /settings/mt5`; conflict resolutions across listed paths
