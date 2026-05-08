@@ -1,9 +1,8 @@
-from sqlalchemy import Column, String, Float, Integer, Boolean, DateTime, Text, JSON, Enum as SAEnum
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, Float, Integer, DateTime, Text, JSON, Enum as SAEnum
 from sqlalchemy.sql import func
 import enum
 
-Base = declarative_base()
+from .base import Base
 
 
 class TradeDirection(str, enum.Enum):

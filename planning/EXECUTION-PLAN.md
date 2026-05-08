@@ -32,7 +32,7 @@
 
 > **Goal:** Multi-user Tradex with PostgreSQL. See `NEXT_STEPS.md` Phase 1.
 
-- [ ] **1.1** JWT auth endpoints + `User` model + `get_current_user`
+- [x] **1.1** JWT auth endpoints + `User` model + `get_current_user`
 - [ ] **1.2** Replace in-memory stores with SQLAlchemy queries
 - [ ] **1.3** Login/signup UI + `App.tsx` guard + Settings logout
 

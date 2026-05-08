@@ -6,10 +6,10 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ## Current State (Already Done)
 
-- React frontend with 8 pages: Dashboard, Journal, Playbooks, PropFirm, Notebook, Reports, Calculator, Settings
+- React frontend with 8 pages (dashboard still fed by `mockData.ts` until API wiring in Phase 1)
 - FastAPI backend with trade CRUD, analytics engine, AI insights, MT5 sync service
-- All data is currently mock/in-memory — no real database connected yet
-- Users are hardcoded — no auth system yet
+- **JWT auth:** `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `GET /api/v1/auth/me`; other `/api/v1/*` routes require `Authorization: Bearer` except `GET /health`
+- `users` table in PostgreSQL (password hashing via **bcrypt**); trades/notebook/challenges still **in-memory per user** until DB persistence lands
 
 ---
 
@@ -19,22 +19,22 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ### Tasks
 
-1. **Add user auth to the backend**
-   - Install `python-jose`, `passlib[bcrypt]` (already in requirements.txt)
+1. **Add user auth to the backend** ✓ *(slice 1.1 — see `backend/app/api/v1/routes.py`, `backend/app/models/user.py`)*
+   - Dependencies: `python-jose`, **bcrypt** (already in requirements.txt)
    - Create a `users` table: `id`, `email`, `hashed_password`, `name`, `plan` (`free`/`pro`), `created_at`
    - Add `POST /api/v1/auth/register` — create user, return JWT token
    - Add `POST /api/v1/auth/login` — verify password, return JWT token
    - Add `GET /api/v1/auth/me` — return current user from token
    - Protect all existing routes with `Depends(get_current_user)`
-   - File to edit: `backend/app/api/v1/routes.py`
+   - Files: `backend/app/api/v1/routes.py`, `backend/app/api/deps.py`, `backend/app/core/security.py`, `backend/app/database.py`
 
 2. **Connect PostgreSQL**
    - Replace the in-memory `_trades`, `_notebook`, `_challenges` lists in `routes.py` with real SQLAlchemy DB queries
    - The `Trade` model already exists in `backend/app/models/trade.py`
-   - Add `User` model in `backend/app/models/user.py`
+   - `User` model: **`backend/app/models/user.py`** ✓
    - Add `NotebookEntry` and `PropChallenge` models
-   - Create `backend/app/core/database.py` with `get_db` dependency
-   - File to edit: `backend/app/api/v1/routes.py`, add `backend/app/core/database.py`
+   - `get_db` / engine: **`backend/app/database.py`** ✓ *(NEXT_STEPS previously suggested `core/database.py`; canonical path is `app/database.py`)*
+   - File to edit: `backend/app/api/v1/routes.py`
 
 3. **Add login/signup UI to frontend**
    - Create `frontend/src/pages/Auth.tsx` with two tabs: Sign In / Sign Up

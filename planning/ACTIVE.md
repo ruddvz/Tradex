@@ -6,12 +6,12 @@
 
 ---
 
-## 👉 NEXT UP: **[1.1]** — Phase 1: Authentication and PostgreSQL
+## 👉 NEXT UP: **[1.2]** — Persist trades, notebook, and challenges in PostgreSQL
 
-Implement `NEXT_STEPS.md` Phase 1: JWT auth (`/api/v1/auth/*`), SQLAlchemy models + `get_db`, protect routes, and add `frontend/src/pages/Auth.tsx` with token storage.
+Replace in-memory `_trades`, `_notebook`, `_challenges` in `routes.py` with SQLAlchemy queries against `Trade`, `NotebookEntry`, and `PropChallenge` models. Wire `get_db` for all CRUD.
 
-**Context:** `NEXT_STEPS.md` Phase 1, `backend/app/api/v1/routes.py`, `frontend/src/App.tsx`
-**Blocked by:** nothing
+**Context:** `NEXT_STEPS.md` Phase 1 task 2, `backend/app/api/v1/routes.py`, `backend/app/models/trade.py`
+**Blocked by:** nothing (requires running PostgreSQL + Alembic or `create_all` for new tables)
 
 ---
 
@@ -22,11 +22,11 @@ Implement `NEXT_STEPS.md` Phase 1: JWT auth (`/api/v1/auth/*`), SQLAlchemy model
 **Target:** Complete Phase 1 checkboxes in NEXT_STEPS.md
 
 ### Open Slices
-- [ ] **1.1** Backend auth + User model + protected routes
 - [ ] **1.2** Wire trades/notebook/challenges to DB
 - [ ] **1.3** Auth UI + App routing guard + logout in Settings
 
 ### Recently Done
+- [x] **1.1** JWT auth (`/auth/register`, `/auth/login`, `/auth/me`), `User` model + `users` table, `HTTPBearer` protection, per-user in-memory stores until 1.2
 - [x] **0.1** Claude Company OS files imported from archive
 - [x] **0.2** Company OS configured for Tradex (skills + planning)
 - [x] **0.3** Architecture skill — Tradex data model + API map
@@ -38,7 +38,8 @@ Implement `NEXT_STEPS.md` Phase 1: JWT auth (`/api/v1/auth/*`), SQLAlchemy model
 
 | # | Area | Issue | Priority | Status |
 |---|------|-------|----------|--------|
-| 1 | Data | API still mock/in-memory until Phase 1 DB work | P1 | Open |
+| 1 | Data / API | Trades, notebook, and challenges are still in-memory (per `user_id`) until slice **1.2**; all data routes require `Authorization: Bearer` | P1 | Open |
+| 2 | Frontend | Demo still uses `mockData.ts` — add **1.3** `Auth.tsx` and API wiring to use the token | P2 | Open |
 
 ---
 
@@ -52,8 +53,8 @@ Implement `NEXT_STEPS.md` Phase 1: JWT auth (`/api/v1/auth/*`), SQLAlchemy model
 
 ## Completed This Session
 
-- [x] Company OS integrated; Tradex preset applied via `scripts/setup.sh --preset tradex`
-- [x] Phase 0 closed out in skills (`architecture.md`, `workflows.md`) and `EXECUTION-PLAN.md`
+- [x] **Phase 0** merged to `main` (Plan0 UI + `PHASE0-INVENTORY`, skills)
+- [x] **1.1** backend — JWT, `User` + `users` table, protected routes, user-scoped in-memory data
 
 ---
 

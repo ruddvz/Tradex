@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/phase1-jwt-auth-backend-07ef — slice 1.1: JWT auth, User model, protected API
+- Commit: (see git log)
+- Files touched: `backend/app/database.py`, `backend/app/models/{base,user}.py`, `backend/app/models/trade.py`, `backend/app/core/security.py`, `backend/app/api/deps.py`, `backend/app/api/v1/routes.py`, `backend/app/main.py`, `backend/requirements.txt`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `NEXT_STEPS.md`
+- Tests added / changed: 0 (manual: TestClient + SQLite `DATABASE_URL`)
+- Build: pass (import + auth smoke)
+- Status: done
+- Next up: **1.2** — SQLAlchemy persistence for trades, notebook, challenges
+- Notes: Password hashing uses `bcrypt` package (replaces passlib in requirements). In-memory stores are namespaced by `user_id` until 1.2. `init_db()` creates `users` + `trades` on startup. MetaTrader5 remains Windows-only in requirements. Clients must send `Authorization: Bearer <jwt>` on protected routes (token from register/login).
+
 ## 2026-05-08 — cursor/phase0-architecture-docs-07ef — merge Plan0 UI + PHASE0-INVENTORY (single source of truth)
 - Commit: cf5dbc6 (Merge branch cursor/plan0-pixel-perfect-ui-66d8 into phase0 consolidation)
 - Files touched: merge `origin/cursor/plan0-pixel-perfect-ui-66d8` (frontend Plan0 implementation + `planning/Plan0-AUDIT.md`), `planning/PHASE0-INVENTORY.md`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md` (conflict resolution)
