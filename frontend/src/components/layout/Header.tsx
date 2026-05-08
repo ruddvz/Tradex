@@ -23,14 +23,12 @@ export function Header({ title, subtitle, action, onAddTrade }: HeaderProps) {
   return (
     <header
       className={clsx(
-        'no-print fixed top-0 right-0 z-30 flex items-center gap-3 px-4 sm:px-6',
+        'no-print header-safe fixed top-0 right-0 z-30 flex items-center gap-3 px-4 sm:px-6',
         'bg-dark-400/90 backdrop-blur-md border-b border-surface-border',
         'transition-all duration-300',
         'left-0',
-        sidebarOpen ? 'md:left-64' : 'md:left-16',
-        'pt-[env(safe-area-inset-top)]'
+        sidebarOpen ? 'md:left-64' : 'md:left-16'
       )}
-      style={{ height: 'calc(4rem + env(safe-area-inset-top))' }}
     >
       <div className="flex-1 min-w-0">
         <h1 className="text-lg font-bold text-white truncate">{title}</h1>

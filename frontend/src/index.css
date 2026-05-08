@@ -30,6 +30,11 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
+  #root {
+    min-height: 100vh;
+    background-color: #0f141c;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;

@@ -31,7 +31,7 @@ export function Landing() {
   return (
     <div className="min-h-screen bg-dark-400">
       {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-400/80 backdrop-blur-sm border-b border-surface-border">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-400/80 backdrop-blur-sm border-b border-surface-border pt-[env(safe-area-inset-top)]">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-gradient-brand flex items-center justify-center shadow-glow-sm">
@@ -52,7 +52,7 @@ export function Landing() {
       </nav>
 
       {/* Hero */}
-      <section className="pt-24 pb-16 px-6 relative overflow-hidden">
+      <section className="pt-[calc(6rem+env(safe-area-inset-top))] pb-16 px-6 relative overflow-hidden">
         {/* Background glow */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-brand-500/5 blur-3xl pointer-events-none" />
 

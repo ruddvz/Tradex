@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/plan0-pixel-perfect-ui-66d8 — Plan0 completion: boot skeleton, audit doc, safe-area polish
+- Commit: (see git log)
+- Files touched: `frontend/src/components/layout/{Layout,AppShellSkeleton}.tsx`, `frontend/src/components/layout/Header.tsx`, `frontend/src/index.css`, `frontend/src/pages/Landing.tsx`, `planning/Plan0-AUDIT.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: manual Lighthouse / device QA per `planning/Plan0-AUDIT.md`; or Phase **1.1** backend auth per `planning/ACTIVE.md`
+- Notes: Boot overlay uses `document.fonts.ready` + min 280ms; `#root` bg prevents flash; Header uses `.header-safe`; Landing nav/hero respect safe-area.
+
 ## 2026-05-08 — cursor/plan0-pixel-perfect-ui-66d8 — Plan0: pixel-perfect PWA UI + interactions
 - Commit: (see git log)
 - Files touched: `frontend/index.html`, `frontend/vite.config.ts`, `frontend/src/index.css`, `frontend/src/App.tsx`, `frontend/src/store/useStore.ts`, `frontend/src/components/layout/*`, `frontend/src/components/ui/{Toast,Skeleton}.tsx`, `frontend/src/components/journal/AddTradeModal.tsx`, `frontend/src/components/playbooks/CreatePlaybookModal.tsx`, `frontend/src/components/notebook/NoteEditor.tsx`, `frontend/src/components/ErrorBoundary.tsx`, `frontend/src/hooks/useBreakpoint.ts`, `frontend/src/pages/*`, chart tooltip typings
