@@ -35,7 +35,7 @@
 ## Log (newest first)
 
 ## 2026-05-08 — cursor/phase0-architecture-docs-07ef — slice 0.3 + 0.4: Tradex architecture skill + Plan0 workflow pointer
-- Commit: (see git log)
+- Commit: ff873e6 (docs: complete Phase 0 architecture skill and Plan0 workflow link)
 - Files touched: `.claude/skills/project/architecture.md`, `.claude/skills/project/workflows.md`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`
 - Tests added / changed: 0
 - Build: pass (documentation only)
