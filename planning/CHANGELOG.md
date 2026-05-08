@@ -35,7 +35,7 @@
 ## Log (newest first)
 
 ## 2026-05-08 — cursor/phase1-db-persistence-07ef — slice 1.3: Auth UI, protected shell, Settings sign out
-- Commit: (see git log)
+- Commit: 0ddd464 (feat(frontend): slice 1.3 — Auth page, protected shell, Settings sign out)
 - Files touched: `frontend/src/App.tsx`, `frontend/src/pages/Auth.tsx`, `frontend/src/components/auth/ProtectedLayout.tsx`, `frontend/src/lib/auth.ts`, `frontend/src/pages/Settings.tsx`, `frontend/vite.config.ts`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `NEXT_STEPS.md`
 - Tests added / changed: 0
 - Build: pass (`npm run lint`, `npm run build`)
