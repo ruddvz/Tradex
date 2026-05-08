@@ -1,14 +1,37 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- PWA Core -->
+    <meta name="theme-color" content="#0b0f16" media="(prefers-color-scheme: dark)" />
     <meta name="theme-color" content="#0b0f16" />
-    <meta name="description" content="Tradex - AI-Powered Trading Journal for Forex, Gold, Indices & Stock Traders. Auto-sync MT5, AI pattern detection, prop firm tracking." />
-    <title>Tradex | Trader's Performance Lab</title>
+    <meta name="background-color" content="#020617" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Tradex" />
+
+    <!-- SEO + Share -->
+    <meta name="description" content="Tradex — AI-Powered Trading Journal for Forex, Gold, Indices & Stock Traders." />
+    <meta name="application-name" content="Tradex" />
+    <meta property="og:title" content="Tradex | Trader's Performance Lab" />
+    <meta property="og:description" content="Journal, analyze, and improve your trading edge with AI-powered insights." />
+    <meta property="og:type" content="website" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/pwa-192.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+
+    <!-- Fonts — preconnect first, then preload critical weight -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" />
+
+    <title>Tradex | Trader's Performance Lab</title>
   </head>
   <body>
     <div id="root"></div>

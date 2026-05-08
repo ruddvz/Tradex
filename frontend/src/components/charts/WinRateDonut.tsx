@@ -3,7 +3,7 @@ import { useStore } from '../../store/useStore';
 
 const COLORS = ['#10b981', '#ef4444', '#64748b'];
 
-const CustomLabel = ({ cx, cy, value }: any) => (
+const CustomLabel = ({ cx, cy, value }: { cx?: number; cy?: number; value?: string | number }) => (
   <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central" fill="white" fontSize={22} fontWeight={700}>
     {value}%
   </text>

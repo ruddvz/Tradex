@@ -1,4 +1,16 @@
-import { TrendingUp, TrendingDown, BarChart3, Target, Zap, Brain, Clock, Award, ArrowUpRight } from 'lucide-react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  TrendingUp,
+  TrendingDown,
+  BarChart3,
+  Target,
+  Zap,
+  Brain,
+  Clock,
+  Award,
+  ArrowUpRight,
+} from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { StatCard } from '../components/ui/StatCard';
 import { EquityCurve } from '../components/charts/EquityCurve';
@@ -10,11 +22,21 @@ import { PnlBadge, DirectionBadge, Badge, GradeBadge } from '../components/ui/Ba
 import { useStore } from '../store/useStore';
 import { format } from 'date-fns';
 import { clsx } from 'clsx';
+import { useIsMobile } from '../hooks/useBreakpoint';
+import type { AIInsight } from '../types';
 
 export function Dashboard() {
+  const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const { metrics, trades, aiInsights, dismissInsight } = useStore();
   const recentTrades = trades.slice(0, 8);
   const topInsight = aiInsights[0];
+  const [dismissingId, setDismissingId] = useState<string | null>(null);
+
+  const handleDismissInsight = (insight: AIInsight) => {
+    setDismissingId(insight.id);
+    setTimeout(() => dismissInsight(insight.id), 300);
+  };
 
   return (
     <div className="min-h-screen">
@@ -23,22 +45,37 @@ export function Dashboard() {
         subtitle={`Last updated ${format(new Date(), 'MMM d, yyyy · h:mm a')}`}
       />
 
-      <div className="pt-16 p-6 space-y-6">
-        {/* AI Insight Banner */}
+      <div className="page-shell p-6 space-y-6">
         {topInsight && (
-          <div className={clsx(
-            'p-4 rounded-xl border flex items-start gap-4 animate-slide-up',
-            topInsight.impact === 'high' ? 'bg-brand-500/8 border-brand-500/30' :
-            topInsight.impact === 'medium' ? 'bg-blue-500/8 border-blue-500/30' :
-            'bg-amber-500/8 border-amber-500/30'
-          )}>
+          <div
+            className={clsx(
+              'p-4 rounded-xl border flex items-start gap-4 animate-slide-up transition-all duration-300',
+              topInsight.impact === 'high'
+                ? 'bg-brand-500/8 border-brand-500/30'
+                : topInsight.impact === 'medium'
+                  ? 'bg-blue-500/8 border-blue-500/30'
+                  : 'bg-amber-500/8 border-amber-500/30',
+              dismissingId === topInsight.id && 'opacity-0 scale-95 pointer-events-none'
+            )}
+          >
             <div className="p-2 rounded-lg bg-brand-500/15 flex-shrink-0">
               <Brain className="w-5 h-5 text-brand-400" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-semibold text-brand-400 uppercase tracking-wider">AI Insight</span>
-                <Badge variant={topInsight.impact === 'high' ? 'profit' : topInsight.impact === 'medium' ? 'info' : 'warn'} size="xs">
+                <span className="text-xs font-semibold text-brand-400 uppercase tracking-wider">
+                  AI Insight
+                </span>
+                <Badge
+                  variant={
+                    topInsight.impact === 'high'
+                      ? 'profit'
+                      : topInsight.impact === 'medium'
+                        ? 'info'
+                        : 'warn'
+                  }
+                  size="xs"
+                >
                   {topInsight.impact} impact
                 </Badge>
               </div>
@@ -46,15 +83,23 @@ export function Dashboard() {
               <p className="text-xs text-slate-400 line-clamp-1">{topInsight.description}</p>
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
-              <button className="text-xs text-brand-400 hover:text-brand-300 font-medium flex items-center gap-1">
+              <button
+                type="button"
+                className="text-xs text-brand-400 hover:text-brand-300 font-medium flex items-center gap-1"
+              >
                 View <ArrowUpRight className="w-3 h-3" />
               </button>
-              <button onClick={() => dismissInsight(topInsight.id)} className="text-slate-500 hover:text-slate-300 text-xs">✕</button>
+              <button
+                type="button"
+                onClick={() => handleDismissInsight(topInsight)}
+                className="text-slate-500 hover:text-slate-300 text-xs"
+              >
+                ✕
+              </button>
             </div>
           </div>
         )}
 
-        {/* Key Metrics Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-4">
           <StatCard
             title="Total P&L"
@@ -97,17 +142,25 @@ export function Dashboard() {
           />
         </div>
 
-        {/* Secondary Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <StatCard title="Total Trades" value={metrics.totalTrades} subtitle="90-day period" icon={BarChart3} />
-          <StatCard title="Best Trade" value={`+$${metrics.bestTrade.toFixed(0)}`} icon={Award} variant="profit" />
+          <StatCard
+            title="Best Trade"
+            value={`+$${metrics.bestTrade.toFixed(0)}`}
+            icon={Award}
+            variant="profit"
+          />
           <StatCard title="Avg Hold Time" value={`${metrics.avgHoldTime}m`} subtitle="Per trade" icon={Clock} />
-          <StatCard title="Expectancy" value={`$${metrics.expectancy.toFixed(0)}`} subtitle="Per trade avg" icon={Zap} variant={metrics.expectancy > 0 ? 'profit' : 'loss'} />
+          <StatCard
+            title="Expectancy"
+            value={`$${metrics.expectancy.toFixed(0)}`}
+            subtitle="Per trade avg"
+            icon={Zap}
+            variant={metrics.expectancy > 0 ? 'profit' : 'loss'}
+          />
         </div>
 
-        {/* Charts Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Equity Curve - wider */}
           <div className="card p-5 lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -115,14 +168,19 @@ export function Dashboard() {
                 <p className="section-subtitle">Balance vs Equity over time</p>
               </div>
               <div className="flex items-center gap-3 text-xs">
-                <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-brand-400 rounded" /><span className="text-slate-500">Equity</span></div>
-                <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-blue-400 rounded border-dashed border" /><span className="text-slate-500">Balance</span></div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-0.5 bg-brand-400 rounded" />
+                  <span className="text-slate-500">Equity</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <div className="w-3 h-0.5 bg-blue-400 rounded border-dashed border" />
+                  <span className="text-slate-500">Balance</span>
+                </div>
               </div>
             </div>
-            <EquityCurve height={220} />
+            <EquityCurve height={isMobile ? 160 : 220} />
           </div>
 
-          {/* Win Rate Donut */}
           <div className="card p-5">
             <div className="mb-4">
               <h3 className="section-title text-base">Win Rate</h3>
@@ -146,9 +204,7 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Middle Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Daily P&L Bar Chart */}
           <div className="card p-5 lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -157,33 +213,41 @@ export function Dashboard() {
               </div>
               <div className="text-right">
                 <div className="text-xs text-slate-400">Avg Daily</div>
-                <div className={clsx('text-sm font-bold', metrics.avgDailyPnl >= 0 ? 'text-brand-400' : 'text-red-400')}>
+                <div
+                  className={clsx(
+                    'text-sm font-bold',
+                    metrics.avgDailyPnl >= 0 ? 'text-brand-400' : 'text-red-400'
+                  )}
+                >
                   {metrics.avgDailyPnl >= 0 ? '+' : ''}${metrics.avgDailyPnl.toFixed(0)}
                 </div>
               </div>
             </div>
-            <PnLBarChart height={180} />
+            <PnLBarChart height={isMobile ? 140 : 180} />
           </div>
 
-          {/* P&L Calendar */}
           <div className="card p-5">
             <PnLCalendar />
           </div>
         </div>
 
-        {/* Bottom Row */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Recent Trades */}
           <div className="card lg:col-span-2">
             <div className="flex items-center justify-between px-5 py-4 border-b border-surface-border">
               <div>
                 <h3 className="section-title text-base">Recent Trades</h3>
                 <p className="section-subtitle">{trades.length} total trades</p>
               </div>
-              <button className="btn-secondary text-xs py-1.5">View All</button>
+              <button
+                type="button"
+                className="btn-secondary text-xs py-1.5"
+                onClick={() => navigate('/journal')}
+              >
+                View All
+              </button>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full">
+            <div className="overflow-x-auto -mx-0 rounded-b-xl">
+              <table className="w-full min-w-[360px]">
                 <thead>
                   <tr className="border-b border-surface-border">
                     <th className="table-header text-left">Symbol</th>
@@ -215,8 +279,14 @@ export function Dashboard() {
                         <PnlBadge value={trade.pnl} />
                       </td>
                       <td className="table-cell text-center">
-                        <span className={clsx('text-xs font-mono font-semibold', trade.rMultiple >= 1 ? 'text-brand-400' : 'text-red-400')}>
-                          {trade.rMultiple >= 0 ? '+' : ''}{trade.rMultiple}R
+                        <span
+                          className={clsx(
+                            'text-xs font-mono font-semibold',
+                            trade.rMultiple >= 1 ? 'text-brand-400' : 'text-red-400'
+                          )}
+                        >
+                          {trade.rMultiple >= 0 ? '+' : ''}
+                          {trade.rMultiple}R
                         </span>
                       </td>
                       <td className="table-cell text-center hidden md:table-cell">
@@ -232,7 +302,6 @@ export function Dashboard() {
             </div>
           </div>
 
-          {/* Session Heatmap */}
           <div className="card p-5">
             <div className="mb-4">
               <h3 className="section-title text-base">Session Heatmap</h3>
@@ -254,40 +323,40 @@ export function Dashboard() {
           </div>
         </div>
 
-        {/* Streak & Drawdown */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="card p-5">
+          <div className="card p-5 min-h-[100px]">
             <div className="text-xs text-slate-500 mb-2">Max Win Streak</div>
             <div className="text-2xl font-bold text-brand-400">{metrics.maxConsecutiveWins}</div>
             <div className="text-xs text-slate-500 mt-1">consecutive wins</div>
           </div>
-          <div className="card p-5">
+          <div className="card p-5 min-h-[100px]">
             <div className="text-xs text-slate-500 mb-2">Max Loss Streak</div>
             <div className="text-2xl font-bold text-red-400">{metrics.maxConsecutiveLosses}</div>
             <div className="text-xs text-slate-500 mt-1">consecutive losses</div>
           </div>
-          <div className="card p-5">
+          <div className="card p-5 min-h-[100px]">
             <div className="text-xs text-slate-500 mb-2">Trading Days</div>
             <div className="text-2xl font-bold text-white">{metrics.tradingDays}</div>
             <div className="text-xs text-slate-500 mt-1">days active</div>
           </div>
-          <div className="card p-5">
+          <div className="card p-5 min-h-[100px]">
             <div className="text-xs text-slate-500 mb-2">Worst Trade</div>
             <div className="text-2xl font-bold text-red-400">${metrics.worstTrade.toFixed(0)}</div>
             <div className="text-xs text-slate-500 mt-1">single trade loss</div>
           </div>
         </div>
 
-        {/* Drawdown chart */}
         <div className="card p-5">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="section-title text-base">Drawdown Analysis</h3>
               <p className="section-subtitle">% drawdown from equity peak</p>
             </div>
-            <Badge variant="loss" size="xs">Max {metrics.maxDrawdown.toFixed(1)}%</Badge>
+            <Badge variant="loss" size="xs">
+              Max {metrics.maxDrawdown.toFixed(1)}%
+            </Badge>
           </div>
-          <EquityCurve showDrawdown height={160} />
+          <EquityCurve showDrawdown height={isMobile ? 140 : 160} />
         </div>
       </div>
     </div>

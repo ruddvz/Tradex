@@ -34,7 +34,15 @@
 
 ## Log (newest first)
 
-## 2026-05-06 — main — company-os: Tradex preset + automated setup
+## 2026-05-08 — cursor/plan0-pixel-perfect-ui-66d8 — Plan0: pixel-perfect PWA UI + interactions
+- Commit: (see git log)
+- Files touched: `frontend/index.html`, `frontend/vite.config.ts`, `frontend/src/index.css`, `frontend/src/App.tsx`, `frontend/src/store/useStore.ts`, `frontend/src/components/layout/*`, `frontend/src/components/ui/{Toast,Skeleton}.tsx`, `frontend/src/components/journal/AddTradeModal.tsx`, `frontend/src/components/playbooks/CreatePlaybookModal.tsx`, `frontend/src/components/notebook/NoteEditor.tsx`, `frontend/src/components/ErrorBoundary.tsx`, `frontend/src/hooks/useBreakpoint.ts`, `frontend/src/pages/*`, chart tooltip typings
+- Tests added / changed: 0 (manual verification via build + lint)
+- Build: pass (`npm run build`, `npm run lint`)
+- Status: done
+- Next up: Phase **1.1** from `planning/ACTIVE.md` — JWT auth + User model if continuing backend roadmap
+- Notes: Implements `planning/Plan0.md`: mobile bottom nav, PWA meta/manifest/workbox, safe-area/header offset (`page-shell`), journal/playbooks/notebook modals, toasts, calculator RR meter, reports print export, PropFirm drawdown pulse + live days.
+
 - Commit: (see git log)
 - Files touched: `.claude/`, `planning/`, `scripts/setup.sh`, `scripts/company_os_apply.py`, `scripts/presets/tradex.env`
 - Tests added / changed: 0

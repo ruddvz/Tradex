@@ -23,39 +23,60 @@ export default defineConfig(({ mode }) => {
           '.nojekyll',
         ],
         manifest: {
-          name: 'Tradex',
+          name: "Tradex — Trader's Performance Lab",
           short_name: 'Tradex',
           description:
-            "Tradex — AI-Powered Trading Journal for Forex, Gold, Indices & Stock Traders.",
+            'AI-Powered Trading Journal for Forex, Gold, Indices & Stock Traders.',
           theme_color: '#0b0f16',
           background_color: '#020617',
           display: 'standalone',
+          display_override: ['standalone', 'minimal-ui'],
           orientation: 'any',
           scope: base,
           start_url: base,
+          categories: ['finance', 'productivity'],
+          lang: 'en',
+          dir: 'ltr',
+          prefer_related_applications: false,
+          screenshots: [],
+          shortcuts: [
+            {
+              name: 'Dashboard',
+              url: base,
+              description: 'Open trading dashboard',
+            },
+            {
+              name: 'Trade Journal',
+              url: `${base}journal`,
+              description: 'View your trade journal',
+            },
+          ],
           icons: [
-            {
-              src: 'pwa-192.png',
-              sizes: '192x192',
-              type: 'image/png',
-              purpose: 'any',
-            },
-            {
-              src: 'pwa-512.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'any',
-            },
-            {
-              src: 'pwa-512-maskable.png',
-              sizes: '512x512',
-              type: 'image/png',
-              purpose: 'maskable',
-            },
+            { src: 'pwa-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+            { src: 'pwa-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+            { src: 'pwa-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
           ],
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'gstatic-fonts-cache',
+                expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              },
+            },
+          ],
         },
       }),
     ],

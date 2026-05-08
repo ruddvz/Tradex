@@ -47,7 +47,8 @@ export function PropFirm() {
   const profitPct = (propChallenge.currentPnl / propChallenge.profitTarget) * 100;
   const drawdownPct = (propChallenge.currentDrawdown / propChallenge.maxDrawdown) * 100;
   const dailyPct = (propChallenge.dailyLoss / propChallenge.dailyDrawdown) * 100;
-  const daysRemaining = differenceInDays(new Date(propChallenge.endDate), new Date());
+  const daysRemaining = Math.max(0, differenceInDays(new Date(propChallenge.endDate), new Date()));
+  const isExpiringSoon = daysRemaining <= 3;
 
   const challengeTrades = trades.slice(0, propChallenge.trades);
   const challengeWins = challengeTrades.filter(t => t.status === 'WIN').length;
@@ -56,7 +57,7 @@ export function PropFirm() {
     <div className="min-h-screen">
       <Header title="Prop Firm Mode" subtitle="Track your funded challenge progress" />
 
-      <div className="pt-16 p-6 space-y-6">
+      <div className="page-shell p-6 space-y-6">
         {/* Challenge Header Card */}
         <div className="card p-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -91,7 +92,14 @@ export function PropFirm() {
           {[
             { label: 'Account Size', value: `$${(propChallenge.accountSize / 1000).toFixed(0)}K`, sub: propChallenge.firm, icon: Shield, color: 'text-white' },
             { label: 'Current P&L', value: `+$${propChallenge.currentPnl.toLocaleString()}`, sub: `${((propChallenge.currentPnl / propChallenge.accountSize) * 100).toFixed(2)}%`, icon: TrendingUp, color: 'text-brand-400' },
-            { label: 'Days Remaining', value: daysRemaining, sub: `${propChallenge.daysTraded} days traded`, icon: Calendar, color: 'text-blue-400' },
+            {
+              label: 'Days Remaining',
+              value: daysRemaining,
+              sub: `${propChallenge.daysTraded} days traded`,
+              icon: Calendar,
+              color: isExpiringSoon ? 'text-red-400' : 'text-blue-400',
+              pulse: isExpiringSoon,
+            },
             { label: 'Total Trades', value: propChallenge.trades, sub: `${challengeWins}W / ${propChallenge.trades - challengeWins}L`, icon: BarChart3, color: 'text-white' },
           ].map(s => (
             <div key={s.label} className="card p-5">
@@ -99,7 +107,7 @@ export function PropFirm() {
                 <span className="text-xs text-slate-500">{s.label}</span>
                 <s.icon className="w-4 h-4 text-slate-600" />
               </div>
-              <div className={clsx('text-2xl font-bold', s.color)}>{s.value}</div>
+              <div className={clsx('text-2xl font-bold', s.color, 'pulse' in s && s.pulse && 'animate-pulse')}>{s.value}</div>
               <div className="text-xs text-slate-500 mt-1">{s.sub}</div>
             </div>
           ))}
@@ -136,13 +144,30 @@ export function PropFirm() {
               </Badge>
             </div>
 
-            <ProgressBar
-              value={propChallenge.currentDrawdown}
-              max={propChallenge.maxDrawdown}
-              color={drawdownPct >= 80 ? '#ef4444' : drawdownPct >= 50 ? '#f59e0b' : '#10b981'}
-              label="Overall Drawdown (10% Max)"
-              sublabel="0% used"
-            />
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-slate-300 font-medium">Overall Drawdown (10% Max)</span>
+                <span className="text-white font-bold">
+                  ${propChallenge.currentDrawdown.toLocaleString()} / ${propChallenge.maxDrawdown.toLocaleString()}
+                </span>
+              </div>
+              <div className="h-3 bg-dark-300 rounded-full overflow-hidden border border-surface-border">
+                <div
+                  className={clsx(
+                    'h-full rounded-full transition-all duration-700',
+                    drawdownPct > 70 ? 'animate-pulse' : '',
+                    drawdownPct > 80 ? 'bg-red-500' : drawdownPct > 60 ? 'bg-amber-500' : 'bg-brand-500'
+                  )}
+                  style={{ width: `${Math.min(drawdownPct, 100)}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-500">0% used</span>
+                <span className={clsx('font-semibold', drawdownPct >= 80 ? 'text-amber-400' : 'text-slate-400')}>
+                  {drawdownPct.toFixed(1)}% used
+                </span>
+              </div>
+            </div>
 
             <ProgressBar
               value={propChallenge.dailyLoss}
