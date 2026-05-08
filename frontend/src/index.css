@@ -1,22 +1,38 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --header-height: calc(4rem + env(safe-area-inset-top));
+}
+
 @layer base {
   * {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.surface.border') transparent;
     @apply border-surface-border;
   }
-  
+
+  :focus-visible {
+    outline: 2px solid theme('colors.brand.500');
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
   html {
     @apply scroll-smooth;
   }
-  
+
   body {
     @apply bg-dark-400 text-slate-100 font-sans antialiased;
     background: linear-gradient(135deg, #0b0f16 0%, #0f1420 50%, #0b0f16 100%);
     min-height: 100vh;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  #root {
+    min-height: 100vh;
+    background-color: #0f141c;
   }
 
   ::-webkit-scrollbar {
@@ -32,6 +48,35 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-slate-500;
   }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .card {
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: none !important;
+  }
+}
+
+.page-shell {
+  padding-top: var(--header-height);
+}
+
+/* Sidebar bottom safe area (home indicator) */
+.sidebar-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+/* Header clears status bar in standalone mode */
+.header-safe {
+  padding-top: env(safe-area-inset-top);
+  height: calc(4rem + env(safe-area-inset-top));
 }
 
 @layer components {
@@ -133,6 +178,49 @@
 
   .progress-fill {
     @apply h-full rounded-full transition-all duration-500;
+  }
+
+  /* Toggle switch */
+  .toggle-track {
+    @apply relative w-10 h-5 rounded-full transition-colors duration-200;
+  }
+  .toggle-thumb {
+    @apply absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200 shadow-sm;
+  }
+
+  /* Drag handle */
+  .drag-handle {
+    @apply w-8 h-1 bg-surface-border rounded-full mx-auto mb-4 cursor-grab;
+  }
+
+  /* Sheet overlay */
+  .sheet-overlay {
+    @apply fixed inset-0 z-40 bg-black/60 backdrop-blur-sm;
+  }
+
+  /* Empty state */
+  .empty-state {
+    @apply text-center py-16 text-slate-500;
+  }
+
+  /* Divider */
+  .divider {
+    @apply border-t border-surface-border my-4;
+  }
+
+  /* Chip/tag */
+  .chip {
+    @apply inline-flex items-center gap-1 px-2.5 py-1 bg-surface-light rounded-full text-xs font-medium text-slate-300 border border-surface-border;
+  }
+
+  /* Modal backdrop */
+  .modal-backdrop {
+    @apply fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4;
+  }
+
+  /* Code block */
+  .code {
+    @apply font-mono text-xs bg-dark-300 border border-surface-border rounded px-1.5 py-0.5 text-brand-300;
   }
 }
 

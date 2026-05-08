@@ -25,6 +25,9 @@ interface AppState {
   updateNotebookEntry: (id: string, updates: Partial<NotebookEntry>) => void;
   deleteNotebookEntry: (id: string) => void;
   dismissInsight: (id: string) => void;
+  addPlaybook: (pb: Playbook) => void;
+  updatePlaybook: (id: string, updates: Partial<Playbook>) => void;
+  deletePlaybook: (id: string) => void;
 }
 
 export const useStore = create<AppState>((set) => ({
@@ -60,4 +63,10 @@ export const useStore = create<AppState>((set) => ({
   })),
   deleteNotebookEntry: (id) => set(state => ({ notebook: state.notebook.filter(n => n.id !== id) })),
   dismissInsight: (id) => set(state => ({ aiInsights: state.aiInsights.filter(i => i.id !== id) })),
+
+  addPlaybook: (pb) => set(state => ({ playbooks: [pb, ...state.playbooks] })),
+  updatePlaybook: (id, updates) => set(state => ({
+    playbooks: state.playbooks.map(p => (p.id === id ? { ...p, ...updates } : p)),
+  })),
+  deletePlaybook: (id) => set(state => ({ playbooks: state.playbooks.filter(p => p.id !== id) })),
 }));

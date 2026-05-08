@@ -34,14 +34,41 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/phase0-architecture-docs-07ef — merge Plan0 UI + PHASE0-INVENTORY (single source of truth)
+- Commit: (see git log — merge commit)
+- Files touched: merge `origin/cursor/plan0-pixel-perfect-ui-66d8` (frontend Plan0 implementation + `planning/Plan0-AUDIT.md`), `planning/PHASE0-INVENTORY.md`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md` (conflict resolution)
+- Tests added / changed: 0
+- Build: pass (`npm ci && npm run build` in `frontend/`)
+- Status: done
+- Next up: **1.1** — JWT auth + User model per `NEXT_STEPS.md`; merge this branch to `main` so Plan0 UI is not stranded
+- Notes: `main` previously had only `planning/Plan0.md` (prompt) and misleading commit `7b367b5`; UI work lived on `cursor/plan0-pixel-perfect-ui-66d8` until this merge. See `planning/PHASE0-INVENTORY.md` for the full map.
+
+## 2026-05-08 — cursor/plan0-pixel-perfect-ui-66d8 — Plan0 completion: boot skeleton, audit doc, safe-area polish
+- Commit: 5e78eb4 (feat(frontend): finish Plan0 — boot skeleton, audit doc, safe areas)
+- Files touched: `frontend/src/components/layout/{Layout,AppShellSkeleton}.tsx`, `frontend/src/components/layout/Header.tsx`, `frontend/src/index.css`, `frontend/src/pages/Landing.tsx`, `planning/Plan0-AUDIT.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: manual Lighthouse / device QA per `planning/Plan0-AUDIT.md`; then **1.1** per `NEXT_STEPS.md`
+- Notes: Boot overlay uses `document.fonts.ready` + min 280ms; `#root` bg prevents flash; Header uses `.header-safe`; Landing nav/hero respect safe-area.
+
+## 2026-05-08 — cursor/plan0-pixel-perfect-ui-66d8 — Plan0: pixel-perfect PWA UI + interactions
+- Commit: 4a078ca (feat(frontend): implement Plan0 pixel-perfect PWA UI and interactions)
+- Files touched: `frontend/index.html`, `frontend/vite.config.ts`, `frontend/src/index.css`, `frontend/src/App.tsx`, `frontend/src/store/useStore.ts`, `frontend/src/components/layout/*`, `frontend/src/components/ui/{Toast,Skeleton}.tsx`, `frontend/src/components/journal/AddTradeModal.tsx`, `frontend/src/components/playbooks/CreatePlaybookModal.tsx`, `frontend/src/components/notebook/NoteEditor.tsx`, `frontend/src/components/ErrorBoundary.tsx`, `frontend/src/hooks/useBreakpoint.ts`, `frontend/src/pages/*`, chart tooltip typings
+- Tests added / changed: 0 (manual verification via build + lint)
+- Build: pass (`npm run build`, `npm run lint`)
+- Status: done
+- Next up: boot polish / audit doc (commit `5e78eb4`) then Phase **1.1**
+- Notes: Implements `planning/Plan0.md`: mobile bottom nav, PWA meta/manifest/workbox, safe-area/header offset (`page-shell`), journal/playbooks/notebook modals, toasts, calculator RR meter, reports print export, PropFirm drawdown pulse + live days.
+
 ## 2026-05-08 — cursor/phase0-architecture-docs-07ef — slice 0.3 + 0.4: Tradex architecture skill + Plan0 workflow pointer
-- Commit: ff873e6 (docs: complete Phase 0 architecture skill and Plan0 workflow link)
+- Commit: ff873e6 / 3bb808f (docs: Phase 0 architecture skill + CHANGELOG sha)
 - Files touched: `.claude/skills/project/architecture.md`, `.claude/skills/project/workflows.md`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`
 - Tests added / changed: 0
 - Build: pass (documentation only)
 - Status: done
 - Next up: **1.1** — JWT auth + User model + `get_current_user` per `NEXT_STEPS.md` Phase 1
-- Notes: Replaces template placeholders in `architecture.md` with Tradex stack, API table, compose diagram, and Phase 1 debt. `workflows.md` step 5 links optional UI work to `planning/Plan0.md`. Prior commits `7b367b5`/`520559b` on `main` added `planning/Plan0.md` (misleading commit message on first commit — file is the pixel-perfect UI prompt, not a print-statement change).
+- Notes: Replaces template placeholders in `architecture.md` with Tradex stack, API table, compose diagram, and Phase 1 debt. `workflows.md` links optional UI work to `planning/Plan0.md`. Commits `7b367b5`/`520559b` on `main` added `planning/Plan0.md` (misleading message on `7b367b5` — file is the pixel-perfect UI prompt).
 
 ## 2026-05-06 — main — company-os: Tradex preset + automated setup
 - Commit: (see git log)

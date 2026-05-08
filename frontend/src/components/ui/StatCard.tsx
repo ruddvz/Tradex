@@ -27,7 +27,7 @@ export function StatCard({ title, value, subtitle, trend, trendLabel, icon: Icon
   const isPositiveTrend = trend !== undefined && trend >= 0;
 
   return (
-    <div className={clsx('card p-5 animate-fade-in', className)}>
+    <div className={clsx('card p-5 animate-fade-in flex flex-col justify-between min-h-[116px]', className)}>
       <div className="flex items-start justify-between mb-3">
         <span className="text-sm text-slate-400 font-medium">{title}</span>
         {Icon && (

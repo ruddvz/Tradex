@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { Brain, Target, Plus, Sparkles } from 'lucide-react';
+import { Brain, Target, Plus, Sparkles, Loader2 } from 'lucide-react';
 import { Header } from '../components/layout/Header';
+import { CreatePlaybookModal } from '../components/playbooks/CreatePlaybookModal';
+import { useToast } from '../components/ui/Toast';
 import { useStore } from '../store/useStore';
 import { Badge, PnlBadge } from '../components/ui/Badge';
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
@@ -151,9 +153,19 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
 }
 
 export function Playbooks() {
+  const { showToast } = useToast();
   const { playbooks, aiInsights, trades } = useStore();
   const [selected, setSelected] = useState<Playbook | null>(null);
+  const [createOpen, setCreateOpen] = useState(false);
+  const [generating, setGenerating] = useState(false);
   const psychInsights = aiInsights.filter(i => i.type === 'psychology' || i.type === 'pattern');
+
+  const handleAIGenerate = async () => {
+    setGenerating(true);
+    await new Promise(r => setTimeout(r, 2000));
+    setGenerating(false);
+    showToast('AI analysis complete — 2 new insights generated');
+  };
 
   const symbolStats = Array.from(new Set(trades.map(t => t.symbol))).map(sym => {
     const symTrades = trades.filter(t => t.symbol === sym);
@@ -170,13 +182,34 @@ export function Playbooks() {
     <div className="min-h-screen">
       <Header title="AI Playbooks" subtitle="Pattern detection & performance intelligence" />
 
-      <div className="pt-16 p-6 space-y-6">
+      <div className="page-shell p-6 space-y-6">
+        {createOpen && <CreatePlaybookModal onClose={() => setCreateOpen(false)} />}
         {/* AI Banner */}
         <div className="p-5 rounded-xl bg-gradient-to-r from-brand-500/10 to-blue-500/10 border border-brand-500/20">
-          <div className="flex items-center gap-3 mb-3">
-            <Sparkles className="w-5 h-5 text-brand-400" />
-            <span className="font-semibold text-white">AI Pattern Engine</span>
-            <Badge variant="profit" size="xs">Active</Badge>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-3">
+            <div className="flex items-center gap-3 flex-1">
+              <Sparkles className="w-5 h-5 text-brand-400 shrink-0" />
+              <span className="font-semibold text-white">AI Pattern Engine</span>
+              <Badge variant="profit" size="xs">
+                Active
+              </Badge>
+            </div>
+            <button
+              type="button"
+              disabled={generating}
+              onClick={handleAIGenerate}
+              className="btn-secondary text-sm shrink-0 justify-center"
+            >
+              {generating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Analyzing…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" /> Run AI Analysis
+                </>
+              )}
+            </button>
           </div>
           <p className="text-sm text-slate-400">
             Analyzed {trades.length} trades to surface your most profitable patterns. Updated continuously as you trade.
@@ -252,7 +285,7 @@ export function Playbooks() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="section-title text-base">My Playbooks</h2>
-            <button className="btn-primary text-sm">
+            <button type="button" className="btn-primary text-sm" onClick={() => setCreateOpen(true)}>
               <Plus className="w-4 h-4" /> New Playbook
             </button>
           </div>

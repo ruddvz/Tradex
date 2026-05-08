@@ -13,18 +13,23 @@ interface HeaderProps {
   title: string;
   subtitle?: string;
   action?: React.ReactNode;
+  onAddTrade?: () => void;
 }
 
-export function Header({ title, subtitle, action }: HeaderProps) {
-  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, syncTrades, aiInsights } = useStore();
+export function Header({ title, subtitle, action, onAddTrade }: HeaderProps) {
+  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, syncTrades, aiInsights } =
+    useStore();
 
   return (
-    <header className={clsx(
-      'fixed top-0 right-0 z-30 h-16 flex items-center gap-4 px-6',
-      'bg-dark-400/80 backdrop-blur-sm border-b border-surface-border',
-      'transition-all duration-300',
-      sidebarOpen ? 'left-64' : 'left-16'
-    )}>
+    <header
+      className={clsx(
+        'no-print header-safe fixed top-0 right-0 z-30 flex items-center gap-3 px-4 sm:px-6',
+        'bg-dark-400/90 backdrop-blur-md border-b border-surface-border',
+        'transition-all duration-300',
+        'left-0',
+        sidebarOpen ? 'md:left-64' : 'md:left-16'
+      )}
+    >
       <div className="flex-1 min-w-0">
         <h1 className="text-lg font-bold text-white truncate">{title}</h1>
         {subtitle && <p className="text-xs text-slate-500 truncate">{subtitle}</p>}
@@ -35,6 +40,7 @@ export function Header({ title, subtitle, action }: HeaderProps) {
         {ranges.map(r => (
           <button
             key={r.key}
+            type="button"
             onClick={() => setDateRange(r.key)}
             className={clsx(
               'px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
@@ -50,6 +56,7 @@ export function Header({ title, subtitle, action }: HeaderProps) {
 
       {/* Sync button */}
       <button
+        type="button"
         onClick={() => syncTrades()}
         disabled={isSyncing}
         className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white transition-colors border border-surface-border"
@@ -59,7 +66,10 @@ export function Header({ title, subtitle, action }: HeaderProps) {
       </button>
 
       {/* Notifications */}
-      <button className="relative p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white transition-colors border border-surface-border">
+      <button
+        type="button"
+        className="relative p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white transition-colors border border-surface-border"
+      >
         <Bell className="w-4 h-4" />
         {aiInsights.length > 0 && (
           <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-400 border border-dark-400" />
@@ -67,8 +77,12 @@ export function Header({ title, subtitle, action }: HeaderProps) {
       </button>
 
       {/* Add Trade */}
-      {action || (
-        <button className="btn-primary text-sm hidden sm:flex">
+      {action ?? (
+        <button
+          type="button"
+          className="btn-primary text-sm hidden sm:flex"
+          onClick={onAddTrade}
+        >
           <Plus className="w-4 h-4" />
           Add Trade
         </button>

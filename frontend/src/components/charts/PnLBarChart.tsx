@@ -4,9 +4,17 @@ import {
 import { mockDailyStats } from '../../data/mockData';
 import { format } from 'date-fns';
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{ value?: number; payload?: { trades?: number } }>;
+  label?: string;
+}) => {
   if (!active || !payload?.length) return null;
-  const pnl = payload[0].value;
+  const pnl = payload[0]?.value ?? 0;
   const isProfit = pnl >= 0;
   return (
     <div className="bg-surface border border-surface-border rounded-lg p-3 shadow-card text-sm">

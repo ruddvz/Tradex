@@ -59,7 +59,8 @@ Implement `NEXT_STEPS.md` Phase 1: JWT auth (`/api/v1/auth/*`), SQLAlchemy model
 
 ## Phase History (compact)
 
-- **Setup** (see CHANGELOG): Claude Company OS + Tradex preset ✓
+- **Phase 0:** Complete — see **`planning/PHASE0-INVENTORY.md`** (Company OS, skills, Plan0 prompt, Plan0 UI merge)
+- Company OS + Tradex preset ✓ (`scripts/setup.sh --preset tradex`)
 
 ---
 
@@ -77,5 +78,6 @@ Implement `NEXT_STEPS.md` Phase 1: JWT auth (`/api/v1/auth/*`), SQLAlchemy model
 ## Notes for Next Agent
 
 - Read `planning/CHANGELOG.md` (newest entry) first
+- **Phase 0 / Plan0 full picture:** `planning/PHASE0-INVENTORY.md` (everything shipped and where it lives in git)
 - Product roadmap: **`NEXT_STEPS.md`** (authoritative phases)
 - Company context: `.claude/skills/core/company.md`

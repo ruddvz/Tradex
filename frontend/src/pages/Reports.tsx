@@ -10,9 +10,17 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { clsx } from 'clsx';
 import { useMemo } from 'react';
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{ value?: number }>;
+  label?: string;
+}) => {
   if (!active || !payload?.length) return null;
-  const val = payload[0].value;
+  const val = payload[0]?.value ?? 0;
   return (
     <div className="bg-surface border border-surface-border rounded-lg p-2 text-xs shadow-card">
       <div className="text-slate-400">{label}</div>
@@ -77,13 +85,17 @@ export function Reports() {
         title="Performance Reports"
         subtitle="Comprehensive trading analytics"
         action={
-          <button className="btn-secondary text-sm">
+          <button
+            type="button"
+            className="no-print btn-secondary text-sm"
+            onClick={() => window.print()}
+          >
             <Download className="w-4 h-4" /> Export PDF
           </button>
         }
       />
 
-      <div className="pt-16 p-6 space-y-6">
+      <div className="page-shell p-6 space-y-6">
         {/* KPI Overview */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[

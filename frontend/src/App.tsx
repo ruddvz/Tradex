@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, ScrollRestoration } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { Landing } from './pages/Landing';
 import { Dashboard } from './pages/Dashboard';
@@ -9,23 +9,30 @@ import { Notebook } from './pages/Notebook';
 import { Reports } from './pages/Reports';
 import { Calculator } from './pages/Calculator';
 import { Settings } from './pages/Settings';
+import { ToastProvider } from './components/ui/Toast';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 export default function App() {
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <Routes>
-        <Route path="/landing" element={<Landing />} />
-        <Route element={<Layout />}>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/journal" element={<Journal />} />
-          <Route path="/playbooks" element={<Playbooks />} />
-          <Route path="/propfirm" element={<PropFirm />} />
-          <Route path="/notebook" element={<Notebook />} />
-          <Route path="/reports" element={<Reports />} />
-          <Route path="/calculator" element={<Calculator />} />
-          <Route path="/settings" element={<Settings />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ErrorBoundary>
+      <ToastProvider>
+        <BrowserRouter basename={import.meta.env.BASE_URL}>
+          <ScrollRestoration />
+          <Routes>
+            <Route path="/landing" element={<Landing />} />
+            <Route element={<Layout />}>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/journal" element={<Journal />} />
+              <Route path="/playbooks" element={<Playbooks />} />
+              <Route path="/propfirm" element={<PropFirm />} />
+              <Route path="/notebook" element={<Notebook />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/calculator" element={<Calculator />} />
+              <Route path="/settings" element={<Settings />} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
+    </ErrorBoundary>
   );
 }

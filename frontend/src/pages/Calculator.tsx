@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Calculator as CalcIcon, AlertTriangle, CheckCircle2, TrendingUp } from 'lucide-react';
+import { Calculator as CalcIcon, AlertTriangle, CheckCircle2, TrendingUp, Copy, Check } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { clsx } from 'clsx';
 
@@ -21,6 +21,7 @@ export function Calculator() {
   const [stopLoss, setStopLoss] = useState(2340);
   const [takeProfit, setTakeProfit] = useState(2370);
   const [symbol, setSymbol] = useState('XAUUSD');
+  const [copied, setCopied] = useState(false);
 
   const inst = instruments.find(i => i.name === symbol) || instruments[0];
 
@@ -51,7 +52,7 @@ export function Calculator() {
     <div className="min-h-screen">
       <Header title="Risk Calculator" subtitle="Position sizing & risk management" />
 
-      <div className="pt-16 p-6">
+      <div className="page-shell p-6">
         <div className="max-w-3xl mx-auto space-y-5">
           {/* Main Calculator */}
           <div className="card p-6">
@@ -88,11 +89,12 @@ export function Calculator() {
                     {presetRisks.map(r => (
                       <button
                         key={r}
+                        type="button"
                         onClick={() => setRiskPercent(r)}
                         className={clsx(
                           'flex-1 py-2 rounded-lg text-xs font-semibold border transition-all',
                           riskPercent === r
-                            ? 'bg-brand-500/20 text-brand-400 border-brand-500/30'
+                            ? 'bg-brand-500/20 text-brand-400 border-brand-500/40 shadow-glow-sm'
                             : 'bg-dark-300 text-slate-400 border-surface-border hover:bg-surface-light'
                         )}
                       >
@@ -160,18 +162,32 @@ export function Calculator() {
           <div className="card p-6">
             <h3 className="font-semibold text-white mb-4">Calculation Results</h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
+              <div className="rounded-xl p-4 border border-brand-500/30 bg-brand-500/5">
+                <div className="text-xs text-slate-500 mb-1 flex items-center justify-between gap-2">
+                  Lot Size
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void navigator.clipboard.writeText(calc.lotSize.toString());
+                      setCopied(true);
+                      setTimeout(() => setCopied(false), 2000);
+                    }}
+                    className="p-1.5 rounded hover:bg-surface-border text-slate-400 hover:text-white transition-colors"
+                    title="Copy lot size"
+                  >
+                    {copied ? <Check className="w-4 h-4 text-brand-400" /> : <Copy className="w-4 h-4" />}
+                  </button>
+                </div>
+                <div className={clsx('text-xl font-bold text-white')}>{calc.lotSize} lots</div>
+              </div>
               {[
-                { label: 'Lot Size', value: `${calc.lotSize} lots`, color: 'text-white', highlight: true },
                 { label: 'Risk Amount', value: `$${calc.riskAmount}`, color: 'text-red-400' },
                 { label: 'Potential Profit', value: `$${calc.potentialProfit}`, color: 'text-brand-400' },
                 { label: 'Risk:Reward', value: `1:${calc.rr}`, color: calc.isGoodRR ? 'text-brand-400' : 'text-amber-400' },
                 { label: 'SL Pips', value: `${calc.slPips} pips`, color: 'text-red-400' },
                 { label: 'TP Pips', value: `${calc.tpPips} pips`, color: 'text-brand-400' },
               ].map(r => (
-                <div key={r.label} className={clsx(
-                  'bg-dark-300 rounded-xl p-4',
-                  r.highlight && 'border border-brand-500/30 bg-brand-500/5'
-                )}>
+                <div key={r.label} className="bg-dark-300 rounded-xl p-4">
                   <div className="text-xs text-slate-500 mb-1">{r.label}</div>
                   <div className={clsx('text-xl font-bold', r.color)}>{r.value}</div>
                 </div>
@@ -197,6 +213,35 @@ export function Calculator() {
                     : `1:${calc.rr} RR is below ideal. Aim for 1:2 minimum to ensure profitability.`
                   }
                 </p>
+              </div>
+            </div>
+
+            <div className="mt-3">
+              <div className="flex items-center justify-between text-xs text-slate-500 mb-1.5">
+                <span>Risk</span>
+                <span>
+                  1:{calc.rr} Reward
+                </span>
+              </div>
+              <div className="h-3 bg-dark-300 rounded-full overflow-hidden border border-surface-border">
+                <div className="h-full flex">
+                  <div
+                    className="bg-red-500/60 rounded-l-full"
+                    style={{ width: `${(1 / (1 + calc.rr)) * 100}%` }}
+                  />
+                  <div
+                    className={clsx(
+                      'rounded-r-full flex-1',
+                      calc.isGoodRR ? 'bg-brand-500/70' : 'bg-amber-500/60'
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="flex items-center justify-between text-xs mt-1">
+                <span className="text-red-400">Risk: ${calc.riskAmount}</span>
+                <span className={calc.isGoodRR ? 'text-brand-400' : 'text-amber-400'}>
+                  Reward: ${calc.potentialProfit}
+                </span>
               </div>
             </div>
           </div>

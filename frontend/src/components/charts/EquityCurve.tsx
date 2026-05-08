@@ -4,12 +4,20 @@ import {
 import { format } from 'date-fns';
 import { mockEquityCurve } from '../../data/mockData';
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({
+  active,
+  payload,
+  label,
+}: {
+  active?: boolean;
+  payload?: Array<{ name?: string; color?: string; value?: number }>;
+  label?: string;
+}) => {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-surface border border-surface-border rounded-lg p-3 shadow-card text-sm">
       <p className="text-slate-400 mb-2">{label}</p>
-      {payload.map((p: any) => (
+      {payload.map(p => (
         <div key={p.name} className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
           <span className="text-slate-400 capitalize">{p.name}:</span>

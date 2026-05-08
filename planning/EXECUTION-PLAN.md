@@ -18,6 +18,8 @@
 
 ## Phase 0 — Project Setup
 
+> Delivered-work manifest (slices + Plan0 prompt + Plan0 UI): **`planning/PHASE0-INVENTORY.md`**
+
 - [x] **0.1** Initialize Claude Company OS
 - [x] **0.2** Fill in `skills/core/company.md` with Tradex details (preset)
 - [x] **0.3** Fill in `skills/project/architecture.md` with Tradex data model and API map
@@ -75,4 +77,5 @@
 
 - Slice ids are referenced in `planning/CHANGELOG.md` entries — keep them stable
 - Product-level detail lives in **`NEXT_STEPS.md`**; keep this file in sync when phases shift
+- **`planning/PHASE0-INVENTORY.md`** — canonical inventory for Phase 0 and Plan0-related work (commits, branches, improvements)
 - **`planning/Plan0.md`** — optional pixel-perfect UI/PWA playbook (frontend polish); not a substitute for roadmap slices
