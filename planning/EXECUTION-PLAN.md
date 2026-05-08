@@ -20,8 +20,8 @@
 
 - [x] **0.1** Initialize Claude Company OS
 - [x] **0.2** Fill in `skills/core/company.md` with Tradex details (preset)
-- [ ] **0.3** Fill in `skills/project/architecture.md` with Tradex data model and API map
-- [ ] **0.4** Tune `skills/project/workflows.md` further if new commands are added
+- [x] **0.3** Fill in `skills/project/architecture.md` with Tradex data model and API map
+- [x] **0.4** Tune `skills/project/workflows.md` further if new commands are added
 - [x] **0.5** Align execution plan with `NEXT_STEPS.md` (this file)
 
 ---
@@ -67,7 +67,7 @@
 
 | Phase | Slices | Shipped | Date |
 |-------|--------|---------|------|
-| Phase 0 | 5 | 3 | see CHANGELOG |
+| Phase 0 | 5 | 5 | see CHANGELOG |
 
 ---
 
@@ -75,3 +75,4 @@
 
 - Slice ids are referenced in `planning/CHANGELOG.md` entries — keep them stable
 - Product-level detail lives in **`NEXT_STEPS.md`**; keep this file in sync when phases shift
+- **`planning/Plan0.md`** — optional pixel-perfect UI/PWA playbook (frontend polish); not a substitute for roadmap slices

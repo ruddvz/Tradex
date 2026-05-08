@@ -26,11 +26,11 @@ Implement `NEXT_STEPS.md` Phase 1: JWT auth (`/api/v1/auth/*`), SQLAlchemy model
 - [ ] **1.2** Wire trades/notebook/challenges to DB
 - [ ] **1.3** Auth UI + App routing guard + logout in Settings
 
-### In Progress
-- [ ] **0.2** Company OS configured for Tradex (skills + planning)
-
 ### Recently Done
 - [x] **0.1** Claude Company OS files imported from archive
+- [x] **0.2** Company OS configured for Tradex (skills + planning)
+- [x] **0.3** Architecture skill — Tradex data model + API map
+- [x] **0.4** Workflows skill — pointer to `planning/Plan0.md` for UX polish
 
 ---
 
@@ -53,6 +53,7 @@ Implement `NEXT_STEPS.md` Phase 1: JWT auth (`/api/v1/auth/*`), SQLAlchemy model
 ## Completed This Session
 
 - [x] Company OS integrated; Tradex preset applied via `scripts/setup.sh --preset tradex`
+- [x] Phase 0 closed out in skills (`architecture.md`, `workflows.md`) and `EXECUTION-PLAN.md`
 
 ---
 

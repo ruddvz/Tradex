@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/phase0-architecture-docs-07ef — slice 0.3 + 0.4: Tradex architecture skill + Plan0 workflow pointer
+- Commit: (see git log)
+- Files touched: `.claude/skills/project/architecture.md`, `.claude/skills/project/workflows.md`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (documentation only)
+- Status: done
+- Next up: **1.1** — JWT auth + User model + `get_current_user` per `NEXT_STEPS.md` Phase 1
+- Notes: Replaces template placeholders in `architecture.md` with Tradex stack, API table, compose diagram, and Phase 1 debt. `workflows.md` step 5 links optional UI work to `planning/Plan0.md`. Prior commits `7b367b5`/`520559b` on `main` added `planning/Plan0.md` (misleading commit message on first commit — file is the pixel-perfect UI prompt, not a print-statement change).
+
 ## 2026-05-06 — main — company-os: Tradex preset + automated setup
 - Commit: (see git log)
 - Files touched: `.claude/`, `planning/`, `scripts/setup.sh`, `scripts/company_os_apply.py`, `scripts/presets/tradex.env`

@@ -21,46 +21,47 @@ Phase 0 — Context (mandatory):
   2. Read planning/ACTIVE.md (NEXT UP line)
   3. Read planning/EXECUTION-PLAN.md (find your slice)
   4. git status + git log --oneline -5
+  5. Optional UX-only polish: follow `planning/Plan0.md` (audit + PWA checklist) — does not replace Phase 1 backend work
 
 Phase 1 — Planning:
-  5. Identify blast radius — which files, callers, tests are affected?
-  6. For 3+ file changes: invoke `planner` agent
-  7. For structural changes: invoke `architect` agent
-  8. Create feature branch: git checkout -b cursor/short-description-2f22
-  9. Validate strategy with human if non-trivial
+  6. Identify blast radius — which files, callers, tests are affected?
+  7. For 3+ file changes: invoke `planner` agent
+  8. For structural changes: invoke `architect` agent
+  9. Create feature branch: git checkout -b cursor/short-description-2f22
+  10. Validate strategy with human if non-trivial
 
 Phase 2 — TDD:
-  10. Invoke `tdd-guide` agent to outline tests
-  11. Write failing tests FIRST (RED phase)
-  12. Verify tests fail before implementing
+  11. Invoke `tdd-guide` agent to outline tests
+  12. Write failing tests FIRST (RED phase)
+  13. Verify tests fail before implementing
 
 Phase 3 — Execution:
-  13. Implement the minimum viable solution
-  14. Make tests pass (GREEN phase)
-  15. Refactor to clean code (IMPROVE phase)
+  14. Implement the minimum viable solution
+  15. Make tests pass (GREEN phase)
+  16. Refactor to clean code (IMPROVE phase)
 
 Phase 4 — Verification:
-  16. cd frontend && npm run build (zero errors)
-  17. cd backend && pytest -q; cd ../frontend && npm run lint
-  18. Playwright tests if UI flow changed
+  17. cd frontend && npm run build (zero errors)
+  18. cd backend && pytest -q; cd ../frontend && npm run lint
+  19. Playwright tests if UI flow changed
 
 Phase 5 — Review:
-  19. code-reviewer + security-reviewer in PARALLEL
-  20. Fix all CRITICAL and HIGH issues
-  21. Re-run verification after fixes
+  20. code-reviewer + security-reviewer in PARALLEL
+  21. Fix all CRITICAL and HIGH issues
+  22. Re-run verification after fixes
 
 Phase 6 — Docs:
-  22. Update relevant codemaps if new files/routes added
-  23. Mark slice done in planning/EXECUTION-PLAN.md [x]
-  24. Update planning/ACTIVE.md
+  23. Update relevant codemaps if new files/routes added
+  24. Mark slice done in planning/EXECUTION-PLAN.md [x]
+  25. Update planning/ACTIVE.md
 
 Phase 8 — Push:
-  25. git add [specific files — not git add .]
-  26. git diff --staged (scan for secrets, debug logs)
-  27. git commit -m "feat: description"
-  28. git push
-  29. Update planning/CHANGELOG.md (MANDATORY)
-  30. Create or update PR
+  26. git add [specific files — not git add .]
+  27. git diff --staged (scan for secrets, debug logs)
+  28. git commit -m "feat: description"
+  29. git push
+  30. Update planning/CHANGELOG.md (MANDATORY)
+  31. Create or update PR
 ```
 
 ---

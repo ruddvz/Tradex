@@ -7,184 +7,180 @@ description: >
   onboarding — this is the technical map of the project.
 ---
 
-# Project Architecture
+# Project Architecture — Tradex
 
-The technical map of this project. Understand this before making structural changes.
+The technical map of Tradex. Read this before structural changes or cross-cutting features.
 
 ---
 
 ## System Overview
 
-**What this project does:**
-[2-3 sentences describing the system from a technical perspective. What problem does
-it solve? What are the main moving parts?]
+**What this project does:**  
+Tradex is an AI-assisted trading journal: traders log and review trades (Forex, XAUUSD, indices, equities), see analytics and psychology breakdowns, manage notebook notes and prop-firm challenge tracking, and optionally sync from MetaTrader 5. The product is a React SPA talking to a FastAPI backend; demo mode uses in-memory API state and rich mock data on the client.
 
 **Key user flows:**
-1. [Most important flow — e.g. "User signs up → verifies phone → books session"]
-2. [Second flow — e.g. "Provider lists availability → patient searches → booking created"]
-3. [Third flow if applicable]
+1. **Journal → analytics** — User reviews trades on Dashboard / Journal; charts and metrics come from `/api/v1/analytics/*` (today backed by in-memory trade lists; Phase 1 moves this to PostgreSQL per user).
+2. **AI insights** — User triggers insights; backend aggregates metrics and calls OpenAI when configured (`POST /api/v1/ai/insights`).
+3. **Notebook & challenges** — CRUD for journal entries and prop challenges via `/api/v1/notebook` and `/api/v1/challenges` (in-memory until Phase 1).
 
 ---
 
 ## Architecture Diagram
 
 ```
-[Draw a simple ASCII diagram of your system. Example:]
-
-Browser / Mobile
+Browser (React 19 + Vite + Tailwind + Recharts + Zustand)
     │
+    │  HTTP / JSON  (CORS: local dev + docker frontend origins)
     ▼
-Next.js App (Vercel)
-    ├── /app              ← Server Components (default)
-    │   ├── (public)/     ← Public routes, no auth
-    │   ├── (auth)/       ← Protected routes, session required
-    │   └── api/          ← API route handlers
-    ├── /components       ← React components
-    │   ├── shared/       ← Team-owned shared primitives
-    │   └── features/     ← Feature-specific components
-    └── /lib              ← Business logic, service clients
-          │
-          ├── Supabase (DB + Auth + Storage)
-          ├── Resend (Transactional email)
-          └── Stripe/Razorpay (Payments)
+FastAPI (`backend/app/main.py`) — `/api/v1/*`
+    ├── routes.py       ← trades, analytics, AI, notebook, challenges, MT5 sync
+    ├── services/       ← analytics.py, ai_service.py, mt5_sync.py
+    └── models/trade.py ← SQLAlchemy Trade model (DB wiring pending Phase 1)
+
+Data today:
+    └── In-memory lists in routes.py (`_trades`, `_notebook`, `_challenges`)
+
+Infra (docker-compose):
+    ├── PostgreSQL 16   ← wired in compose; app not fully migrated yet
+    ├── Redis 7         ← available for Celery/cache (future)
+    └── Optional OpenAI API for AI insights
 ```
 
 ---
 
 ## Data Model
 
-### Core entities
+### Core entities (target schema)
+
+The `Trade` SQLAlchemy model in `backend/app/models/trade.py` defines the intended persistence shape. Relationships below reflect **NEXT_STEPS.md** Phase 1 goals (User + owned trades).
 
 ```
-[List your main database tables and their relationships. Example:]
+users (planned — NEXT_STEPS Phase 1)
+  └── has many → trades
 
-users
-  └── has many → bookings (as patient)
-  └── has one  → provider_profile
+trades
+  └── belongs to → users (user_id)
+  └── optional link → mt5_ticket (dedupe on sync)
 
-provider_profiles
+notebook_entries (planned)
   └── belongs to → users
-  └── has many   → availabilities
 
-bookings
-  └── belongs to → users (patient)
-  └── belongs to → provider_profiles
-  └── has one    → payments
-
-payments
-  └── belongs to → bookings
+prop_challenges (planned)
+  └── belongs to → users
 ```
+
+### Key fields on `trades` (summary)
+
+- Identity: `id`, `user_id`, `account_id`
+- Market: `symbol`, `direction`, prices, `lot_size`, times
+- Outcome: `pnl`, `status`, `grade`, `r_multiple`, fees
+- Journal: `notes`, `tags`, `screenshot_url`, psychology fields
+- Sync: `mt5_ticket` (unique when present)
 
 ### Key relationships to know
-- [Explain any non-obvious relationship or constraint]
-- [e.g. "Users can be both patient AND provider — role is not exclusive"]
-- [e.g. "Bookings are soft-deleted, never hard-deleted"]
-- [e.g. "Availabilities are generated weekly by a cron job, not stored ad-hoc"]
+
+- **Current API** uses a single global in-memory list for trades — not multi-user safe until JWT + DB (Phase 1).
+- **Trade model** exists in code before Alembic migrations; migrating routes to `get_db` is explicit roadmap work.
+
+---
+
+## API Surface (`/api/v1`)
+
+| Area | Methods | Notes |
+|------|---------|--------|
+| Health | `GET /health` | Liveness |
+| Trades | `GET/POST /trades`, `GET/PATCH/DELETE /trades/{id}` | Filters: symbol, status, date range |
+| Analytics | `GET /analytics/metrics`, `/symbols`, `/sessions`, `/psychology`, `/calendar` | Driven by trade set |
+| AI | `POST /ai/insights` | Uses OpenAI when key present |
+| Notebook | `GET/POST /notebook`, `PATCH/DELETE /notebook/{id}` | |
+| Challenges | `GET/POST /challenges` | Prop firm tracking |
+| Sync | `POST /sync/mt5` | Query-style params: login, password, server, days (see `/docs`) |
+
+Interactive docs: `/docs` (Swagger).
 
 ---
 
 ## Key Architectural Decisions
 
-These decisions were made deliberately. Don't change them without understanding why.
+### Decision 1: Monorepo SPA + API
+**What:** React frontend in `frontend/`, FastAPI in `backend/`, orchestrated with Docker Compose for full stack.  
+**Why:** Clear separation, independent scaling of UI vs API, matches team skills.  
+**Trade-off:** Two deploy surfaces (static CDN vs API server).  
+**Date:** Project inception.
 
-### Decision 1: [Name it]
-**What:** [What was decided]
-**Why:** [Why this choice was made over alternatives]
-**Trade-off:** [What we gave up to get this]
-**Date:** YYYY-MM-DD
+### Decision 2: Mock / in-memory first, PostgreSQL second
+**What:** Routes use Python lists until Phase 1 replaces them with SQLAlchemy queries.  
+**Why:** Rapid UI and analytics iteration without migration churn early on.  
+**Trade-off:** No real persistence or auth until Phase 1 ships.
 
-### Decision 2: [Name it]
-**What:**
-**Why:**
-**Trade-off:**
-**Date:**
-
-> Add more decisions as they are made. See `decisions.md` for the full log.
+### Decision 3: Production build targets GitHub Pages base path
+**What:** `frontend/vite.config.ts` sets `base` to `/Tradex/` in production builds for `*.github.io/<repo>/`.  
+**Why:** Hosted demo/installable PWA from GitHub Pages.  
+**Trade-off:** Local dev uses `/`; agents must respect `base` for asset paths and router basename when testing production builds.
 
 ---
 
 ## Feature Flags / Config
 
-```typescript
-// Features that can be enabled/disabled
-const FEATURES = {
-  NEW_UI:        process.env.NEXT_PUBLIC_FF_UI_V2 === 'true',
-  BETA_FEATURE:  process.env.NEXT_PUBLIC_FF_BETA === 'true',
-};
-```
+Backend (`backend/app/core/config.py` via env):
 
-[List current feature flags and what they control]
+- `DATABASE_URL`, `REDIS_URL` — Compose defaults; Phase 1 persistence.
+- `SECRET_KEY` — JWT signing once auth lands.
+- `OPENAI_API_KEY` — Without it, AI paths degrade gracefully where implemented.
+- `CORS_ORIGINS` — JSON list of allowed browser origins.
+
+Frontend: no central feature-flag module yet; demo data toggle lives in store/mock usage.
 
 ---
 
 ## Third-Party Integrations
 
 | Service | Purpose | Key file(s) | Notes |
-|---|---|---|---|
-| Supabase | DB + Auth + Storage | `lib/supabase.ts` | RLS enabled on all tables |
-| Resend | Transactional email | `lib/email.ts` | Templates in `emails/` folder |
-| Stripe / Razorpay | Payments | `lib/payment.ts` | Webhook at `/api/webhooks/payment` |
-| [Add yours] | | | |
+|---------|---------|-------------|--------|
+| OpenAI | Narrative AI insights | `backend/app/services/ai_service.py` | Optional |
+| MetaTrader 5 | Trade sync | `backend/app/services/mt5_sync.py` | Demo fallback if MT5 unavailable |
 
 ---
 
 ## Performance Considerations
 
-- [e.g. "The provider search query is expensive — it has a 60s cache; don't remove it"]
-- [e.g. "Product images are served via CDN — don't change the storage bucket structure"]
-- [e.g. "The booking check hits multiple tables — it uses a DB function, not ORM queries"]
-- [e.g. "Homepage is fully static — revalidate after any provider data change"]
+- Analytics endpoints scan in-memory trade lists — acceptable for demo volume; Phase 1 should index by `user_id` and date.
+- AI insights bundle multiple aggregations — cache or rate-limit if exposed publicly.
 
 ---
 
 ## Security Boundaries
 
-- **Public routes:** [List routes accessible without auth]
-- **Patient-only routes:** [Routes requiring patient session]
-- **Provider-only routes:** [Routes requiring provider session]
-- **Admin-only routes:** [Routes requiring admin role]
-- **RLS policies:** Every Supabase table has RLS. Never bypass with `service_role` unless truly necessary.
+- **Today:** No authentication; `/api/v1/*` is effectively public — acceptable only for local/demo. **Phase 1** adds JWT and `Depends(get_current_user)`.
+- **Secrets:** Never commit `.env`; MT5 credentials must not be logged (Phase 3 hardening).
 
 ---
 
 ## Known Technical Debt
 
-Things we know are imperfect and plan to fix:
-
-| Area | Issue | Priority | Owner |
-|---|---|---|---|
-| [e.g. Auth] | [Token refresh not handled gracefully] | [High] | [Name] |
-| [e.g. Search] | [Full-text search is regex-based, not indexed] | [Medium] | [Name] |
-
-Do not build on top of these without flagging them first.
+| Area | Issue | Priority |
+|------|-------|----------|
+| Persistence | In-memory stores | P1 — Phase 1 |
+| Auth | No users or JWT | P1 — Phase 1 |
+| Migrations | No Alembic revision chain yet | P1 |
 
 ---
 
 ## Deployment
 
 **Environments:**
-- `local` — your machine, `.env.local`
-- `preview` — Vercel preview deploys, auto-created per PR
-- `production` — [PROD_URL], deploys from `main` branch
 
-**Deploy process:**
-```bash
-# To production (via PR)
-git push origin feat/my-feature
-# Open PR → CI green → merge → auto-deploys
-```
+- **Local:** `cd frontend && npm run dev` (5173) or `docker-compose up` (frontend :80, API :8000).
+- **Static demo:** GitHub Pages from frontend production build (`base: /Tradex/`).
 
-**Rollback:**
-[How to quickly rollback a bad deploy — e.g. "Revert the merge commit" or "Redeploy previous tag in Vercel dashboard"]
+**Compose stack:** `postgres`, `redis`, `backend`, `frontend` — see root `docker-compose.yml`.
+
+**Rollback:** Revert merge or redeploy previous image/build artifact.
 
 ---
 
 ## Migrations
 
-All DB migrations live in `supabase/migrations/` and are numbered sequentially.
+Database migrations are **not** yet populated with Alembic revisions in-repo. Phase 1 introduces Alembic (or equivalent) and Alembic-first workflow — see `planning/EXECUTION-PLAN.md` slice **1.2**.
 
-**Rules:**
-- Never edit existing migrations
-- Always run locally before committing
-- Document schema changes in this file under "Data Model"
-- Coordinate production timing — migrations run BEFORE code deploy
+**Rules once migrations exist:** never edit shipped migrations; create new revisions; test up/down locally.
