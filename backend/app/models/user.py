@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import enum
 
-from sqlalchemy import Column, DateTime, Enum as SAEnum, String, func
+from sqlalchemy import Column, DateTime, Enum as SAEnum, String, Text, func
 
 from .base import Base
 
@@ -23,3 +23,7 @@ class User(Base):
     name = Column(String(255), nullable=False)
     plan = Column(SAEnum(UserPlan), nullable=False, default=UserPlan.FREE)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    mt5_server = Column(String(255))
+    mt5_login = Column(String(64))
+    mt5_password_encrypted = Column(Text)

@@ -34,6 +34,24 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — main — merge Phase 3 MT5 into Phase 2 stack (`main`)
+- Commit: (see git log — merge commit after resolving `routes.py`, Settings, planning docs)
+- Files touched: unified `POST /sync/mt5` with JSON credentials + PostgreSQL inserts via `trade_from_mt5_dict` (not in-memory `_trades`); `GET`/`PUT /settings/mt5`; conflict resolutions across listed paths
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`; backend import smoke)
+- Status: done
+- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
+- Notes: Feature branch Phase 3 targeted legacy in-memory trades; merged `main` keeps SQLAlchemy persistence for synced MT5 rows.
+
+## 2026-05-08 — cursor/phase3-mt5-sync-07ef — slices 3.1 + 3.2: MT5 sync API, saved credentials, modal + Settings
+- Commit: b8374f7 (feat(api+frontend): Phase 3 MT5 sync — saved credentials, JSON sync, modal UI)
+- Files touched: `backend/app/core/mt5_crypto.py`, `backend/app/models/user.py`, `backend/app/database.py`, `backend/app/api/v1/routes.py`, `frontend/src/lib/{auth,mapApiTrade}.ts`, `frontend/src/store/useStore.ts`, `frontend/src/components/mt5/Mt5SyncModal.tsx`, `frontend/src/components/layout/{Layout,Header,Sidebar}.tsx`, `frontend/src/pages/Settings.tsx`, `frontend/src/types/index.ts`, `NEXT_STEPS.md`, `planning/{EXECUTION-PLAN,ACTIVE,CHANGELOG}.md`
+- Tests added / changed: 0 (manual: TestClient sync + settings on SQLite)
+- Build: pass (`npm run lint`, `npm run build`; backend import + TestClient)
+- Status: done
+- Next up: merge to `main` + align `sync_mt5` with PostgreSQL persistence
+- Notes: JSON body for sync (no query-string passwords). Fernet key from `SECRET_KEY`. `ALTER TABLE` for MT5 columns on upgrade.
+
 ## 2026-05-08 — cursor/phase2-trade-screenshots-07ef — slices 2.1 + 2.2: trade screenshot upload, Journal UI, static uploads
 - Commit: f6d8d5b (feat(api+frontend): slices 2.1–2.2 — trade screenshots, Journal uploads, static /uploads)
 - Files touched: `backend/app/api/v1/routes.py`, `backend/app/core/config.py`, `backend/app/main.py`, `backend/app/models/trade.py`, `backend/app/services/trade_codec.py`, `frontend/src/pages/Journal.tsx`, `frontend/src/lib/mapApiTrade.ts`, `frontend/src/types/index.ts`, `frontend/vite.config.ts`, `.gitignore`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `NEXT_STEPS.md`
@@ -41,7 +59,7 @@
 - Build: pass (backend import smoke; `npm run lint`, `npm run build`)
 - Status: done
 - Next up: **3** — MT5 sync (real) per `NEXT_STEPS.md` Phase 3 / `EXECUTION-PLAN` Phase 3
-- Notes: `POST /api/v1/trades/{id}/screenshot?slot=before|after`. `UPLOAD_ROOT`; FastAPI mounts `/uploads`. Trade model: `screenshot_before_url`, `screenshot_after_url`. Merge branch to `main` so Phase 2 is visible on default branch.
+- Notes: `POST /api/v1/trades/{id}/screenshot?slot=before|after`. `UPLOAD_ROOT`; FastAPI mounts `/uploads`. Trade model: `screenshot_before_url`, `screenshot_after_url`.
 
 ## 2026-05-08 — cursor/phase1-db-persistence-07ef — slice 1.3: Auth UI, protected shell, Settings sign out
 - Commit: 0ddd464 (feat(frontend): slice 1.3 — Auth page, protected shell, Settings sign out)

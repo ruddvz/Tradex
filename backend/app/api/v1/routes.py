@@ -19,6 +19,8 @@ from ...models.notebook import NotebookEntry
 from ...models.trade import Trade, TradeGrade, TradeStatus
 from ...models.user import User, UserPlan
 from ...core.security import hash_password, verify_password, create_access_token
+from ...core.mt5_crypto import decrypt_mt5_secret, encrypt_mt5_secret
+from ..deps import get_current_user
 from ...services.analytics import (
     compute_metrics,
     compute_symbol_stats,
@@ -35,7 +37,6 @@ from ...services.trade_codec import (
     trade_from_mt5_dict,
     trade_to_api_dict,
 )
-from ..deps import get_current_user
 
 router = APIRouter(prefix="/api/v1")
 
@@ -110,6 +111,19 @@ class PropChallengeIn(BaseModel):
     end_date: str
 
 
+class Mt5SyncIn(BaseModel):
+    server: Optional[str] = None
+    login: Optional[int] = None
+    password: Optional[str] = None
+    days: int = Field(default=90, ge=1, le=365)
+
+
+class Mt5SettingsUpdate(BaseModel):
+    server: Optional[str] = None
+    login: Optional[str] = None
+    password: Optional[str] = None
+
+
 # ── Serialization helpers ───────────────────────────────────────────────────────
 
 
@@ -181,6 +195,32 @@ def _user_trade_dicts(db: Session, user_id: str) -> List[Dict[str, Any]]:
         select(Trade).where(Trade.user_id == user_id).order_by(Trade.entry_time.desc())
     ).scalars().all()
     return [trade_to_api_dict(t) for t in rows]
+
+
+def _mt5_settings_public(user: User) -> dict:
+    return {
+        "server": user.mt5_server,
+        "login": user.mt5_login,
+        "has_password": bool(user.mt5_password_encrypted),
+    }
+
+
+def _resolve_mt5_credentials(user: User, body: Mt5SyncIn) -> tuple[int, str, str]:
+    login_i = body.login
+    if login_i is None and user.mt5_login:
+        s = user.mt5_login.strip()
+        if s.isdigit():
+            login_i = int(s)
+    server = (body.server or user.mt5_server or "").strip() or None
+    password = body.password
+    if password is None and user.mt5_password_encrypted:
+        password = decrypt_mt5_secret(user.mt5_password_encrypted)
+    if login_i is None or not server or not password:
+        raise HTTPException(
+            status_code=400,
+            detail="Missing MT5 credentials. Save server, login, and password in Settings, or include them in this request.",
+        )
+    return login_i, password, server
 
 
 # ── Health (public) ─────────────────────────────────────────────────────────────
@@ -604,29 +644,56 @@ async def upload_trade_screenshot(
     return trade_to_api_dict(trade)
 
 
+# ── Settings: MT5 credentials ────────────────────────────────────────────────────
+
+
+@router.get("/settings/mt5")
+def get_mt5_settings(user: User = Depends(get_current_user)):
+    return _mt5_settings_public(user)
+
+
+@router.put("/settings/mt5")
+def put_mt5_settings(
+    body: Mt5SettingsUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    if body.server is not None:
+        user.mt5_server = body.server.strip() if body.server.strip() else None
+    if body.login is not None:
+        user.mt5_login = body.login.strip() if body.login.strip() else None
+    if body.password is not None:
+        if body.password == "":
+            user.mt5_password_encrypted = None
+        else:
+            user.mt5_password_encrypted = encrypt_mt5_secret(body.password)
+    db.commit()
+    db.refresh(user)
+    return _mt5_settings_public(user)
+
+
 # ── MT5 Sync ───────────────────────────────────────────────────────────────────
 
 
 @router.post("/sync/mt5")
 async def sync_mt5(
+    body: Mt5SyncIn = Body(default_factory=Mt5SyncIn),
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-    login: int = Query(...),
-    password: str = Query(...),
-    server: str = Query(...),
-    days: int = Query(default=90),
 ):
-    """Sync trades from MT5 terminal."""
+    """Sync trades from MT5 terminal (or import demo samples when MT5 is unavailable)."""
+    db.refresh(user)
+    login_i, password, server = _resolve_mt5_credentials(user, body)
+
     from ...services.mt5_sync import MT5SyncService
 
-    service = MT5SyncService(login, password, server)
+    service = MT5SyncService(login_i, password, server)
     connected = service.connect()
-    if not connected:
-        return {"status": "demo", "message": "MT5 not available; using demo data", "trades": []}
-
-    from_date = datetime.now() - timedelta(days=days)
-    sync_trades = service.fetch_trades(from_date=from_date)
-    service.disconnect()
+    from_date = datetime.now() - timedelta(days=body.days)
+    try:
+        fetched = service.fetch_trades(from_date=from_date)
+    finally:
+        service.disconnect()
 
     uid = user.id
     tickets_q = select(Trade.mt5_ticket).where(
@@ -636,7 +703,7 @@ async def sync_mt5(
     existing_tickets = {x for x in db.execute(tickets_q).scalars().all() if x}
 
     added = 0
-    for tr in sync_trades:
+    for tr in fetched:
         mt = str(tr.get("mt5_ticket") or tr.get("ticket") or "")
         if mt and mt in existing_tickets:
             continue
@@ -648,4 +715,11 @@ async def sync_mt5(
         added += 1
 
     db.commit()
-    return {"status": "success", "synced": len(sync_trades), "new": added}
+
+    status = "success" if connected else "demo"
+    message = (
+        None
+        if connected
+        else "MetaTrader 5 is not available in this environment; sample trades were imported instead."
+    )
+    return {"status": status, "synced": len(fetched), "new": added, "message": message}

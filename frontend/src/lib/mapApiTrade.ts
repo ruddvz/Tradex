@@ -10,7 +10,7 @@ export function mapApiTradeRow(row: Record<string, unknown>): Trade {
 
   return {
     id: String(row.id),
-    symbol: String(row.symbol),
+    symbol: String(row.symbol ?? ''),
     direction: String(row.direction) === 'SELL' ? 'SELL' : 'BUY',
     entryPrice: Number(row.entry_price ?? 0),
     exitPrice: Number(row.exit_price ?? 0),
@@ -41,8 +41,12 @@ export function mapApiTradeRow(row: Record<string, unknown>): Trade {
     screenshot:
       typeof row.screenshot_url === 'string' ? row.screenshot_url : undefined,
     screenshotBeforeUrl:
-      typeof row.screenshot_before_url === 'string' ? row.screenshot_before_url : undefined,
+      typeof row.screenshot_before_url === 'string'
+        ? row.screenshot_before_url
+        : undefined,
     screenshotAfterUrl:
-      typeof row.screenshot_after_url === 'string' ? row.screenshot_after_url : undefined,
+      typeof row.screenshot_after_url === 'string'
+        ? row.screenshot_after_url
+        : undefined,
   };
 }

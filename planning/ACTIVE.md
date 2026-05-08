@@ -6,29 +6,30 @@
 
 ---
 
-## 👉 NEXT UP: **[3]** — MT5 sync (real)
+## 👉 NEXT UP: **[4]** — Daily email reports
 
-Wire Sidebar/Header sync to `POST /api/v1/sync/mt5`, persist credentials from Settings per `NEXT_STEPS.md` Phase 3.
+Implement **`NEXT_STEPS.md` Phase 4**: HTML email service, Celery beat schedule, wire existing Settings toggles.
 
-**Context:** `frontend/src/components/layout/Sidebar.tsx`, `frontend/src/pages/Settings.tsx`, `backend/app/api/v1/routes.py`  
+**Context:** `backend/app/services/`, `frontend/src/pages/Settings.tsx`  
 **Blocked by:** nothing
 
 ---
 
 ## 🎯 Current Sprint / Phase
 
-**Phase:** Phase 3 — MT5 integration (next)  
-**Previous:** Phase 2 — trade screenshots ✓
+**Phase:** Phase 4 — Daily email + notifications (next)  
+**Previous:** Phases **1–3** merged to `main` (through MT5 sync ✓)
 
 ### Open Slices
-- [ ] **3** — MT5 sync UI + optional credential storage (see `NEXT_STEPS.md` Phase 3)
+- [ ] **4** — Email service + Celery + `PUT /settings/notifications` (see `NEXT_STEPS.md` Phase 4)
 
 ### Recently Done
-- [x] **2.1–2.2** Trade screenshots — `POST /trades/{id}/screenshot`, static `/uploads`, `screenshot_before_url` / `screenshot_after_url`, Journal before/after zones, API trade fetch when logged in
-- [x] **1.3** Auth UI (`/auth`), `ProtectedLayout`, `tradex_access_token`, Settings **Sign out**, Vite dev proxy `/api` → backend
-- [x] **1.2** PostgreSQL persistence for trades, notebook entries, prop challenges
+- [x] **3.1–3.2** MT5 sync merged — JSON `POST /sync/mt5`, `GET`/`PUT /settings/mt5`, Fernet password storage, `Mt5SyncModal`, Settings MT5 form, `refreshTradesFromApi`
+- [x] **2.1–2.2** Trade screenshots — upload endpoint, Journal UI, `/uploads`
+- [x] **1.3** Auth UI (`/auth`), `ProtectedLayout`, Settings **Sign out**
+- [x] **1.2** PostgreSQL persistence for trades, notebook, prop challenges
 - [x] **1.1** JWT auth + Bearer protection
-- [x] **0.1–0.4** Company OS + Plan0 documentation track
+- [x] **0.1–0.5** Company OS + Plan0 documentation track
 
 ---
 
@@ -51,14 +52,17 @@ Wire Sidebar/Header sync to `POST /api/v1/sync/mt5`, persist credentials from Se
 
 ## Completed This Session
 
-- [x] Phase 2 closed: **2.1–2.2** screenshot upload + Journal UI + `/uploads` proxy
-- [x] Phase 1 closed: **1.1** JWT, **1.2** DB persistence, **1.3** Auth UI + guard + logout
+- [x] **Merged to `main`:** `cursor/phase2-trade-screenshots-07ef` then `cursor/phase3-mt5-sync-07ef` (merge commit resolves MT5 + PostgreSQL sync path)
+- [x] Phase 3 closed: **3.1–3.2** MT5 settings API + UI
+- [x] Phase 2 closed: **2.1–2.2** screenshots + Journal + `/uploads`
+- [x] Phase 1 closed: **1.1–1.3** JWT, DB persistence, Auth UI
 - [x] **`planning/COMMITS-ON-MAIN.md`** — explains fast-forward vs visible PR diffs
 
 ---
 
 ## Phase History (compact)
 
+- **Phase 3** — MT5 sync ✓
 - **Phase 2** — Trade screenshots ✓
 - **Phase 1** — Auth + PostgreSQL + Auth UI ✓
 - **Phase 0** — see **`planning/PHASE0-INVENTORY.md`**

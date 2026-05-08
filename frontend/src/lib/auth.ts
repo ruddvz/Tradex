@@ -1,4 +1,4 @@
-/** JWT storage — matches backend Bearer auth (slice 1.1). */
+/** JWT storage — matches backend `/api/v1/auth/login` + Bearer usage on protected routes. */
 
 export const AUTH_TOKEN_KEY = 'tradex_access_token';
 

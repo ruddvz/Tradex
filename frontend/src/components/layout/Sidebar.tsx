@@ -44,7 +44,7 @@ function Tooltip({ label, children }: { label: string; children: ReactNode }) {
 }
 
 export function Sidebar() {
-  const { sidebarOpen, setSidebarOpen, account, isSyncing, syncTrades } = useStore();
+  const { sidebarOpen, setSidebarOpen, account, isSyncing, openMt5SyncModal } = useStore();
   const location = useLocation();
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
@@ -119,7 +119,7 @@ export function Sidebar() {
           {sidebarOpen && (
             <button
               type="button"
-              onClick={() => syncTrades()}
+              onClick={() => openMt5SyncModal()}
               disabled={isSyncing}
               className="flex-shrink-0 p-1 rounded hover:bg-surface-border transition-colors"
               title="Sync trades"

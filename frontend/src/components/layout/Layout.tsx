@@ -4,11 +4,12 @@ import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { AppShellSkeleton } from './AppShellSkeleton';
 import { RouteFallback } from './RouteFallback';
+import { Mt5SyncModal } from '../mt5/Mt5SyncModal';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
 export function Layout() {
-  const { sidebarOpen } = useStore();
+  const { sidebarOpen, mt5SyncModalOpen } = useStore();
   const location = useLocation();
   const [bootOverlay, setBootOverlay] = useState(true);
 
@@ -60,6 +61,8 @@ export function Layout() {
       <div className="block md:hidden">
         <MobileNav />
       </div>
+
+      <Mt5SyncModal open={mt5SyncModalOpen} />
     </div>
   );
 }

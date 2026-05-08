@@ -5,8 +5,8 @@ import { useToast } from '../components/ui/Toast';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
 import { clsx } from 'clsx';
-import { useState } from 'react';
-import { clearToken } from '../lib/auth';
+import { useState, useEffect } from 'react';
+import { clearToken, getToken } from '../lib/auth';
 
 const brokers = [
   { name: 'Exness', logo: 'EX', connected: true },
@@ -18,10 +18,109 @@ const brokers = [
 
 export function Settings() {
   const navigate = useNavigate();
-  const { account, syncTrades, isSyncing } = useStore();
+  const { account, syncTrades, isSyncing, openMt5SyncModal } = useStore();
   const { showToast } = useToast();
   const [notifications, setNotifications] = useState({ email: true, push: true, drawdownAlerts: true, dailyReport: false });
   const [connectedBrokers, setConnectedBrokers] = useState(['Exness']);
+
+  const [mt5Server, setMt5Server] = useState('');
+  const [mt5Login, setMt5Login] = useState('');
+  const [mt5Password, setMt5Password] = useState('');
+  const [mt5HasPassword, setMt5HasPassword] = useState(false);
+  const [mt5Loading, setMt5Loading] = useState(true);
+
+  useEffect(() => {
+    void (async () => {
+      const token = getToken();
+      if (!token) {
+        setMt5Loading(false);
+        return;
+      }
+      setMt5Loading(true);
+      try {
+        const res = await fetch('/api/v1/settings/mt5', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = (await res.json()) as {
+          server?: string | null;
+          login?: string | null;
+          has_password?: boolean;
+        };
+        if (res.ok) {
+          setMt5Server(data.server ?? '');
+          setMt5Login(data.login ?? '');
+          setMt5HasPassword(Boolean(data.has_password));
+        }
+      } finally {
+        setMt5Loading(false);
+      }
+    })();
+  }, []);
+
+  const mt5Configured =
+    Boolean(mt5Server.trim() && mt5Login.trim()) && mt5HasPassword;
+
+  const saveMt5Settings = async () => {
+    const token = getToken();
+    if (!token) return;
+    const body: Record<string, string> = {
+      server: mt5Server.trim(),
+      login: mt5Login.trim(),
+    };
+    if (mt5Password.trim()) body.password = mt5Password.trim();
+    const res = await fetch('/api/v1/settings/mt5', {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    const data = (await res.json()) as { has_password?: boolean };
+    if (!res.ok) {
+      showToast('Could not save MT5 settings');
+      return;
+    }
+    setMt5HasPassword(Boolean(data.has_password));
+    setMt5Password('');
+    showToast('MT5 settings saved');
+  };
+
+  const disconnectMt5 = async () => {
+    const token = getToken();
+    if (!token) return;
+    const res = await fetch('/api/v1/settings/mt5', {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ server: '', login: '', password: '' }),
+    });
+    if (!res.ok) {
+      showToast('Could not clear MT5 credentials');
+      return;
+    }
+    setMt5Server('');
+    setMt5Login('');
+    setMt5Password('');
+    setMt5HasPassword(false);
+    showToast('MT5 credentials cleared');
+  };
+
+  const runSyncFromSettings = async () => {
+    const r = await syncTrades();
+    if (r.ok) {
+      showToast(
+        r.status === 'demo'
+          ? r.message ?? 'Demo trades imported (MT5 not available in this environment).'
+          : 'Sync complete.'
+      );
+      return;
+    }
+    showToast(r.detail ?? 'Sync failed');
+    if ((r.detail ?? '').includes('Missing MT5')) openMt5SyncModal();
+  };
 
   const toggleBroker = (name: string) => {
     const wasConnected = connectedBrokers.includes(name);
@@ -90,44 +189,111 @@ export function Settings() {
 
           {/* MT5 Connection */}
           <div className="card p-6">
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4 flex-wrap">
               <Link className="w-4 h-4 text-brand-400" />
               <h3 className="font-semibold text-white">MT5 Auto-Sync</h3>
-              <Badge variant="profit" size="xs">Connected</Badge>
+              {mt5Configured ? (
+                <Badge variant="profit" size="xs">
+                  Credentials saved
+                </Badge>
+              ) : (
+                <Badge variant="warn" size="xs">
+                  Not configured
+                </Badge>
+              )}
             </div>
 
-            <div className="p-4 bg-dark-300 rounded-xl mb-4 border border-brand-500/20">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <div className="font-semibold text-white">{account.name}</div>
-                  <div className="text-sm text-slate-400">{account.broker} · Account #PRO-10042</div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-brand-400 animate-pulse-slow" />
-                  <span className="text-xs text-brand-400">Live</span>
-                </div>
+            <p className="text-sm text-slate-500 mb-4">
+              The trading password is encrypted at rest. Sync uses saved credentials, or open the sync dialog from the header / sidebar to enter details once.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+              <div>
+                <label className="label" htmlFor="settings-mt5-server">
+                  Server
+                </label>
+                <input
+                  id="settings-mt5-server"
+                  className="input"
+                  value={mt5Server}
+                  onChange={(e) => setMt5Server(e.target.value)}
+                  placeholder="Broker-Demo"
+                  disabled={mt5Loading}
+                  autoComplete="off"
+                />
               </div>
-              <div className="grid grid-cols-2 gap-3 text-sm">
+              <div>
+                <label className="label" htmlFor="settings-mt5-login">
+                  Login
+                </label>
+                <input
+                  id="settings-mt5-login"
+                  className="input"
+                  value={mt5Login}
+                  onChange={(e) => setMt5Login(e.target.value)}
+                  placeholder="Account number"
+                  disabled={mt5Loading}
+                  inputMode="numeric"
+                  autoComplete="username"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="label" htmlFor="settings-mt5-password">
+                  Password
+                </label>
+                <input
+                  id="settings-mt5-password"
+                  type="password"
+                  className="input"
+                  value={mt5Password}
+                  onChange={(e) => setMt5Password(e.target.value)}
+                  placeholder={
+                    mt5HasPassword
+                      ? 'Leave blank to keep current saved password'
+                      : 'Main trading password'
+                  }
+                  disabled={mt5Loading}
+                  autoComplete="current-password"
+                />
+              </div>
+            </div>
+
+            <div className="p-4 bg-dark-300 rounded-xl mb-4 border border-surface-border">
+              <div className="grid grid-cols-2 gap-3 text-sm mb-3">
                 <div>
-                  <span className="text-slate-500">Balance: </span>
+                  <span className="text-slate-500">Demo balance: </span>
                   <span className="text-white font-medium">${account.balance.toLocaleString()}</span>
                 </div>
                 <div>
-                  <span className="text-slate-500">Equity: </span>
+                  <span className="text-slate-500">Demo equity: </span>
                   <span className="text-brand-400 font-medium">${account.equity.toLocaleString()}</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2 mt-3">
+              <div className="flex flex-wrap items-center gap-2">
                 <button
-                  onClick={() => syncTrades()}
-                  disabled={isSyncing}
-                  className="btn-primary text-sm"
+                  type="button"
+                  onClick={saveMt5Settings}
+                  disabled={mt5Loading}
+                  className="btn-secondary text-sm"
+                >
+                  Save MT5 credentials
+                </button>
+                <button
+                  type="button"
+                  onClick={runSyncFromSettings}
+                  disabled={isSyncing || mt5Loading}
+                  className="btn-primary text-sm inline-flex items-center gap-1.5"
                 >
                   <RefreshCw className={clsx('w-3.5 h-3.5', isSyncing && 'animate-spin')} />
                   {isSyncing ? 'Syncing...' : 'Sync Now'}
                 </button>
-                <button className="btn-danger text-sm">
-                  <Trash2 className="w-3.5 h-3.5" /> Disconnect
+                <button
+                  type="button"
+                  onClick={disconnectMt5}
+                  disabled={mt5Loading}
+                  className="btn-danger text-sm inline-flex items-center gap-1.5"
+                >
+                  <Trash2 className="w-3.5 h-3.5" /> Clear saved credentials
                 </button>
               </div>
             </div>

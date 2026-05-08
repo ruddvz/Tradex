@@ -51,6 +51,9 @@
 
 > **Goal:** Sidebar sync calls backend; Settings stores credentials. See NEXT_STEPS Phase 3.
 
+- [x] **3.1** JSON `POST /sync/mt5` + saved-credentials fallback; demo imports sample trades when MT5 unavailable
+- [x] **3.2** `GET`/`PUT /settings/mt5` (Fernet-at-rest) + `Mt5SyncModal` + Settings MT5 form
+
 ---
 
 ## Phase 4 — Daily email reports
@@ -72,6 +75,7 @@
 | Phase 0 | 5 | 5 | see CHANGELOG |
 | Phase 1 | 3 | 3 | see CHANGELOG |
 | Phase 2 | 2 | 2 | see CHANGELOG |
+| Phase 3 | 2 | 2 | see CHANGELOG |
 
 ---
 
