@@ -35,7 +35,7 @@
 ## Log (newest first)
 
 ## 2026-05-08 — cursor/phase3-mt5-sync-07ef — slices 3.1 + 3.2: MT5 sync API, saved credentials, modal + Settings
-- Commit: (see git log)
+- Commit: b8374f7 (feat(api+frontend): Phase 3 MT5 sync — saved credentials, JSON sync, modal UI)
 - Files touched: `backend/app/core/mt5_crypto.py`, `backend/app/models/user.py`, `backend/app/database.py`, `backend/app/api/v1/routes.py`, `frontend/src/lib/{auth,mapApiTrade}.ts`, `frontend/src/store/useStore.ts`, `frontend/src/components/mt5/Mt5SyncModal.tsx`, `frontend/src/components/layout/{Layout,Header,Sidebar}.tsx`, `frontend/src/pages/Settings.tsx`, `frontend/src/types/index.ts`, `NEXT_STEPS.md`, `planning/{EXECUTION-PLAN,ACTIVE,CHANGELOG}.md`
 - Tests added / changed: 0 (manual: TestClient sync + settings on SQLite)
 - Build: pass (`npm run lint`, `npm run build`; backend import + TestClient)
