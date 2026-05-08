@@ -55,6 +55,8 @@ def trade_to_api_dict(t: Trade) -> Dict[str, Any]:
         "broker": t.broker,
         "account_id": t.account_id,
         "screenshot_url": t.screenshot_url,
+        "screenshot_before_url": t.screenshot_before_url,
+        "screenshot_after_url": t.screenshot_after_url,
         "mt5_ticket": t.mt5_ticket,
         "created_at": t.created_at.isoformat() if t.created_at else None,
         "updated_at": t.updated_at.isoformat() if t.updated_at else None,

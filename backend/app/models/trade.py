@@ -67,7 +67,9 @@ class Trade(Base):
     # Journal
     notes = Column(Text)
     tags = Column(JSON, default=list)
-    screenshot_url = Column(String)
+    screenshot_url = Column(String)  # legacy single URL
+    screenshot_before_url = Column(String)
+    screenshot_after_url = Column(String)
 
     # Meta
     duration = Column(Integer, default=0)  # minutes

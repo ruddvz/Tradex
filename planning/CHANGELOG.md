@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/phase2-trade-screenshots-07ef — slices 2.1 + 2.2: trade screenshot upload, Journal UI, static uploads
+- Commit: (see git log)
+- Files touched: `backend/app/api/v1/routes.py`, `backend/app/core/config.py`, `backend/app/main.py`, `backend/app/models/trade.py`, `backend/app/services/trade_codec.py`, `frontend/src/pages/Journal.tsx`, `frontend/src/lib/mapApiTrade.ts`, `frontend/src/types/index.ts`, `frontend/vite.config.ts`, `.gitignore`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `NEXT_STEPS.md`
+- Tests added / changed: 0 (manual TestClient + SQLite; frontend lint + build)
+- Build: pass (backend import smoke; `npm run lint`, `npm run build`)
+- Status: done
+- Next up: **3** — MT5 sync (real) per `NEXT_STEPS.md` Phase 3 / `EXECUTION-PLAN` Phase 3
+- Notes: `POST /api/v1/trades/{id}/screenshot?slot=before|after`. `UPLOAD_ROOT`; FastAPI mounts `/uploads`. Trade model: `screenshot_before_url`, `screenshot_after_url`. Merge branch to `main` so Phase 2 is visible on default branch.
+
 ## 2026-05-08 — cursor/phase1-db-persistence-07ef — slice 1.3: Auth UI, protected shell, Settings sign out
 - Commit: 0ddd464 (feat(frontend): slice 1.3 — Auth page, protected shell, Settings sign out)
 - Files touched: `frontend/src/App.tsx`, `frontend/src/pages/Auth.tsx`, `frontend/src/components/auth/ProtectedLayout.tsx`, `frontend/src/lib/auth.ts`, `frontend/src/pages/Settings.tsx`, `frontend/vite.config.ts`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `NEXT_STEPS.md`

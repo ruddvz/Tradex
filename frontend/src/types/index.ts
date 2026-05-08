@@ -18,7 +18,11 @@ export interface Trade {
   emotionScore: number;
   notes: string;
   tags: string[];
+  /** Legacy single screenshot from older mocks */
   screenshot?: string;
+  /** Chart screenshots (match API snake_case mapping in clients) */
+  screenshotBeforeUrl?: string;
+  screenshotAfterUrl?: string;
   duration: number; // minutes
   commission: number;
   swap: number;

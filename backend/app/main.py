@@ -3,10 +3,12 @@ Tradex Backend API
 AI-Powered Trading Journal Platform
 """
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from .core.config import settings
 from .database import init_db
@@ -39,6 +41,12 @@ app.add_middleware(
 
 # Routes
 app.include_router(router)
+
+_upload_root = Path(settings.UPLOAD_ROOT)
+_upload_root.mkdir(parents=True, exist_ok=True)
+(_upload_root / "screenshots").mkdir(exist_ok=True)
+
+app.mount("/uploads", StaticFiles(directory=str(_upload_root)), name="uploads")
 
 
 @app.get("/")

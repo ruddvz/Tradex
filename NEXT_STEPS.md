@@ -6,8 +6,8 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ## Current State (Already Done)
 
-- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded app shell (**slice 1.3**); journal widgets still use **`mockData.ts`** until wired to `fetch` + Bearer (**future slice**)
-- FastAPI: JWT (**slice 1.1**), persisted trades / notebook / challenges in PostgreSQL (**slice 1.2**), analytics, AI insights, MT5 sync
+- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded app shell (**slice 1.3**); **Journal** loads trades from the API when authenticated (**slice 2.2**); **Dashboard** and other pages still use **`mockData.ts`** until wired (**future slice**)
+- FastAPI: JWT (**slice 1.1**), persisted trades / notebook / challenges in PostgreSQL (**slice 1.2**), trade screenshot upload (**slices 2.1–2.2**), analytics, AI insights, MT5 sync stub
 - **`Authorization: Bearer`** on `/api/v1/*` except `GET /health` and `POST /auth/register` / `POST /auth/login`
 
 ---
@@ -38,18 +38,9 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ### Tasks
 
-1. **Backend: file upload endpoint**
-   - Add `POST /api/v1/trades/{id}/screenshot` that accepts a multipart image file
-   - Save to `backend/uploads/screenshots/{user_id}/{trade_id}.png`
-   - Return the file URL, store it in the `Trade.screenshot_url` column
-   - Install `aiofiles` (already in requirements.txt)
+1. **Backend: file upload endpoint** ✓ *(slice 2.1 — `?slot=before|after`, stores under `UPLOAD_ROOT/screenshots/{user_id}/`, columns `screenshot_before_url` / `screenshot_after_url`; served via `/uploads`)*
 
-2. **Frontend: screenshot section in trade drawer**
-   - The trade drawer is in `frontend/src/pages/Journal.tsx` — component `TradeDrawer`
-   - Add a "Before/After" screenshot upload section at the bottom of the drawer
-   - Two upload zones side by side: "Before Trade" and "After Trade"
-   - Show thumbnail preview once uploaded
-   - Use a simple `<input type="file" accept="image/*">` with drag-and-drop styling
+2. **Frontend: screenshot section in trade drawer** ✓ *(slice 2.2 — `ScreenshotUploadZone` in `Journal.tsx`, thumbnails, Bearer upload; Vite proxies `/uploads`)*
 
 ---
 

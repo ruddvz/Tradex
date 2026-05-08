@@ -6,25 +6,25 @@
 
 ---
 
-## 👉 NEXT UP: **[2.1]** — Trade screenshot upload (backend)
+## 👉 NEXT UP: **[3]** — MT5 sync (real)
 
-Add `POST /api/v1/trades/{id}/screenshot` with multipart file save under `uploads/` and `Trade.screenshot_url` per `NEXT_STEPS.md` Phase 2.
+Wire Sidebar/Header sync to `POST /api/v1/sync/mt5`, persist credentials from Settings per `NEXT_STEPS.md` Phase 3.
 
-**Context:** `backend/app/api/v1/routes.py`, `EXECUTION-PLAN` Phase 2  
+**Context:** `frontend/src/components/layout/Sidebar.tsx`, `frontend/src/pages/Settings.tsx`, `backend/app/api/v1/routes.py`  
 **Blocked by:** nothing
 
 ---
 
 ## 🎯 Current Sprint / Phase
 
-**Phase:** Phase 2 — Trade screenshots (next)  
-**Previous phase:** Phase 1 — **complete** (slices 1.1–1.3)
+**Phase:** Phase 3 — MT5 integration (next)  
+**Previous:** Phase 2 — trade screenshots ✓
 
 ### Open Slices
-- [ ] **2.1** Backend multipart upload + storage path
-- [ ] **2.2** Journal `TradeDrawer` before/after upload UI
+- [ ] **3** — MT5 sync UI + optional credential storage (see `NEXT_STEPS.md` Phase 3)
 
 ### Recently Done
+- [x] **2.1–2.2** Trade screenshots — `POST /trades/{id}/screenshot`, static `/uploads`, `screenshot_before_url` / `screenshot_after_url`, Journal before/after zones, API trade fetch when logged in
 - [x] **1.3** Auth UI (`/auth`), `ProtectedLayout`, `tradex_access_token`, Settings **Sign out**, Vite dev proxy `/api` → backend
 - [x] **1.2** PostgreSQL persistence for trades, notebook entries, prop challenges
 - [x] **1.1** JWT auth + Bearer protection
@@ -37,7 +37,7 @@ Add `POST /api/v1/trades/{id}/screenshot` with multipart file save under `upload
 | # | Area | Issue | Priority | Status |
 |---|------|-------|----------|--------|
 | 1 | Data / API | API requires `Authorization: Bearer` for data routes | P1 | By design |
-| 2 | Frontend | Dashboard/journal still read **`mockData.ts`** — wire `fetch` + Bearer to live trades list (after screenshot slice or dedicated wiring task) | P2 | Open |
+| 2 | Frontend | **Dashboard** (and most pages) still use **`mockData.ts`** — Journal loads live trades when authenticated; broader API wiring is future work | P2 | Open |
 
 ---
 
@@ -51,6 +51,7 @@ Add `POST /api/v1/trades/{id}/screenshot` with multipart file save under `upload
 
 ## Completed This Session
 
+- [x] Phase 2 closed: **2.1–2.2** screenshot upload + Journal UI + `/uploads` proxy
 - [x] Phase 1 closed: **1.1** JWT, **1.2** DB persistence, **1.3** Auth UI + guard + logout
 - [x] **`planning/COMMITS-ON-MAIN.md`** — explains fast-forward vs visible PR diffs
 
@@ -58,6 +59,7 @@ Add `POST /api/v1/trades/{id}/screenshot` with multipart file save under `upload
 
 ## Phase History (compact)
 
+- **Phase 2** — Trade screenshots ✓
 - **Phase 1** — Auth + PostgreSQL + Auth UI ✓
 - **Phase 0** — see **`planning/PHASE0-INVENTORY.md`**
 

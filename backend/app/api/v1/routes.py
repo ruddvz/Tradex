@@ -2,15 +2,18 @@
 FastAPI route handlers for Tradex API v1.
 """
 from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
+from pathlib import Path
+from typing import Any, Dict, List, Literal, Optional
 import uuid
 
-from fastapi import APIRouter, Body, Depends, HTTPException, Query
+import aiofiles
+from fastapi import APIRouter, Body, Depends, File, HTTPException, Query, UploadFile
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import and_, func as sql_func, select
 from sqlalchemy.orm import Session
 
 from ...database import get_db
+from ...core.config import settings
 from ...models.challenge import PropChallenge
 from ...models.notebook import NotebookEntry
 from ...models.trade import Trade, TradeGrade, TradeStatus
@@ -545,6 +548,60 @@ async def create_challenge(
     db.commit()
     db.refresh(row)
     return _challenge_to_dict(row)
+
+
+# ── Trade screenshots (Phase 2) ────────────────────────────────────────────────
+
+_ALLOWED_IMAGE_TYPES = {
+    "image/jpeg": ".jpg",
+    "image/png": ".png",
+    "image/webp": ".webp",
+    "image/gif": ".gif",
+}
+_MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024
+
+
+@router.post("/trades/{trade_id}/screenshot")
+async def upload_trade_screenshot(
+    trade_id: str,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+    slot: Literal["before", "after"] = Query("before"),
+    file: UploadFile = File(...),
+):
+    """Upload a before/after chart image for a trade. Stored under uploads/screenshots/{user_id}/."""
+    trade = db.execute(
+        select(Trade).where(Trade.id == trade_id, Trade.user_id == user.id)
+    ).scalar_one_or_none()
+    if trade is None:
+        raise HTTPException(status_code=404, detail="Trade not found")
+
+    ct = (file.content_type or "").split(";")[0].strip().lower()
+    if ct not in _ALLOWED_IMAGE_TYPES:
+        raise HTTPException(status_code=400, detail="Use PNG, JPEG, WebP, or GIF")
+
+    raw = await file.read()
+    if len(raw) > _MAX_SCREENSHOT_BYTES:
+        raise HTTPException(status_code=400, detail="Image too large (max 5 MB)")
+
+    base_dir = Path(settings.UPLOAD_ROOT) / "screenshots" / user.id
+    base_dir.mkdir(parents=True, exist_ok=True)
+    ext = _ALLOWED_IMAGE_TYPES[ct]
+    fname = f"{trade_id}_{slot}{ext}"
+    dest = base_dir / fname
+
+    async with aiofiles.open(dest, "wb") as out:
+        await out.write(raw)
+
+    public_path = f"/uploads/screenshots/{user.id}/{fname}"
+    if slot == "before":
+        trade.screenshot_before_url = public_path
+    else:
+        trade.screenshot_after_url = public_path
+
+    db.commit()
+    db.refresh(trade)
+    return trade_to_api_dict(trade)
 
 
 # ── MT5 Sync ───────────────────────────────────────────────────────────────────

@@ -1,8 +1,11 @@
-import { useState, useMemo } from 'react';
-import { Search, Filter, Download, Plus, Clock, Trash2, BarChart3 } from 'lucide-react';
+import { useState, useMemo, useRef, useEffect } from 'react';
+import { Search, Filter, Download, Plus, Clock, Trash2, BarChart3, ImagePlus } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { AddTradeModal } from '../components/journal/AddTradeModal';
 import { useStore } from '../store/useStore';
+import { useToast } from '../components/ui/Toast';
+import { getToken } from '../lib/auth';
+import { mapApiTradeRow } from '../lib/mapApiTrade';
 import { PnlBadge, DirectionBadge, GradeBadge, Badge } from '../components/ui/Badge';
 import { format } from 'date-fns';
 import { clsx } from 'clsx';
@@ -22,6 +25,99 @@ const emotionEmojis: Record<string, string> = {
   Patient: '🧘',
 };
 
+function ScreenshotUploadZone({
+  tradeId,
+  slot,
+  label,
+  url,
+  onUploaded,
+}: {
+  tradeId: string;
+  slot: 'before' | 'after';
+  label: string;
+  url?: string;
+  onUploaded: (payload: Partial<Trade>) => void;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { showToast } = useToast();
+  const [busy, setBusy] = useState(false);
+
+  const onPick = () => inputRef.current?.click();
+
+  const onFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const token = getToken();
+    if (!token) {
+      showToast('Sign in to attach screenshots (Journal uses live API when authenticated).');
+      return;
+    }
+    setBusy(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      const res = await fetch(`/api/v1/trades/${tradeId}/screenshot?slot=${slot}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+      if (!res.ok) {
+        const detail = data.detail;
+        showToast(typeof detail === 'string' ? detail : 'Upload failed');
+        return;
+      }
+      const patch: Partial<Trade> = {};
+      if (typeof data.screenshot_before_url === 'string')
+        patch.screenshotBeforeUrl = data.screenshot_before_url;
+      if (typeof data.screenshot_after_url === 'string')
+        patch.screenshotAfterUrl = data.screenshot_after_url;
+      if (Object.keys(patch).length > 0) onUploaded(patch);
+      showToast('Screenshot saved');
+    } catch {
+      showToast('Upload failed — is the API running?');
+    } finally {
+      setBusy(false);
+      e.target.value = '';
+    }
+  };
+
+  const displayUrl = url;
+
+  return (
+    <div className="rounded-xl border border-dashed border-surface-border bg-dark-300/40 p-4">
+      <div className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <ImagePlus className="h-4 w-4 text-brand-400" />
+        {label}
+      </div>
+      {displayUrl ? (
+        <img
+          src={displayUrl}
+          alt={label}
+          className="mb-3 max-h-44 w-full rounded-lg object-contain"
+        />
+      ) : (
+        <p className="mb-3 text-xs text-slate-500">No image yet</p>
+      )}
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif"
+        className="hidden"
+        onChange={onFile}
+      />
+      <button
+        type="button"
+        className="btn-secondary w-full justify-center text-sm"
+        onClick={onPick}
+        disabled={busy}
+      >
+        {busy ? 'Uploading…' : displayUrl ? 'Replace' : 'Upload'}
+      </button>
+    </div>
+  );
+}
+
 function TradeDrawer({
   trade,
   onClose,
@@ -29,7 +125,10 @@ function TradeDrawer({
   trade: Trade;
   onClose: () => void;
 }) {
-  const { deleteTrade } = useStore();
+  const { deleteTrade, updateTrade } = useStore();
+
+  const beforeSrc = trade.screenshotBeforeUrl || trade.screenshot;
+  const afterSrc = trade.screenshotAfterUrl;
 
   return (
     <div
@@ -146,6 +245,28 @@ function TradeDrawer({
               <p className="text-sm text-slate-300">{trade.notes}</p>
             </div>
           )}
+
+          <div className="no-print border-t border-surface-border pt-5">
+            <div className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Chart screenshots
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <ScreenshotUploadZone
+                tradeId={trade.id}
+                slot="before"
+                label="Before trade"
+                url={beforeSrc}
+                onUploaded={partial => updateTrade(trade.id, partial)}
+              />
+              <ScreenshotUploadZone
+                tradeId={trade.id}
+                slot="after"
+                label="After trade"
+                url={afterSrc}
+                onUploaded={partial => updateTrade(trade.id, partial)}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="p-5 border-t border-surface-border">
@@ -173,6 +294,25 @@ export function Journal() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const [addTradeOpen, setAddTradeOpen] = useState(false);
+
+  useEffect(() => {
+    const tok = getToken();
+    if (!tok) return;
+    let cancelled = false;
+    void fetch('/api/v1/trades?limit=500', {
+      headers: { Authorization: `Bearer ${tok}` },
+    })
+      .then(r => (r.ok ? r.json() : null))
+      .then(data => {
+        if (cancelled || !data?.trades || !Array.isArray(data.trades)) return;
+        const mapped = (data.trades as Record<string, unknown>[]).map(mapApiTradeRow);
+        useStore.setState({ trades: mapped });
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const symbols = useMemo(() => ['all', ...Array.from(new Set(trades.map(t => t.symbol)))], [trades]);
 

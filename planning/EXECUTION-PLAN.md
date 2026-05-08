@@ -42,8 +42,8 @@
 
 > **Goal:** `POST /api/v1/trades/{id}/screenshot` + Journal drawer uploads. See NEXT_STEPS Phase 2.
 
-- [ ] **2.1** Backend multipart upload + storage path
-- [ ] **2.2** Journal `TradeDrawer` before/after upload UI
+- [x] **2.1** Backend multipart upload + storage path
+- [x] **2.2** Journal `TradeDrawer` before/after upload UI
 
 ---
 
@@ -70,6 +70,8 @@
 | Phase | Slices | Shipped | Date |
 |-------|--------|---------|------|
 | Phase 0 | 5 | 5 | see CHANGELOG |
+| Phase 1 | 3 | 3 | see CHANGELOG |
+| Phase 2 | 2 | 2 | see CHANGELOG |
 
 ---
 

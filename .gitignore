@@ -7,6 +7,10 @@ dist
 __pycache__/
 *.pyc
 
+# Local trade screenshot uploads (Phase 2)
+uploads/
+backend/uploads/
+
 # Source archive for Claude Company OS (tree lives under .claude/)
 claude-company-os 2.zip
 
