@@ -72,7 +72,7 @@ class Trade(Base):
     # Meta
     duration = Column(Integer, default=0)  # minutes
     broker = Column(String(100))
-    mt5_ticket = Column(String, unique=True)  # MT5 ticket number
+    mt5_ticket = Column(String, index=True)  # scoped per user in app logic; no global unique (multi-tenant)
 
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

@@ -6,12 +6,12 @@
 
 ---
 
-## 👉 NEXT UP: **[1.2]** — Persist trades, notebook, and challenges in PostgreSQL
+## 👉 NEXT UP: **[1.3]** — Auth UI + App routing guard + logout
 
-Replace in-memory `_trades`, `_notebook`, `_challenges` in `routes.py` with SQLAlchemy queries against `Trade`, `NotebookEntry`, and `PropChallenge` models. Wire `get_db` for all CRUD.
+Add `frontend/src/pages/Auth.tsx`, JWT storage, `App.tsx` guard, Settings logout; wire API calls with `Authorization: Bearer` when replacing `mockData.ts`.
 
-**Context:** `NEXT_STEPS.md` Phase 1 task 2, `backend/app/api/v1/routes.py`, `backend/app/models/trade.py`
-**Blocked by:** nothing (requires running PostgreSQL + Alembic or `create_all` for new tables)
+**Context:** `NEXT_STEPS.md` Phase 1 task 3  
+**Blocked by:** nothing
 
 ---
 
@@ -22,11 +22,11 @@ Replace in-memory `_trades`, `_notebook`, `_challenges` in `routes.py` with SQLA
 **Target:** Complete Phase 1 checkboxes in NEXT_STEPS.md
 
 ### Open Slices
-- [ ] **1.2** Wire trades/notebook/challenges to DB
 - [ ] **1.3** Auth UI + App routing guard + logout in Settings
 
 ### Recently Done
-- [x] **1.1** JWT auth (`/auth/register`, `/auth/login`, `/auth/me`), `User` model + `users` table, `HTTPBearer` protection, per-user in-memory stores until 1.2
+- [x] **1.2** PostgreSQL persistence for trades, notebook entries, prop challenges (`Trade`, `NotebookEntry`, `PropChallenge` + `routes.py` refactor)
+- [x] **1.1** JWT auth (`/auth/register`, `/auth/login`, `/auth/me`), `User` model + `users` table, `HTTPBearer` protection
 - [x] **0.1** Claude Company OS files imported from archive
 - [x] **0.2** Company OS configured for Tradex (skills + planning)
 - [x] **0.3** Architecture skill — Tradex data model + API map
@@ -38,8 +38,8 @@ Replace in-memory `_trades`, `_notebook`, `_challenges` in `routes.py` with SQLA
 
 | # | Area | Issue | Priority | Status |
 |---|------|-------|----------|--------|
-| 1 | Data / API | Trades, notebook, and challenges are still in-memory (per `user_id`) until slice **1.2**; all data routes require `Authorization: Bearer` | P1 | Open |
-| 2 | Frontend | Demo still uses `mockData.ts` — add **1.3** `Auth.tsx` and API wiring to use the token | P2 | Open |
+| 1 | Data / API | Backend stores trades, notebook, challenges in PostgreSQL; API requires `Authorization: Bearer` | P1 | Mitigated (1.2) |
+| 2 | Frontend | Demo still uses `mockData.ts` — **1.3** Auth UI + API wiring | P2 | Open |
 
 ---
 
@@ -54,7 +54,7 @@ Replace in-memory `_trades`, `_notebook`, `_challenges` in `routes.py` with SQLA
 ## Completed This Session
 
 - [x] **Phase 0** merged to `main` (Plan0 UI + `PHASE0-INVENTORY`, skills)
-- [x] **1.1** backend — JWT, `User` + `users` table, protected routes, user-scoped in-memory data
+- [x] **1.2** backend — SQLAlchemy persistence (trades, notebook, challenges)
 
 ---
 
@@ -82,3 +82,4 @@ Replace in-memory `_trades`, `_notebook`, `_challenges` in `routes.py` with SQLA
 - **Phase 0 / Plan0 full picture:** `planning/PHASE0-INVENTORY.md` (everything shipped and where it lives in git)
 - Product roadmap: **`NEXT_STEPS.md`** (authoritative phases)
 - Company context: `.claude/skills/core/company.md`
+- **Git / PRs:** if PR diff is empty, see **`planning/COMMITS-ON-MAIN.md`** (fast-forward merges land commits on `main` without a merge commit diff).

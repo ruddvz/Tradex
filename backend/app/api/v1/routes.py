@@ -1,19 +1,21 @@
 """
 FastAPI route handlers for Tradex API v1.
 """
-from fastapi import APIRouter, Depends, HTTPException, Query
-from typing import List, Optional
 from datetime import datetime, timedelta
-from pydantic import BaseModel, EmailStr, Field
+from typing import Any, Dict, List, Optional
 import uuid
 
-from sqlalchemy import select
+from fastapi import APIRouter, Body, Depends, HTTPException, Query
+from pydantic import BaseModel, EmailStr, Field
+from sqlalchemy import and_, func as sql_func, select
 from sqlalchemy.orm import Session
 
 from ...database import get_db
+from ...models.challenge import PropChallenge
+from ...models.notebook import NotebookEntry
+from ...models.trade import Trade, TradeGrade, TradeStatus
 from ...models.user import User, UserPlan
 from ...core.security import hash_password, verify_password, create_access_token
-from ..deps import get_current_user
 from ...services.analytics import (
     compute_metrics,
     compute_symbol_stats,
@@ -21,6 +23,16 @@ from ...services.analytics import (
     compute_psychology_stats,
 )
 from ...services.ai_service import generate_ai_insights
+from ...services.trade_codec import (
+    compute_grade_and_rr,
+    grade_from_str,
+    parse_iso_datetime,
+    direction_from_str,
+    status_from_str,
+    trade_from_mt5_dict,
+    trade_to_api_dict,
+)
+from ..deps import get_current_user
 
 router = APIRouter(prefix="/api/v1")
 
@@ -95,36 +107,44 @@ class PropChallengeIn(BaseModel):
     end_date: str
 
 
-# ── In-memory store (replaced with DB queries in slice 1.2) ────────────────────
-_trades: List[dict] = []
-_notebook: List[dict] = []
-_challenges: List[dict] = []
+# ── Serialization helpers ───────────────────────────────────────────────────────
 
 
-def _user_trades(user_id: str) -> List[dict]:
-    return [t for t in _trades if t.get("user_id") == user_id]
+def _notebook_to_dict(n: NotebookEntry) -> Dict[str, Any]:
+    return {
+        "id": n.id,
+        "user_id": n.user_id,
+        "title": n.title,
+        "content": n.content,
+        "type": n.entry_type,
+        "tags": n.tags or [],
+        "pinned": n.pinned,
+        "created_at": n.created_at.isoformat() if n.created_at else None,
+        "updated_at": n.updated_at.isoformat() if n.updated_at else None,
+    }
 
 
-def _find_trade(trade_id: str, user_id: str) -> Optional[dict]:
-    for t in _trades:
-        if t["id"] == trade_id and t.get("user_id") == user_id:
-            return t
-    return None
-
-
-def _user_notebook(user_id: str) -> List[dict]:
-    return [n for n in _notebook if n.get("user_id") == user_id]
-
-
-def _find_note(entry_id: str, user_id: str) -> Optional[dict]:
-    for n in _notebook:
-        if n["id"] == entry_id and n.get("user_id") == user_id:
-            return n
-    return None
-
-
-def _user_challenges(user_id: str) -> List[dict]:
-    return [c for c in _challenges if c.get("user_id") == user_id]
+def _challenge_to_dict(c: PropChallenge) -> Dict[str, Any]:
+    return {
+        "id": c.id,
+        "user_id": c.user_id,
+        "name": c.name,
+        "firm": c.firm,
+        "account_size": c.account_size,
+        "profit_target": c.profit_target,
+        "max_drawdown": c.max_drawdown,
+        "daily_drawdown": c.daily_drawdown,
+        "min_trading_days": c.min_trading_days,
+        "start_date": c.start_date,
+        "end_date": c.end_date,
+        "current_pnl": c.current_pnl,
+        "current_drawdown": c.current_drawdown,
+        "daily_loss": c.daily_loss,
+        "status": c.status,
+        "trades": c.trades_count,
+        "days_traded": c.days_traded,
+        "created_at": c.created_at.isoformat() if c.created_at else None,
+    }
 
 
 def _serialize_user(user: User) -> dict:
@@ -137,14 +157,38 @@ def _serialize_user(user: User) -> dict:
     }
 
 
+def _norm_day_start(s: str) -> datetime:
+    raw = s.strip()
+    if len(raw) == 10:
+        raw = raw + "T00:00:00"
+    dt = parse_iso_datetime(raw)
+    return dt or datetime.min
+
+
+def _norm_day_end(s: str) -> datetime:
+    raw = s.strip()
+    if len(raw) == 10:
+        raw = raw + "T23:59:59"
+    dt = parse_iso_datetime(raw)
+    return dt or datetime.max
+
+
+def _user_trade_dicts(db: Session, user_id: str) -> List[Dict[str, Any]]:
+    rows = db.execute(
+        select(Trade).where(Trade.user_id == user_id).order_by(Trade.entry_time.desc())
+    ).scalars().all()
+    return [trade_to_api_dict(t) for t in rows]
+
+
 # ── Health (public) ─────────────────────────────────────────────────────────────
+
 
 @router.get("/health")
 async def health():
     return {"status": "ok", "version": "1.0.0", "timestamp": datetime.utcnow().isoformat()}
 
 
-# ── Auth (public except /me) ────────────────────────────────────────────────────
+# ── Auth ────────────────────────────────────────────────────────────────────────
 
 
 @router.post("/auth/register", status_code=201)
@@ -192,6 +236,7 @@ def auth_me(user: User = Depends(get_current_user)):
 @router.get("/trades")
 async def get_trades(
     user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
     symbol: Optional[str] = None,
     status: Optional[str] = None,
     from_date: Optional[str] = None,
@@ -199,62 +244,127 @@ async def get_trades(
     limit: int = Query(default=100, le=500),
     offset: int = 0,
 ):
-    trades = _user_trades(user.id)
+    conditions = [Trade.user_id == user.id]
     if symbol:
-        trades = [t for t in trades if t["symbol"] == symbol]
+        conditions.append(Trade.symbol == symbol)
     if status:
-        trades = [t for t in trades if t.get("status") == status]
+        try:
+            conditions.append(Trade.status == TradeStatus[status.upper()])
+        except KeyError as exc:
+            raise HTTPException(status_code=400, detail="Invalid status filter") from exc
     if from_date:
-        trades = [t for t in trades if t.get("entry_time", "") >= from_date]
+        conditions.append(Trade.entry_time >= _norm_day_start(from_date))
     if to_date:
-        trades = [t for t in trades if t.get("entry_time", "") <= to_date]
-    return {"trades": trades[offset : offset + limit], "total": len(trades)}
+        conditions.append(Trade.entry_time <= _norm_day_end(to_date))
+
+    base_where = and_(*conditions)
+    total = db.execute(select(sql_func.count()).select_from(Trade).where(base_where)).scalar() or 0
+
+    stmt = (
+        select(Trade)
+        .where(base_where)
+        .order_by(Trade.entry_time.desc())
+        .offset(offset)
+        .limit(limit)
+    )
+    rows = db.execute(stmt).scalars().all()
+    return {"trades": [trade_to_api_dict(t) for t in rows], "total": total}
 
 
 @router.post("/trades", status_code=201)
-async def create_trade(trade: TradeIn, user: User = Depends(get_current_user)):
+async def create_trade(trade: TradeIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     pnl = trade.pnl
     status_str = "WIN" if pnl > 0 else "LOSS" if pnl < 0 else "BREAKEVEN"
-    grade = "A" if pnl > 300 else "B" if pnl > 100 else "C" if pnl > 0 else "D" if pnl > -100 else "F"
-    rr = abs(pnl) / max(abs(pnl * 0.4), 1)
+    grade_s, r_mult = compute_grade_and_rr(pnl, status_str)
 
-    new_trade = {
-        "id": str(uuid.uuid4()),
-        "user_id": user.id,
-        **trade.model_dump(),
-        "status": status_str,
-        "grade": grade,
-        "r_multiple": round(rr, 2) if status_str == "WIN" else -round(rr * 0.5, 2),
-        "created_at": datetime.utcnow().isoformat(),
-    }
-    _trades.insert(0, new_trade)
-    return new_trade
+    entry_time = parse_iso_datetime(trade.entry_time)
+    if entry_time is None:
+        raise HTTPException(status_code=400, detail="Invalid entry_time")
+    exit_time = parse_iso_datetime(trade.exit_time)
+
+    try:
+        direction = direction_from_str(trade.direction)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
+
+    tid = str(uuid.uuid4())
+    row = Trade(
+        id=tid,
+        user_id=user.id,
+        symbol=trade.symbol,
+        direction=direction,
+        entry_price=trade.entry_price,
+        exit_price=trade.exit_price,
+        lot_size=trade.lot_size,
+        entry_time=entry_time,
+        exit_time=exit_time,
+        pnl=trade.pnl,
+        commission=trade.commission,
+        swap=trade.swap,
+        stop_loss=trade.stop_loss,
+        take_profit=trade.take_profit,
+        strategy=trade.strategy,
+        session=trade.session,
+        emotion=trade.emotion or "Neutral",
+        emotion_score=trade.emotion_score,
+        notes=trade.notes,
+        tags=trade.tags or [],
+        duration=trade.duration,
+        status=status_from_str(status_str),
+        grade=grade_from_str(grade_s),
+        r_multiple=r_mult,
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return trade_to_api_dict(row)
 
 
 @router.get("/trades/{trade_id}")
-async def get_trade(trade_id: str, user: User = Depends(get_current_user)):
-    trade = _find_trade(trade_id, user.id)
-    if not trade:
+async def get_trade(trade_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    row = db.execute(
+        select(Trade).where(Trade.id == trade_id, Trade.user_id == user.id)
+    ).scalar_one_or_none()
+    if row is None:
         raise HTTPException(status_code=404, detail="Trade not found")
-    return trade
+    return trade_to_api_dict(row)
 
 
 @router.patch("/trades/{trade_id}")
-async def update_trade(trade_id: str, updates: TradeUpdate, user: User = Depends(get_current_user)):
-    trade = _find_trade(trade_id, user.id)
-    if not trade:
+async def update_trade(
+    trade_id: str,
+    updates: TradeUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    trade = db.execute(
+        select(Trade).where(Trade.id == trade_id, Trade.user_id == user.id)
+    ).scalar_one_or_none()
+    if trade is None:
         raise HTTPException(status_code=404, detail="Trade not found")
+
     for k, v in updates.model_dump(exclude_none=True).items():
-        trade[k] = v
-    return trade
+        if k == "grade" and v is not None:
+            trade.grade = grade_from_str(str(v))
+        elif k == "tags":
+            trade.tags = v
+        elif hasattr(trade, k):
+            setattr(trade, k, v)
+
+    db.commit()
+    db.refresh(trade)
+    return trade_to_api_dict(trade)
 
 
 @router.delete("/trades/{trade_id}", status_code=204)
-async def delete_trade(trade_id: str, user: User = Depends(get_current_user)):
-    global _trades
-    if _find_trade(trade_id, user.id) is None:
+async def delete_trade(trade_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    trade = db.execute(
+        select(Trade).where(Trade.id == trade_id, Trade.user_id == user.id)
+    ).scalar_one_or_none()
+    if trade is None:
         raise HTTPException(status_code=404, detail="Trade not found")
-    _trades = [t for t in _trades if not (t["id"] == trade_id and t.get("user_id") == user.id)]
+    db.delete(trade)
+    db.commit()
 
 
 # ── Analytics ──────────────────────────────────────────────────────────────────
@@ -263,37 +373,38 @@ async def delete_trade(trade_id: str, user: User = Depends(get_current_user)):
 @router.get("/analytics/metrics")
 async def get_metrics(
     user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
     from_date: Optional[str] = None,
     to_date: Optional[str] = None,
 ):
-    trades = _user_trades(user.id)
+    trades = _user_trade_dicts(db, user.id)
     if from_date:
-        trades = [t for t in trades if t.get("entry_time", "") >= from_date]
+        trades = [t for t in trades if t.get("entry_time", "") >= _norm_day_start(from_date).isoformat()]
     if to_date:
-        trades = [t for t in trades if t.get("entry_time", "") <= to_date]
+        trades = [t for t in trades if t.get("entry_time", "") <= _norm_day_end(to_date).isoformat()]
     return compute_metrics(trades)
 
 
 @router.get("/analytics/symbols")
-async def get_symbol_stats(user: User = Depends(get_current_user)):
-    return compute_symbol_stats(_user_trades(user.id))
+async def get_symbol_stats(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return compute_symbol_stats(_user_trade_dicts(db, user.id))
 
 
 @router.get("/analytics/sessions")
-async def get_session_stats(user: User = Depends(get_current_user)):
-    return compute_session_stats(_user_trades(user.id))
+async def get_session_stats(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return compute_session_stats(_user_trade_dicts(db, user.id))
 
 
 @router.get("/analytics/psychology")
-async def get_psychology_stats(user: User = Depends(get_current_user)):
-    return compute_psychology_stats(_user_trades(user.id))
+async def get_psychology_stats(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    return compute_psychology_stats(_user_trade_dicts(db, user.id))
 
 
 @router.get("/analytics/calendar")
-async def get_calendar(user: User = Depends(get_current_user), days: int = 90):
+async def get_calendar(user: User = Depends(get_current_user), db: Session = Depends(get_db), days: int = 90):
     from_dt = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
     daily_pnl: dict = {}
-    for t in _user_trades(user.id):
+    for t in _user_trade_dicts(db, user.id):
         day = t.get("entry_time", "")[:10]
         if day >= from_dt:
             daily_pnl[day] = daily_pnl.get(day, {"pnl": 0, "trades": 0})
@@ -306,8 +417,8 @@ async def get_calendar(user: User = Depends(get_current_user), days: int = 90):
 
 
 @router.post("/ai/insights")
-async def get_ai_insights(user: User = Depends(get_current_user)):
-    ut = _user_trades(user.id)
+async def get_ai_insights(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    ut = _user_trade_dicts(db, user.id)
     if not ut:
         return {"insights": []}
     metrics = compute_metrics(ut)
@@ -324,66 +435,116 @@ async def get_ai_insights(user: User = Depends(get_current_user)):
 
 
 @router.get("/notebook")
-async def get_notebook(user: User = Depends(get_current_user)):
-    return {"entries": _user_notebook(user.id)}
+async def get_notebook(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    rows = db.execute(
+        select(NotebookEntry)
+        .where(NotebookEntry.user_id == user.id)
+        .order_by(NotebookEntry.pinned.desc(), NotebookEntry.updated_at.desc())
+    ).scalars().all()
+    return {"entries": [_notebook_to_dict(n) for n in rows]}
 
 
 @router.post("/notebook", status_code=201)
-async def create_note(entry: NotebookEntryIn, user: User = Depends(get_current_user)):
-    now = datetime.utcnow().isoformat()
-    new_entry = {
-        "id": str(uuid.uuid4()),
-        "user_id": user.id,
-        **entry.model_dump(),
-        "created_at": now,
-        "updated_at": now,
-    }
-    _notebook.insert(0, new_entry)
-    return new_entry
+async def create_note(entry: NotebookEntryIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    payload = entry.model_dump()
+    row = NotebookEntry(
+        id=str(uuid.uuid4()),
+        user_id=user.id,
+        title=payload["title"],
+        content=payload["content"],
+        entry_type=payload["type"],
+        tags=payload.get("tags") or [],
+        pinned=payload.get("pinned") or False,
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return _notebook_to_dict(row)
 
 
 @router.patch("/notebook/{entry_id}")
-async def update_note(entry_id: str, updates: dict, user: User = Depends(get_current_user)):
-    entry = _find_note(entry_id, user.id)
-    if not entry:
+async def update_note(
+    entry_id: str,
+    updates: Dict[str, Any] = Body(...),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    row = db.execute(
+        select(NotebookEntry).where(NotebookEntry.id == entry_id, NotebookEntry.user_id == user.id)
+    ).scalar_one_or_none()
+    if row is None:
         raise HTTPException(status_code=404, detail="Entry not found")
-    entry.update(updates)
-    entry["updated_at"] = datetime.utcnow().isoformat()
-    return entry
+
+    allowed = {"title", "content", "tags", "pinned", "type"}
+    for k, v in updates.items():
+        if k not in allowed:
+            continue
+        if k == "type":
+            row.entry_type = v
+        elif k == "tags":
+            row.tags = v
+        elif k == "pinned":
+            row.pinned = bool(v)
+        elif k in ("title", "content"):
+            setattr(row, k, v)
+
+    db.commit()
+    db.refresh(row)
+    return _notebook_to_dict(row)
 
 
 @router.delete("/notebook/{entry_id}", status_code=204)
-async def delete_note(entry_id: str, user: User = Depends(get_current_user)):
-    global _notebook
-    if _find_note(entry_id, user.id) is None:
+async def delete_note(entry_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    row = db.execute(
+        select(NotebookEntry).where(NotebookEntry.id == entry_id, NotebookEntry.user_id == user.id)
+    ).scalar_one_or_none()
+    if row is None:
         raise HTTPException(status_code=404, detail="Entry not found")
-    _notebook = [n for n in _notebook if not (n["id"] == entry_id and n.get("user_id") == user.id)]
+    db.delete(row)
+    db.commit()
 
 
 # ── Prop Firm Challenges ───────────────────────────────────────────────────────
 
 
 @router.get("/challenges")
-async def get_challenges(user: User = Depends(get_current_user)):
-    return {"challenges": _user_challenges(user.id)}
+async def get_challenges(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    rows = db.execute(
+        select(PropChallenge)
+        .where(PropChallenge.user_id == user.id)
+        .order_by(PropChallenge.created_at.desc())
+    ).scalars().all()
+    return {"challenges": [_challenge_to_dict(c) for c in rows]}
 
 
 @router.post("/challenges", status_code=201)
-async def create_challenge(challenge: PropChallengeIn, user: User = Depends(get_current_user)):
-    new = {
-        "id": str(uuid.uuid4()),
-        "user_id": user.id,
-        **challenge.model_dump(),
-        "current_pnl": 0,
-        "current_drawdown": 0,
-        "daily_loss": 0,
-        "status": "active",
-        "trades": 0,
-        "days_traded": 0,
-        "created_at": datetime.utcnow().isoformat(),
-    }
-    _challenges.append(new)
-    return new
+async def create_challenge(
+    challenge: PropChallengeIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
+    data = challenge.model_dump()
+    row = PropChallenge(
+        id=str(uuid.uuid4()),
+        user_id=user.id,
+        name=data["name"],
+        firm=data["firm"],
+        account_size=data["account_size"],
+        profit_target=data["profit_target"],
+        max_drawdown=data["max_drawdown"],
+        daily_drawdown=data["daily_drawdown"],
+        min_trading_days=data["min_trading_days"],
+        start_date=data["start_date"],
+        end_date=data["end_date"],
+        current_pnl=0,
+        current_drawdown=0,
+        daily_loss=0,
+        status="active",
+        trades_count=0,
+        days_traded=0,
+    )
+    db.add(row)
+    db.commit()
+    db.refresh(row)
+    return _challenge_to_dict(row)
 
 
 # ── MT5 Sync ───────────────────────────────────────────────────────────────────
@@ -392,6 +553,7 @@ async def create_challenge(challenge: PropChallengeIn, user: User = Depends(get_
 @router.post("/sync/mt5")
 async def sync_mt5(
     user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
     login: int = Query(...),
     password: str = Query(...),
     server: str = Query(...),
@@ -406,22 +568,27 @@ async def sync_mt5(
         return {"status": "demo", "message": "MT5 not available; using demo data", "trades": []}
 
     from_date = datetime.now() - timedelta(days=days)
-    trades = service.fetch_trades(from_date=from_date)
+    sync_trades = service.fetch_trades(from_date=from_date)
     service.disconnect()
 
     uid = user.id
-    existing_tickets = {
-        t.get("mt5_ticket")
-        for t in _trades
-        if t.get("user_id") == uid and t.get("mt5_ticket")
-    }
-    added = 0
-    for trade in trades:
-        if trade.get("mt5_ticket") not in existing_tickets:
-            _trades.insert(
-                0,
-                {**trade, "id": str(uuid.uuid4()), "user_id": uid},
-            )
-            added += 1
+    tickets_q = select(Trade.mt5_ticket).where(
+        Trade.user_id == uid,
+        Trade.mt5_ticket.is_not(None),
+    )
+    existing_tickets = {x for x in db.execute(tickets_q).scalars().all() if x}
 
-    return {"status": "success", "synced": len(trades), "new": added}
+    added = 0
+    for tr in sync_trades:
+        mt = str(tr.get("mt5_ticket") or tr.get("ticket") or "")
+        if mt and mt in existing_tickets:
+            continue
+        tid = str(uuid.uuid4())
+        row = trade_from_mt5_dict(uid, tid, tr)
+        db.add(row)
+        if mt:
+            existing_tickets.add(mt)
+        added += 1
+
+    db.commit()
+    return {"status": "success", "synced": len(sync_trades), "new": added}

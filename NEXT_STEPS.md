@@ -6,10 +6,9 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ## Current State (Already Done)
 
-- React frontend with 8 pages (dashboard still fed by `mockData.ts` until API wiring in Phase 1)
-- FastAPI backend with trade CRUD, analytics engine, AI insights, MT5 sync service
-- **JWT auth:** `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `GET /api/v1/auth/me`; other `/api/v1/*` routes require `Authorization: Bearer` except `GET /health`
-- `users` table in PostgreSQL (password hashing via **bcrypt**); trades/notebook/challenges still **in-memory per user** until DB persistence lands
+- React frontend with 8 pages (dashboard still fed by `mockData.ts` until slice **1.3**)
+- FastAPI: JWT (**slice 1.1**), persisted trades / notebook / challenges in PostgreSQL (**slice 1.2**), analytics, AI insights, MT5 sync
+- **`Authorization: Bearer`** on `/api/v1/*` except `GET /health` and `POST /auth/register` / `POST /auth/login`
 
 ---
 
@@ -19,16 +18,9 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ### Tasks
 
-1. **Add user auth to the backend** ✓ *(slice 1.1 — see `backend/app/api/v1/routes.py`, `backend/app/models/user.py`)*
-   - Dependencies: `python-jose`, **bcrypt** (already in requirements.txt)
-   - Create a `users` table: `id`, `email`, `hashed_password`, `name`, `plan` (`free`/`pro`), `created_at`
-   - Add `POST /api/v1/auth/register` — create user, return JWT token
-   - Add `POST /api/v1/auth/login` — verify password, return JWT token
-   - Add `GET /api/v1/auth/me` — return current user from token
-   - Protect all existing routes with `Depends(get_current_user)`
-   - Files: `backend/app/api/v1/routes.py`, `backend/app/api/deps.py`, `backend/app/core/security.py`, `backend/app/database.py`
+1. **Add user auth to the backend** ✓ *(slice 1.1)*
 
-2. **Connect PostgreSQL**
+2. **Connect PostgreSQL** ✓ *(slice 1.2 — see `backend/app/models/notebook.py`, `challenge.py`, `services/trade_codec.py`)*
    - Replace the in-memory `_trades`, `_notebook`, `_challenges` lists in `routes.py` with real SQLAlchemy DB queries
    - The `Trade` model already exists in `backend/app/models/trade.py`
    - `User` model: **`backend/app/models/user.py`** ✓

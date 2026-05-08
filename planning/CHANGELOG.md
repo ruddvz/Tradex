@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/phase1-db-persistence-07ef — slice 1.2: PostgreSQL trades, notebook, challenges
+- Commit: (see git log)
+- Files touched: `backend/app/api/v1/routes.py`, `backend/app/database.py`, `backend/app/models/trade.py`, `backend/app/models/notebook.py`, `backend/app/models/challenge.py`, `backend/app/services/trade_codec.py`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `planning/COMMITS-ON-MAIN.md`, `NEXT_STEPS.md`
+- Tests added / changed: 0 (manual TestClient + SQLite)
+- Build: pass (backend import + CRUD smoke)
+- Status: done
+- Next up: **1.3** — Auth UI + `App.tsx` guard + Settings logout
+- Notes: `Trade.mt5_ticket` no longer globally unique. `PropChallenge` counter column SQL name `trades` (Python `trades_count`). **`planning/COMMITS-ON-MAIN.md`** explains fast-forward vs PR visibility.
+
 ## 2026-05-08 — cursor/plan0-final-polish-07ef — Plan0: lazy routes, route fallback, mobile nav a11y
 - Commit: 2818932 (feat(frontend): Plan0 completion — lazy routes, suspense boundaries, nav a11y)
 - Files touched: `frontend/src/App.tsx`, `frontend/src/components/layout/{Layout,MobileNav,RouteFallback}.tsx`, `planning/Plan0-AUDIT.md`, `planning/CHANGELOG.md`
