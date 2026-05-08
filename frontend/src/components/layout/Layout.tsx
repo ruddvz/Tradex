@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { AppShellSkeleton } from './AppShellSkeleton';
+import { RouteFallback } from './RouteFallback';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
@@ -50,7 +51,9 @@ export function Layout() {
             bootOverlay && 'opacity-0 pointer-events-none select-none'
           )}
         >
-          <Outlet />
+          <Suspense fallback={<RouteFallback />}>
+            <Outlet />
+          </Suspense>
         </div>
       </main>
 

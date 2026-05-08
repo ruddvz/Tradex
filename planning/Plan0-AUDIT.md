@@ -5,9 +5,9 @@ This document satisfies **Plan0 §0** (pre-flight checks). Automated checks were
 ## Automated / workspace verification
 
 | # | Check | Result | Notes |
-|---|--------|--------|--------|
+|---|--------|--------|-------|
 | 1 | `npm install` (frontend) | Pass | — |
-| 2 | `npm run build` | Pass | TypeScript + Vite production build |
+| 2 | `npm run build` | Pass | TypeScript + Vite production build; route-level `React.lazy` — largest chunk ~306 kB (Recharts); entry ~274 kB gz ~88 kB |
 | 3 | `npm run lint` | Pass | ESLint clean |
 | 4 | PWA manifest generated | Pass | `vite-plugin-pwa`; see `dist/manifest.webmanifest` after build |
 | 5 | Console errors (build) | Pass | No TS errors; runtime requires manual smoke test |
@@ -31,7 +31,7 @@ Complete these in a browser (see Plan0 §17).
 
 | # | Page | Issue type | Description | Priority |
 |---|------|------------|-------------|----------|
-| 1 | Global | Perf | Main JS bundle &gt;500 kB — consider route-based code splitting | P3 |
+| 1 | Global | Perf | Entry bundle split via lazy-loaded routes + shared vendor chunks; further gains possible by lazy-loading heavy charts per page | P3 |
 | 2 | MobileNav | UX | Notebook and Settings are not in bottom nav (by Plan0 design); reach via sidebar on tablet+ only | P3 |
 | 3 | Landing | PWA | Marketing route separate from app shell; no service worker gap expected if same origin | P3 |
 
@@ -43,4 +43,4 @@ Complete these in a browser (see Plan0 §17).
 
 ---
 
-*Last updated: automated slice + Plan0 completion pass.*
+*Last updated: Plan0 completion pass — lazy routes (`App.tsx` + `Layout` Suspense), `RouteFallback`, mobile nav `aria-*`, main + Phase 1.1 merged.*

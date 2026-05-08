@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-08 — cursor/plan0-final-polish-07ef — Plan0: lazy routes, route fallback, mobile nav a11y
+- Commit: (see git log)
+- Files touched: `frontend/src/App.tsx`, `frontend/src/components/layout/{Layout,MobileNav,RouteFallback}.tsx`, `planning/Plan0-AUDIT.md`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build` — no oversized single chunk warning; lazy splits Recharts/pages)
+- Status: done
+- Next up: **1.2** — Persist trades/notebook/challenges in PostgreSQL (`NEXT_STEPS.md` task 2); manual Plan0 device QA rows in `Plan0-AUDIT.md` remain human-only
+- Notes: `Suspense` wraps `Outlet` in `Layout` so sidebar/mobile chrome stays mounted during chunk loads; `/landing` uses its own boundary. MobileNav: `role="navigation"`, `aria-current`, `end` on home link.
+
 ## 2026-05-08 — cursor/phase1-jwt-auth-backend-07ef — slice 1.1: JWT auth, User model, protected API
 - Commit: 95b72e3 (feat(auth): JWT users table, Bearer protection, user-scoped stores)
 - Files touched: `backend/app/database.py`, `backend/app/models/{base,user}.py`, `backend/app/models/trade.py`, `backend/app/core/security.py`, `backend/app/api/deps.py`, `backend/app/api/v1/routes.py`, `backend/app/main.py`, `backend/requirements.txt`, `planning/EXECUTION-PLAN.md`, `planning/ACTIVE.md`, `planning/CHANGELOG.md`, `NEXT_STEPS.md`

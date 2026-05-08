@@ -23,6 +23,8 @@ export function MobileNav() {
 
   return (
     <nav
+      role="navigation"
+      aria-label="Primary mobile"
       className={clsx(
         'fixed bottom-0 left-0 right-0 z-50',
         'bg-surface/95 backdrop-blur-md border-t border-surface-border',
@@ -38,6 +40,8 @@ export function MobileNav() {
           <NavLink
             key={path}
             to={path}
+            end={path === '/'}
+            aria-current={isActive ? 'page' : undefined}
             className={clsx(
               'relative flex flex-col items-center justify-center gap-0.5 rounded-xl px-3 py-2 min-w-[52px] transition-all duration-200',
               isActive
