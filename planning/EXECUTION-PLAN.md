@@ -60,6 +60,11 @@
 
 > **Goal:** Celery + email service + Settings toggle. See NEXT_STEPS Phase 4.
 
+- [x] **4.1** `email_service.py` + HTML daily digest; SMTP env (optional in dev)
+- [x] **4.2** Celery worker + beat (`app/celery_app.py`) — daily UTC hour configurable
+- [x] **4.3** `GET`/`PUT /settings/notifications`; `POST /notifications/send-daily` (cron secret / DEBUG)
+- [x] **4.4** Settings UI persists toggles; `users.notification_prefs` JSON column
+
 ---
 
 ## Phase 5 — PWA and mobile nav

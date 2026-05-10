@@ -7,7 +7,7 @@ from typing import Any, Dict, List, Literal, Optional
 import uuid
 
 import aiofiles
-from fastapi import APIRouter, Body, Depends, File, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Body, Depends, File, Header, HTTPException, Query, UploadFile
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import and_, func as sql_func, select
 from sqlalchemy.orm import Session
@@ -37,6 +37,7 @@ from ...services.trade_codec import (
     trade_from_mt5_dict,
     trade_to_api_dict,
 )
+from ...tasks.notifications import merge_notification_prefs, run_daily_report_cycle
 
 router = APIRouter(prefix="/api/v1")
 
@@ -122,6 +123,13 @@ class Mt5SettingsUpdate(BaseModel):
     server: Optional[str] = None
     login: Optional[str] = None
     password: Optional[str] = None
+
+
+class NotificationsUpdate(BaseModel):
+    email: Optional[bool] = None
+    push: Optional[bool] = None
+    drawdownAlerts: Optional[bool] = None
+    dailyReport: Optional[bool] = None
 
 
 # ── Serialization helpers ───────────────────────────────────────────────────────
@@ -670,6 +678,53 @@ def put_mt5_settings(
     db.commit()
     db.refresh(user)
     return _mt5_settings_public(user)
+
+
+@router.get("/settings/notifications")
+def get_notification_settings(user: User = Depends(get_current_user)):
+    return merge_notification_prefs(user.notification_prefs)
+
+
+@router.put("/settings/notifications")
+def put_notification_settings(
+    body: NotificationsUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    cur = merge_notification_prefs(user.notification_prefs)
+    if body.email is not None:
+        cur["email"] = body.email
+    if body.push is not None:
+        cur["push"] = body.push
+    if body.drawdownAlerts is not None:
+        cur["drawdownAlerts"] = body.drawdownAlerts
+    if body.dailyReport is not None:
+        cur["dailyReport"] = body.dailyReport
+    user.notification_prefs = cur
+    db.commit()
+    db.refresh(user)
+    return merge_notification_prefs(user.notification_prefs)
+
+
+@router.post("/notifications/send-daily")
+def trigger_daily_email_reports(
+    db: Session = Depends(get_db),
+    x_cron_secret: Optional[str] = Header(None, alias="X-Cron-Secret"),
+):
+    """
+    Run the same digest as Celery beat (for cron or ops). Requires X-Cron-Secret when
+    NOTIFICATIONS_CRON_SECRET is set; if unset, only allowed when DEBUG=true.
+    """
+    secret = settings.NOTIFICATIONS_CRON_SECRET
+    if secret:
+        if x_cron_secret != secret:
+            raise HTTPException(status_code=403, detail="Invalid X-Cron-Secret")
+    elif not settings.DEBUG:
+        raise HTTPException(
+            status_code=503,
+            detail="NOTIFICATIONS_CRON_SECRET not configured (set env or DEBUG=true for dev-only trigger)",
+        )
+    return run_daily_report_cycle(db)
 
 
 # ── MT5 Sync ───────────────────────────────────────────────────────────────────

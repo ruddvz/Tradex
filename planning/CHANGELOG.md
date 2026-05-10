@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — cursor/phase4-daily-email-4e43 — feat: Phase 4 daily email + Celery + notification prefs
+- Commit: (see git log)
+- Files touched: `backend/app/models/user.py`, `backend/app/database.py`, `backend/app/core/config.py`, `backend/app/services/email_service.py`, `backend/app/celery_app.py`, `backend/app/tasks/notifications.py`, `backend/app/api/v1/routes.py`, `backend/.env.example`, `docker-compose.yml`, `frontend/src/pages/Settings.tsx`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`
+- Tests added / changed: 0
+- Build: pass frontend (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **5** — PWA / mobile (`NEXT_STEPS.md` Phase 5)
+- Notes: `notification_prefs` JSON on users; SMTP optional in dev; Celery worker + beat services; `POST /notifications/send-daily` guarded.
+
 ## 2026-05-10 — cursor/ui-md-full-tabs-fab-4e43 — feat: Ui.md Journal / Reports / Prop / Calculator
 - Commit: (see git log)
 - Files touched: `frontend/tailwind.config.js`, `frontend/src/index.css`, `frontend/src/data/mockData.ts`, `frontend/src/components/ui/{ProgressRing,SegmentedControl}.tsx`, `frontend/src/components/calculator/RiskPath.tsx`, `frontend/src/components/journal/JournalTradeCard.tsx`, `frontend/src/pages/{Journal,Reports,PropFirm,Calculator}.tsx`, `planning/CHANGELOG.md`
