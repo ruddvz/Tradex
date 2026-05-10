@@ -1,5 +1,6 @@
 import { Target, AlertTriangle, CheckCircle2, XCircle, TrendingUp, Calendar, BarChart3, Shield } from 'lucide-react';
 import { Header } from '../components/layout/Header';
+import { ProgressRing } from '../components/ui/ProgressRing';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
 import { PnLBarChart } from '../components/charts/PnLBarChart';
@@ -50,6 +51,29 @@ export function PropFirm() {
   const daysRemaining = Math.max(0, differenceInDays(new Date(propChallenge.endDate), new Date()));
   const isExpiringSoon = daysRemaining <= 3;
 
+  const challengeProgressPct = Math.min(100, profitPct);
+  const ringTone = (drawdownPct >= 80 ? 'danger' : drawdownPct >= 55 ? 'warning' : 'success') as
+    | 'danger'
+    | 'warning'
+    | 'success';
+
+  const passProbability = Math.min(
+    97,
+    Math.max(
+      12,
+      Math.round(
+        challengeProgressPct * 0.52 +
+          (100 - Math.min(drawdownPct, 100)) * 0.33 +
+          Math.min(15, daysRemaining * 0.5)
+      )
+    )
+  );
+
+  const totalCalendarDays = Math.max(
+    1,
+    differenceInDays(new Date(propChallenge.endDate), new Date(propChallenge.startDate))
+  );
+
   const challengeTrades = trades.slice(0, propChallenge.trades);
   const challengeWins = challengeTrades.filter(t => t.status === 'WIN').length;
 
@@ -58,31 +82,67 @@ export function PropFirm() {
       <Header title="Prop Firm Mode" subtitle="Track your funded challenge progress" />
 
       <div className="page-shell p-6 space-y-6">
-        {/* Challenge Header Card */}
-        <div className="card p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-brand-500/20 to-blue-500/20 flex items-center justify-center">
-                <Shield className="w-7 h-7 text-brand-400" />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-white">{propChallenge.name}</h2>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-slate-400 text-sm">{propChallenge.firm}</span>
-                  <span className="text-slate-600">·</span>
-                  <Badge variant="neutral" size="xs">{propChallenge.phase === 'phase1' ? 'Phase 1' : propChallenge.phase === 'phase2' ? 'Phase 2' : 'Funded'}</Badge>
-                  <Badge variant={cfg.badge}>
-                    <StatusIcon className="w-3 h-3" />
-                    {cfg.label}
-                  </Badge>
-                </div>
+        {/* Challenge selector + hero ring (Ui.md §10.4) */}
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Challenge</span>
+          <select
+            className="chip pr-8 appearance-none bg-dark-300 cursor-default"
+            aria-label="Select challenge"
+            disabled
+            value={propChallenge.id}
+          >
+            <option value={propChallenge.id}>{propChallenge.name}</option>
+          </select>
+          <Badge variant="neutral" size="xs">
+            {propChallenge.phase === 'phase1' ? 'Phase 1' : propChallenge.phase === 'phase2' ? 'Phase 2' : 'Funded'}
+          </Badge>
+          <Badge variant={cfg.badge}>
+            <StatusIcon className="w-3 h-3" />
+            {cfg.label}
+          </Badge>
+        </div>
+
+        <div className="card p-6 lg:p-8 overflow-hidden">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            <div className="relative shrink-0">
+              <ProgressRing value={challengeProgressPct} size={220} stroke={16} tone={ringTone} />
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none pt-1">
+                <span className="text-4xl sm:text-5xl font-black tabular-nums text-white">
+                  {challengeProgressPct.toFixed(1)}%
+                </span>
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mt-1">
+                  Challenge progress
+                </span>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className={clsx('w-3 h-3 rounded-full animate-pulse-slow', cfg.color)} />
-              <span className="text-sm text-slate-400">
-                Day {propChallenge.daysTraded} of {propChallenge.minTradingDays + daysRemaining}
-              </span>
+            <div className="flex-1 w-full space-y-4 text-center lg:text-left">
+              <div>
+                <p className="text-sm text-slate-400">
+                  Day {propChallenge.daysTraded} of {totalCalendarDays}
+                </p>
+                <p className="text-lg font-semibold text-white mt-1">
+                  {daysRemaining} days remaining
+                </p>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="rounded-2xl border border-surface-border bg-dark-300/60 p-4">
+                  <div className="text-[11px] uppercase tracking-wide text-slate-500">Pass probability</div>
+                  <div className="text-2xl font-bold text-brand-400 mt-1">{passProbability}%</div>
+                  <p className="text-xs text-slate-500 mt-1">Heuristic from progress &amp; drawdown headroom</p>
+                </div>
+                <div className="rounded-2xl border border-surface-border bg-dark-300/60 p-4">
+                  <div className="text-[11px] uppercase tracking-wide text-slate-500">Rule pressure</div>
+                  <div
+                    className={clsx(
+                      'text-2xl font-bold mt-1',
+                      drawdownPct >= 80 ? 'text-red-400' : drawdownPct >= 55 ? 'text-amber-400' : 'text-brand-400'
+                    )}
+                  >
+                    {drawdownPct.toFixed(0)}%
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">Drawdown budget used</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

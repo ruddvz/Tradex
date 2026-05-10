@@ -34,23 +34,32 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — cursor/ui-md-full-tabs-fab-4e43 — feat: Ui.md Journal / Reports / Prop / Calculator
+- Commit: (see git log)
+- Files touched: `frontend/tailwind.config.js`, `frontend/src/index.css`, `frontend/src/data/mockData.ts`, `frontend/src/components/ui/{ProgressRing,SegmentedControl}.tsx`, `frontend/src/components/calculator/RiskPath.tsx`, `frontend/src/components/journal/JournalTradeCard.tsx`, `frontend/src/pages/{Journal,Reports,PropFirm,Calculator}.tsx`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **5** — PWA (`NEXT_STEPS.md` Phase 5)
+- Notes: Chip filters + grouped journal cards + FAB; Reports tabs + range metrics; Prop ring + Calculator risk path; merged branch resolves conflicts with PR #15 design-system (chip + tokens unified).
+
 ## 2026-05-10 — cursor/design-system-ui-4e43 — fix: Header profile on mobile → Settings
 - Commit: (see git log)
 - Files touched: `frontend/src/components/layout/Header.tsx`, `planning/CHANGELOG.md`
 - Tests added / changed: 0
 - Build: pass (`npm run lint`, `npm run build`)
 - Status: done
-- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
-- Notes: Restores a 42px avatar affordance on small screens (desktop profile chip unchanged behavior, navigates to `/settings`).
+- Next up: **5** — PWA (`NEXT_STEPS.md` Phase 5)
+- Notes: Mobile avatar navigates to `/settings`.
 
 ## 2026-05-10 — cursor/design-system-ui-4e43 — feat: premium OS shell + Home hero (`planning/Ui.md`)
 - Commit: (see git log)
-- Files touched: `frontend/tailwind.config.js`, `frontend/index.html`, `frontend/src/index.css`, `frontend/src/lib/tokens.ts`, `frontend/src/components/cards/HeroMetricCard.tsx`, `frontend/src/components/dashboard/WeeklyPerformanceStrip.tsx`, `frontend/src/components/dashboard/TradingConsistencyCard.tsx`, `frontend/src/components/layout/{Header,MobileNav,Layout,Sidebar}.tsx`, `frontend/src/components/ui/StatCard.tsx`, `frontend/src/components/charts/EquityCurve.tsx`, `frontend/src/pages/Dashboard.tsx`, `planning/CHANGELOG.md`
+- Files touched: `frontend/tailwind.config.js`, `frontend/index.html`, `frontend/src/index.css`, `frontend/src/lib/tokens.ts`, `frontend/src/components/cards/HeroMetricCard.tsx`, `frontend/src/components/dashboard/{WeeklyPerformanceStrip,TradingConsistencyCard}.tsx`, `frontend/src/components/layout/{Header,MobileNav,Layout,Sidebar}.tsx`, `frontend/src/components/ui/StatCard.tsx`, `frontend/src/components/charts/EquityCurve.tsx`, `frontend/src/pages/Dashboard.tsx`, `planning/CHANGELOG.md`
 - Tests added / changed: 0
 - Build: pass (`npm run lint`, `npm run build`)
 - Status: done
-- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
-- Notes: Tailwind semantic palette (`success`, `analytics`, `ai`, `warning`, `danger`), Inter Tight + layered `.app-bg`, glass cards (`rounded-[22px]`, shadow-card), floating bottom nav (dock), Header icon buttons + optional `showDateRange`. Home: **HeroMetricCard** (P&L + period chips + equity sparkline), consistency + weekly dots, recent activity capped at 3. Further tabs (Journal chips, Reports tabs) still match legacy layouts — iterate against `planning/Ui.md`.
+- Next up: **5** — PWA (`NEXT_STEPS.md` Phase 5)
+- Notes: Semantic palette, `.app-bg`, glass cards, floating dock, Home hero.
 
 ## 2026-05-10 — main — merge: PR #13 + PR #14 → `main` (fast-forward)
 - Commit: (see git log) — tip includes `b2a7326`

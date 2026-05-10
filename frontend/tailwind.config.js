@@ -85,6 +85,11 @@ export default {
         'card-hover':  '0 8px 30px rgba(0,0,0,0.5)',
         glowSemantic:  '0 16px 40px rgba(45,212,163,0.12)',
       },
+      transitionDuration: {
+        fast: '120ms',
+        base: '220ms',
+        slow: '360ms',
+      },
       animation: {
         'fade-in':     'fadeIn 0.3s ease-in-out',
         'slide-up':    'slideUp 0.4s ease-out',
