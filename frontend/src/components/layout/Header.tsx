@@ -1,4 +1,5 @@
 import { Bell, Plus, RefreshCw, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
@@ -12,67 +13,75 @@ const ranges = [
 interface HeaderProps {
   title: string;
   subtitle?: string;
+  /** When false, hides the header date-range chips (e.g. Home hero owns period selection). */
+  showDateRange?: boolean;
   action?: React.ReactNode;
   onAddTrade?: () => void;
 }
 
-export function Header({ title, subtitle, action, onAddTrade }: HeaderProps) {
+export function Header({
+  title,
+  subtitle,
+  showDateRange = true,
+  action,
+  onAddTrade,
+}: HeaderProps) {
+  const navigate = useNavigate();
   const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, openMt5SyncModal, aiInsights } =
     useStore();
 
   return (
     <header
       className={clsx(
-        'no-print header-safe fixed top-0 right-0 z-30 flex items-center gap-3 px-4 sm:px-6',
-        'bg-dark-400/90 backdrop-blur-md border-b border-surface-border',
-        'transition-all duration-300',
+        'no-print header-safe fixed top-0 right-0 z-30 flex items-center gap-3',
+        'bg-[rgba(5,8,18,0.72)] backdrop-blur-xl border-b border-[rgba(126,146,185,0.14)]',
+        'transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]',
         'left-0',
         sidebarOpen ? 'md:left-64' : 'md:left-16'
       )}
     >
       <div className="flex-1 min-w-0">
-        <h1 className="text-lg font-bold text-white truncate">{title}</h1>
-        {subtitle && <p className="text-xs text-slate-500 truncate">{subtitle}</p>}
+        <h1 className="text-xl font-bold text-text-primary tracking-tight truncate">{title}</h1>
+        {subtitle && <p className="text-xs text-text-muted truncate mt-0.5">{subtitle}</p>}
       </div>
 
       {/* Date range selector */}
-      <div className="hidden sm:flex items-center gap-1 bg-surface rounded-lg p-1 border border-surface-border">
-        {ranges.map(r => (
-          <button
-            key={r.key}
-            type="button"
-            onClick={() => setDateRange(r.key)}
-            className={clsx(
-              'px-3 py-1.5 rounded-md text-xs font-medium transition-all duration-200',
-              selectedDateRange === r.key
-                ? 'bg-brand-500/20 text-brand-400 border border-brand-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-surface-light'
-            )}
-          >
-            {r.label}
-          </button>
-        ))}
-      </div>
+      {showDateRange && (
+        <div className="hidden sm:flex items-center gap-1 bg-surface/80 rounded-xl p-1 border border-[rgba(126,146,185,0.18)]">
+          {ranges.map(r => (
+            <button
+              key={r.key}
+              type="button"
+              onClick={() => setDateRange(r.key)}
+              className={clsx(
+                'px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200',
+                selectedDateRange === r.key
+                  ? 'bg-success/15 text-success border border-success/35'
+                  : 'text-text-muted hover:text-text-primary hover:bg-surface-light'
+              )}
+            >
+              {r.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Sync button */}
       <button
         type="button"
         onClick={() => openMt5SyncModal()}
         disabled={isSyncing}
-        className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white transition-colors border border-surface-border"
+        className="header-icon-button disabled:opacity-50"
         title="Sync MT5"
       >
-        <RefreshCw className={clsx('w-4 h-4', isSyncing && 'animate-spin text-brand-400')} />
+        <RefreshCw className={clsx('w-[21px] h-[21px]', isSyncing && 'animate-spin text-success')} />
       </button>
 
       {/* Notifications */}
-      <button
-        type="button"
-        className="relative p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white transition-colors border border-surface-border"
-      >
-        <Bell className="w-4 h-4" />
+      <button type="button" className="header-icon-button relative">
+        <Bell className="w-[21px] h-[21px]" />
         {aiInsights.length > 0 && (
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-brand-400 border border-dark-400" />
+          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-success border-2 border-[rgba(5,8,18,0.9)]" />
         )}
       </button>
 
@@ -89,12 +98,27 @@ export function Header({ title, subtitle, action, onAddTrade }: HeaderProps) {
       )}
 
       {/* Profile */}
-      <div className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-surface-light cursor-pointer border border-surface-border transition-colors">
-        <div className="w-7 h-7 rounded-full bg-gradient-brand flex items-center justify-center text-xs font-bold text-white">
+      <button
+        type="button"
+        className="header-icon-button sm:hidden p-0 overflow-hidden"
+        aria-label="Open settings"
+        onClick={() => navigate('/settings')}
+      >
+        <div className="w-full h-full rounded-full bg-gradient-to-br from-success/90 to-analytics/90 flex items-center justify-center text-xs font-bold text-[#04110d]">
           T
         </div>
-        <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
-      </div>
+      </button>
+      <button
+        type="button"
+        className="header-icon-button hidden sm:flex gap-2 px-2 w-auto"
+        aria-label="Open settings"
+        onClick={() => navigate('/settings')}
+      >
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-success/90 to-analytics/90 flex items-center justify-center text-xs font-bold text-[#04110d]">
+          T
+        </div>
+        <ChevronDown className="w-4 h-4 text-text-muted self-center" />
+      </button>
     </header>
   );
 }
