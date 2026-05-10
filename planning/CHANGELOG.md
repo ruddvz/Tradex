@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — main — merge: PR #13 + PR #14 → `main` (fast-forward)
+- Commit: (see git log) — tip includes `b2a7326`
+- Files touched: same as `cursor/hidden-auth-flags-pwa-icons-26d7` slice (feature flags, Auth, icons, `index.css`, `env.sample`)
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
+- Notes: GitHub PRs #13 and #14 merged into `main`; single fast-forward (no extra merge commit). Default build: auth UI off, no login gate; see `frontend/env.sample`.
+
 ## 2026-05-10 — cursor/hidden-auth-flags-pwa-icons-26d7 — feat: optional auth flags + PWA PNG icons
 - Commit: (see git log)
 - Files touched: `frontend/src/lib/featureFlags.ts`, `frontend/src/vite-env.d.ts`, `frontend/src/App.tsx`, `frontend/src/pages/{Auth,Settings}.tsx`, `frontend/src/components/auth/ProtectedLayout.tsx`, `frontend/index.html`, `frontend/env.sample`, `frontend/public/{pwa-192.png,pwa-512.png,pwa-512-maskable.png,apple-touch-icon.png}`, `planning/CHANGELOG.md`
