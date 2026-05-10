@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — cursor/remove-auth-gate-ios-viewport-26d7 — feat: remove login gate; iOS-friendly viewport/CSS
+- Commit: (see git log)
+- Files touched: `frontend/src/App.tsx`, `frontend/src/index.css`, `frontend/src/pages/Settings.tsx`, removed `frontend/src/pages/Auth.tsx`, removed `frontend/src/components/auth/ProtectedLayout.tsx`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
+- Notes: Main app is reachable without JWT; `/auth` redirects to `/`. Removed Settings **Sign out** (no login UI). `lib/auth.ts` remains for optional Bearer calls (MT5, Journal API). Inputs use 16px (`text-base`) and global tweaks (`text-size-adjust`, `touch-action: manipulation`) to reduce iOS Safari zoom-on-focus.
+
 ## 2026-05-08 — cursor/fix-data-router-scroll-restoration-bcd4 — fix: use data router for ScrollRestoration
 - Commit: (see git log)
 - Files touched: `frontend/src/App.tsx`, `planning/CHANGELOG.md`

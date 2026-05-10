@@ -4,8 +4,9 @@ import {
   RouterProvider,
   ScrollRestoration,
   Outlet,
+  Navigate,
 } from 'react-router-dom';
-import { ProtectedLayout } from './components/auth/ProtectedLayout';
+import { Layout } from './components/layout/Layout';
 import { RouteFallback } from './components/layout/RouteFallback';
 import { ToastProvider } from './components/ui/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -13,7 +14,6 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 const Landing = lazy(() =>
   import('./pages/Landing').then((m) => ({ default: m.Landing }))
 );
-const Auth = lazy(() => import('./pages/Auth').then((m) => ({ default: m.Auth })));
 const Dashboard = lazy(() =>
   import('./pages/Dashboard').then((m) => ({ default: m.Dashboard }))
 );
@@ -63,14 +63,10 @@ const router = createBrowserRouter(
         },
         {
           path: 'auth',
-          element: (
-            <Suspense fallback={<RouteFallback />}>
-              <Auth />
-            </Suspense>
-          ),
+          element: <Navigate to="/" replace />,
         },
         {
-          element: <ProtectedLayout />,
+          element: <Layout />,
           children: [
             {
               index: true,

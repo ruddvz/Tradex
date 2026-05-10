@@ -21,9 +21,12 @@
 
   html {
     @apply scroll-smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
+    touch-action: manipulation;
     @apply bg-dark-400 text-slate-100 font-sans antialiased;
     background: linear-gradient(135deg, #0b0f16 0%, #0f1420 50%, #0b0f16 100%);
     min-height: 100vh;
@@ -117,7 +120,8 @@
   }
 
   .input {
-    @apply w-full bg-dark-300 border border-surface-border rounded-lg px-3 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200;
+    /* text-base (16px) prevents iOS Safari from zooming inputs on focus */
+    @apply w-full bg-dark-300 border border-surface-border rounded-lg px-3 py-2 text-base text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200;
   }
 
   .select {
