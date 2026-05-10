@@ -7,13 +7,16 @@ import {
   Navigate,
 } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
+import { ProtectedLayout } from './components/auth/ProtectedLayout';
 import { RouteFallback } from './components/layout/RouteFallback';
+import { authUiEnabled, requireLogin } from './lib/featureFlags';
 import { ToastProvider } from './components/ui/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 const Landing = lazy(() =>
   import('./pages/Landing').then((m) => ({ default: m.Landing }))
 );
+const Auth = lazy(() => import('./pages/Auth').then((m) => ({ default: m.Auth })));
 const Dashboard = lazy(() =>
   import('./pages/Dashboard').then((m) => ({ default: m.Dashboard }))
 );
@@ -39,6 +42,8 @@ const Settings = lazy(() =>
   import('./pages/Settings').then((m) => ({ default: m.Settings }))
 );
 
+const AppShell = requireLogin ? ProtectedLayout : Layout;
+
 function RootLayout() {
   return (
     <>
@@ -63,10 +68,16 @@ const router = createBrowserRouter(
         },
         {
           path: 'auth',
-          element: <Navigate to="/" replace />,
+          element: authUiEnabled ? (
+            <Suspense fallback={<RouteFallback />}>
+              <Auth />
+            </Suspense>
+          ) : (
+            <Navigate to="/" replace />
+          ),
         },
         {
-          element: <Layout />,
+          element: <AppShell />,
           children: [
             {
               index: true,

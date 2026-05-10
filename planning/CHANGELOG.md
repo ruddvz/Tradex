@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — cursor/hidden-auth-flags-pwa-icons-26d7 — feat: optional auth flags + PWA PNG icons
+- Commit: (see git log)
+- Files touched: `frontend/src/lib/featureFlags.ts`, `frontend/src/vite-env.d.ts`, `frontend/src/App.tsx`, `frontend/src/pages/{Auth,Settings}.tsx`, `frontend/src/components/auth/ProtectedLayout.tsx`, `frontend/index.html`, `frontend/env.sample`, `frontend/public/{pwa-192.png,pwa-512.png,pwa-512-maskable.png,apple-touch-icon.png}`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
+- Notes: Default personal build: `/auth` hidden (`VITE_AUTH_UI_ENABLED` unset/false), shell never gated (`VITE_REQUIRE_LOGIN`). Restore sign-in UI + optional JWT gate via `.env`. PNG app icons generated from `favicon.svg` (maskable on `#0b0f16`). Settings shows session clear only when a JWT exists.
+
 ## 2026-05-10 — cursor/remove-auth-gate-ios-viewport-26d7 — feat: remove login gate; iOS-friendly viewport/CSS
 - Commit: (see git log)
 - Files touched: `frontend/src/App.tsx`, `frontend/src/index.css`, `frontend/src/pages/Settings.tsx`, removed `frontend/src/pages/Auth.tsx`, removed `frontend/src/components/auth/ProtectedLayout.tsx`, `planning/CHANGELOG.md`

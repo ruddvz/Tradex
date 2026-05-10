@@ -1,11 +1,13 @@
 import { Link, Shield, Bell, Database, User, CheckCircle2, RefreshCw, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { useToast } from '../components/ui/Toast';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
 import { clsx } from 'clsx';
 import { useState, useEffect } from 'react';
-import { getToken } from '../lib/auth';
+import { clearToken, getToken } from '../lib/auth';
+import { authUiEnabled } from '../lib/featureFlags';
 
 const brokers = [
   { name: 'Exness', logo: 'EX', connected: true },
@@ -16,6 +18,7 @@ const brokers = [
 ];
 
 export function Settings() {
+  const navigate = useNavigate();
   const { account, syncTrades, isSyncing, openMt5SyncModal } = useStore();
   const { showToast } = useToast();
   const [notifications, setNotifications] = useState({ email: true, push: true, drawdownAlerts: true, dailyReport: false });
@@ -172,6 +175,19 @@ export function Settings() {
             >
               Save Changes
             </button>
+            {getToken() && (
+              <button
+                type="button"
+                className="btn-secondary mt-3 w-full sm:w-auto"
+                onClick={() => {
+                  clearToken();
+                  showToast(authUiEnabled ? 'Signed out' : 'API session cleared');
+                  navigate('/', { replace: true });
+                }}
+              >
+                {authUiEnabled ? 'Sign out' : 'Clear saved API session'}
+              </button>
+            )}
           </div>
 
           {/* MT5 Connection */}
