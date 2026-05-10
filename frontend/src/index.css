@@ -3,7 +3,36 @@
 @tailwind utilities;
 
 :root {
-  --header-height: calc(4rem + env(safe-area-inset-top));
+  --bg-primary: #050812;
+  --bg-secondary: #080d18;
+  --border-subtle: rgba(126, 146, 185, 0.16);
+  --success: #2dd4a3;
+  --analytics: #4a9dff;
+  --ai: #8b5cf6;
+  --danger: #ef5f5f;
+  --motion-fast: 120ms;
+  --motion-base: 220ms;
+  --motion-slow: 360ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --header-height: calc(92px + env(safe-area-inset-top));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.app-bg {
+  background:
+    radial-gradient(circle at top left, rgba(45, 212, 163, 0.08), transparent 28%),
+    radial-gradient(circle at bottom right, rgba(74, 157, 255, 0.08), transparent 34%),
+    linear-gradient(180deg, #050812 0%, #070b15 100%);
 }
 
 @layer base {
@@ -27,15 +56,15 @@
 
   body {
     touch-action: manipulation;
-    @apply bg-dark-400 text-slate-100 font-sans antialiased;
-    background: linear-gradient(135deg, #0b0f16 0%, #0f1420 50%, #0b0f16 100%);
+    @apply text-text-primary font-sans antialiased;
+    background-color: var(--bg-primary);
     min-height: 100vh;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
   #root {
     min-height: 100vh;
-    background-color: #0f141c;
+    @apply app-bg;
   }
 
   ::-webkit-scrollbar {
@@ -79,12 +108,16 @@
 /* Header clears status bar in standalone mode */
 .header-safe {
   padding-top: env(safe-area-inset-top);
-  height: calc(4rem + env(safe-area-inset-top));
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 14px;
+  min-height: calc(92px + env(safe-area-inset-top));
 }
 
 @layer components {
   .card {
-    @apply bg-surface rounded-xl border border-surface-border shadow-card;
+    background: linear-gradient(180deg, rgba(24, 34, 58, 0.94), rgba(15, 23, 42, 0.96));
+    @apply rounded-[22px] border border-[rgba(126,146,185,0.2)] shadow-card;
   }
 
   .card-hover {
@@ -92,11 +125,21 @@
   }
 
   .btn-primary {
-    @apply px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold rounded-lg transition-all duration-200 shadow-glow-sm hover:shadow-glow flex items-center gap-2;
+    @apply px-4 py-2.5 rounded-[14px] font-bold text-[#04110d] transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px];
+    background: linear-gradient(135deg, #18c991, #2dd4a3);
+    box-shadow: 0 8px 24px rgba(45, 212, 163, 0.18);
+  }
+  .btn-primary:hover {
+    filter: brightness(1.06);
   }
 
   .btn-secondary {
-    @apply px-4 py-2 bg-surface-light hover:bg-surface-border text-slate-200 font-medium rounded-lg border border-surface-border transition-all duration-200 flex items-center gap-2;
+    @apply px-4 py-2.5 rounded-[14px] font-semibold text-text-primary transition-all duration-200 flex items-center justify-center gap-2 min-h-[46px];
+    background: rgba(30, 41, 70, 0.9);
+    border: 1px solid rgba(126, 146, 185, 0.2);
+  }
+  .btn-secondary:hover {
+    @apply bg-surface-light;
   }
 
   .btn-danger {
@@ -161,11 +204,11 @@
   }
 
   .profit-text {
-    @apply text-brand-400 font-semibold;
+    @apply text-success font-semibold;
   }
 
   .loss-text {
-    @apply text-red-400 font-semibold;
+    @apply text-danger font-semibold;
   }
 
   .glow-border {
@@ -177,11 +220,13 @@
   }
 
   .progress-bar {
-    @apply h-2 rounded-full bg-surface-border overflow-hidden;
+    @apply h-2.5 rounded-full overflow-hidden;
+    background: rgba(126, 146, 185, 0.16);
   }
 
   .progress-fill {
     @apply h-full rounded-full transition-all duration-500;
+    background: linear-gradient(90deg, #10b981, #2dd4a3);
   }
 
   /* Toggle switch */
@@ -214,12 +259,18 @@
 
   /* Chip/tag — Ui.md filter chips */
   .chip {
-    @apply inline-flex items-center justify-center gap-1 shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-300 border border-surface-border bg-dark-300/80 transition-colors duration-base ease-out cursor-pointer;
+    @apply inline-flex items-center justify-center gap-1 shrink-0 rounded-full text-xs font-semibold cursor-pointer transition-colors duration-base ease-out;
     min-height: 32px;
+    padding: 0 12px;
+    background: rgba(16, 24, 42, 0.72);
+    border: 1px solid rgba(126, 146, 185, 0.2);
+    color: #b6c2d9;
   }
 
   .chip-active {
-    @apply bg-brand-500/15 border-brand-500/40 text-brand-400;
+    background: rgba(45, 212, 163, 0.15);
+    border-color: rgba(45, 212, 163, 0.36);
+    @apply text-success;
   }
 
   .chip-ai-active {
@@ -228,6 +279,20 @@
 
   .motion-tab {
     @apply transition-all duration-base ease-out;
+  }
+
+  .header-icon-button {
+    @apply flex items-center justify-center shrink-0 transition-colors duration-200;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: rgba(16, 24, 42, 0.72);
+    border: 1px solid rgba(126, 146, 185, 0.22);
+    color: #b6c2d9;
+  }
+  .header-icon-button:hover {
+    @apply text-text-primary border-[rgba(126,146,185,0.35)];
+    background: rgba(24, 34, 58, 0.85);
   }
 
   /* Modal backdrop */

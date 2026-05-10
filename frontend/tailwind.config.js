@@ -7,6 +7,18 @@ export default {
   theme: {
     extend: {
       colors: {
+        bg: {
+          primary: '#050812',
+          secondary: '#080D18',
+          elevated: '#10182A',
+          card: '#141D33',
+          input: '#0B111C',
+        },
+        text: {
+          primary: '#F8FAFC',
+          secondary: '#B6C2D9',
+          muted: '#7D8AA5',
+        },
         success: '#2DD4A3',
         analytics: '#4A9DFF',
         ai: '#8B5CF6',
@@ -47,8 +59,13 @@ export default {
         warn:   '#f59e0b',
         info:   '#3b82f6',
       },
+      borderRadius: {
+        card: '22px',
+        button: '14px',
+        nav: '24px',
+      },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['"Inter Tight"', 'Inter', 'system-ui', 'sans-serif'],
         mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
       },
       backgroundImage: {
@@ -63,8 +80,10 @@ export default {
         'glow':        '0 0 20px rgba(16,185,129,0.3)',
         'glow-lg':     '0 0 40px rgba(16,185,129,0.4)',
         'glow-blue':   '0 0 20px rgba(59,130,246,0.3)',
-        'card':        '0 4px 20px rgba(0,0,0,0.4)',
+        'card':        '0 10px 30px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04)',
+        'card-legacy': '0 4px 20px rgba(0,0,0,0.4)',
         'card-hover':  '0 8px 30px rgba(0,0,0,0.5)',
+        glowSemantic:  '0 16px 40px rgba(45,212,163,0.12)',
       },
       transitionDuration: {
         fast: '120ms',

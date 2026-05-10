@@ -40,8 +40,26 @@
 - Tests added / changed: 0
 - Build: pass (`npm run lint`, `npm run build`)
 - Status: done
-- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
-- Notes: Implements remaining `planning/Ui.md` slices on **main** baseline: chip filters + grouped expandable journal cards + FAB; Reports timeframe chips + segmented tabs (`overview`…`behavior`) with range-scoped metrics via `computeMetrics`; Prop hero **ProgressRing** + pass probability heuristic; Calculator mode toggle + **RiskPath** + sticky summary + SL-side validation. `computeMetrics([])` now returns zeros (Reports edge cases).
+- Next up: **5** — PWA (`NEXT_STEPS.md` Phase 5)
+- Notes: Chip filters + grouped journal cards + FAB; Reports tabs + range metrics; Prop ring + Calculator risk path; merged branch resolves conflicts with PR #15 design-system (chip + tokens unified).
+
+## 2026-05-10 — cursor/design-system-ui-4e43 — fix: Header profile on mobile → Settings
+- Commit: (see git log)
+- Files touched: `frontend/src/components/layout/Header.tsx`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **5** — PWA (`NEXT_STEPS.md` Phase 5)
+- Notes: Mobile avatar navigates to `/settings`.
+
+## 2026-05-10 — cursor/design-system-ui-4e43 — feat: premium OS shell + Home hero (`planning/Ui.md`)
+- Commit: (see git log)
+- Files touched: `frontend/tailwind.config.js`, `frontend/index.html`, `frontend/src/index.css`, `frontend/src/lib/tokens.ts`, `frontend/src/components/cards/HeroMetricCard.tsx`, `frontend/src/components/dashboard/{WeeklyPerformanceStrip,TradingConsistencyCard}.tsx`, `frontend/src/components/layout/{Header,MobileNav,Layout,Sidebar}.tsx`, `frontend/src/components/ui/StatCard.tsx`, `frontend/src/components/charts/EquityCurve.tsx`, `frontend/src/pages/Dashboard.tsx`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **5** — PWA (`NEXT_STEPS.md` Phase 5)
+- Notes: Semantic palette, `.app-bg`, glass cards, floating dock, Home hero.
 
 ## 2026-05-10 — main — merge: PR #13 + PR #14 → `main` (fast-forward)
 - Commit: (see git log) — tip includes `b2a7326`
