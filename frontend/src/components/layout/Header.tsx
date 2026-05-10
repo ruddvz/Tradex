@@ -1,4 +1,5 @@
 import { Bell, Plus, RefreshCw, ChevronDown } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
@@ -25,6 +26,7 @@ export function Header({
   action,
   onAddTrade,
 }: HeaderProps) {
+  const navigate = useNavigate();
   const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, openMt5SyncModal, aiInsights } =
     useStore();
 
@@ -96,12 +98,27 @@ export function Header({
       )}
 
       {/* Profile */}
-      <div className="header-icon-button flex gap-2 px-2 w-auto cursor-pointer hidden sm:flex">
+      <button
+        type="button"
+        className="header-icon-button sm:hidden p-0 overflow-hidden"
+        aria-label="Open settings"
+        onClick={() => navigate('/settings')}
+      >
+        <div className="w-full h-full rounded-full bg-gradient-to-br from-success/90 to-analytics/90 flex items-center justify-center text-xs font-bold text-[#04110d]">
+          T
+        </div>
+      </button>
+      <button
+        type="button"
+        className="header-icon-button hidden sm:flex gap-2 px-2 w-auto"
+        aria-label="Open settings"
+        onClick={() => navigate('/settings')}
+      >
         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-success/90 to-analytics/90 flex items-center justify-center text-xs font-bold text-[#04110d]">
           T
         </div>
         <ChevronDown className="w-4 h-4 text-text-muted self-center" />
-      </div>
+      </button>
     </header>
   );
 }

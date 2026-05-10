@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — cursor/design-system-ui-4e43 — fix: Header profile on mobile → Settings
+- Commit: (see git log)
+- Files touched: `frontend/src/components/layout/Header.tsx`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
+- Notes: Restores a 42px avatar affordance on small screens (desktop profile chip unchanged behavior, navigates to `/settings`).
+
 ## 2026-05-10 — cursor/design-system-ui-4e43 — feat: premium OS shell + Home hero (`planning/Ui.md`)
 - Commit: (see git log)
 - Files touched: `frontend/tailwind.config.js`, `frontend/index.html`, `frontend/src/index.css`, `frontend/src/lib/tokens.ts`, `frontend/src/components/cards/HeroMetricCard.tsx`, `frontend/src/components/dashboard/WeeklyPerformanceStrip.tsx`, `frontend/src/components/dashboard/TradingConsistencyCard.tsx`, `frontend/src/components/layout/{Header,MobileNav,Layout,Sidebar}.tsx`, `frontend/src/components/ui/StatCard.tsx`, `frontend/src/components/charts/EquityCurve.tsx`, `frontend/src/pages/Dashboard.tsx`, `planning/CHANGELOG.md`
