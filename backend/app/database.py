@@ -31,6 +31,8 @@ def _ensure_user_mt5_columns() -> None:
         statements.append("ALTER TABLE users ADD COLUMN mt5_login VARCHAR(64)")
     if "mt5_password_encrypted" not in existing:
         statements.append("ALTER TABLE users ADD COLUMN mt5_password_encrypted TEXT")
+    if "notification_prefs" not in existing:
+        statements.append("ALTER TABLE users ADD COLUMN notification_prefs JSON")
     for sql in statements:
         with engine.begin() as conn:
             conn.execute(text(sql))

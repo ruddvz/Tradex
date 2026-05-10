@@ -6,24 +6,25 @@
 
 ---
 
-## 👉 NEXT UP: **[4]** — Daily email reports
+## 👉 NEXT UP: **[5]** — PWA & mobile shell polish
 
-Implement **`NEXT_STEPS.md` Phase 4**: HTML email service, Celery beat schedule, wire existing Settings toggles.
+Implement **`NEXT_STEPS.md` Phase 5**: manifest refinements, offline banner, bottom-nav polish as needed.
 
-**Context:** `backend/app/services/`, `frontend/src/pages/Settings.tsx`  
+**Context:** `frontend/public`, `frontend/vite.config.ts`, `frontend/src/components/layout/`  
 **Blocked by:** nothing
 
 ---
 
 ## 🎯 Current Sprint / Phase
 
-**Phase:** Phase 4 — Daily email + notifications (next)  
-**Previous:** Phases **1–3** merged to `main` (through MT5 sync ✓)
+**Phase:** Phase 5 — PWA / mobile (next)  
+**Previous:** Phase **4** — Daily email + Celery ✓
 
 ### Open Slices
-- [ ] **4** — Email service + Celery + `PUT /settings/notifications` (see `NEXT_STEPS.md` Phase 4)
+- [ ] **5** — PWA manifest / SW / mobile nav (see `NEXT_STEPS.md` Phase 5)
 
 ### Recently Done
+- [x] **4** — Email service + Celery beat + notification prefs API + Settings wiring (`planning/CHANGELOG.md`)
 - [x] **3.1–3.2** MT5 sync merged — JSON `POST /sync/mt5`, `GET`/`PUT /settings/mt5`, Fernet password storage, `Mt5SyncModal`, Settings MT5 form, `refreshTradesFromApi`
 - [x] **2.1–2.2** Trade screenshots — upload endpoint, Journal UI, `/uploads`
 - [x] **1.3** Auth UI (`/auth`), `ProtectedLayout`, Settings **Sign out**

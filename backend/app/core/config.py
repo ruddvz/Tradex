@@ -32,6 +32,18 @@ class Settings(BaseSettings):
     # Trade screenshots (Phase 2) — served under /uploads
     UPLOAD_ROOT: str = "uploads"
 
+    # Phase 4 — daily email (SMTP optional; when unset, sends are logged-only / skipped)
+    SMTP_HOST: Optional[str] = None
+    SMTP_PORT: int = 587
+    SMTP_USER: Optional[str] = None
+    SMTP_PASSWORD: Optional[str] = None
+    SMTP_USE_TLS: bool = True
+    EMAIL_FROM: str = "Tradex <noreply@tradex.local>"
+    # Hour (0–23) UTC for Celery beat daily digest (per-user local 8 PM requires timezone field — future)
+    DAILY_REPORT_HOUR_UTC: int = 20
+    # Shared secret for POST /notifications/send-daily (cron / internal); generate for production
+    NOTIFICATIONS_CRON_SECRET: Optional[str] = None
+
     class Config:
         env_file = ".env"
         case_sensitive = True

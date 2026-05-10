@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — cursor/phase4-daily-email-4e43 — feat: Phase 4 daily email + Celery + notification prefs
+- Commit: (see git log)
+- Files touched: `backend/app/models/user.py`, `backend/app/database.py`, `backend/app/core/config.py`, `backend/app/services/email_service.py`, `backend/app/celery_app.py`, `backend/app/tasks/notifications.py`, `backend/app/api/v1/routes.py`, `backend/.env.example`, `docker-compose.yml`, `frontend/src/pages/Settings.tsx`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`
+- Tests added / changed: 0
+- Build: pass frontend (`npm run lint`, `npm run build`); backend imports require Docker/`pip install` (MetaTrader5 wheel optional on Linux CI)
+- Status: done
+- Next up: **5** — PWA / mobile (`NEXT_STEPS.md` Phase 5)
+- Notes: `users.notification_prefs` JSON; SMTP optional — emails skipped with log when `SMTP_HOST` unset; `POST /api/v1/notifications/send-daily` uses `X-Cron-Secret` when `NOTIFICATIONS_CRON_SECRET` set else requires `DEBUG=true`. Celery beat hour `DAILY_REPORT_HOUR_UTC` (UTC).
+
 ## 2026-05-10 — main — merge: PR #13 + PR #14 → `main` (fast-forward)
 - Commit: (see git log) — tip includes `b2a7326`
 - Files touched: same as `cursor/hidden-auth-flags-pwa-icons-26d7` slice (feature flags, Auth, icons, `index.css`, `env.sample`)

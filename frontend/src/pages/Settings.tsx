@@ -123,6 +123,40 @@ export function Settings() {
     if ((r.detail ?? '').includes('Missing MT5')) openMt5SyncModal();
   };
 
+  useEffect(() => {
+    const token = getToken();
+    if (!token) return;
+    void fetch('/api/v1/settings/notifications', {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => (r.ok ? r.json() : null))
+      .then(data => {
+        if (!data || typeof data !== 'object') return;
+        setNotifications({
+          email: Boolean(data.email),
+          push: Boolean(data.push),
+          drawdownAlerts: Boolean(data.drawdownAlerts),
+          dailyReport: Boolean(data.dailyReport),
+        });
+      })
+      .catch(() => {});
+  }, []);
+
+  const persistNotifications = async (next: typeof notifications) => {
+    const token = getToken();
+    if (!token) return;
+    const res = await fetch('/api/v1/settings/notifications', {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(next),
+    });
+    if (res.ok) showToast('Notifications saved');
+    else showToast('Could not save notifications');
+  };
+
   const toggleBroker = (name: string) => {
     const wasConnected = connectedBrokers.includes(name);
     setConnectedBrokers(prev =>
@@ -345,7 +379,15 @@ export function Settings() {
                     <div className="text-xs text-slate-500">{n.desc}</div>
                   </div>
                   <button
-                    onClick={() => setNotifications(prev => ({ ...prev, [n.key]: !prev[n.key as keyof typeof prev] }))}
+                    type="button"
+                    onClick={() => {
+                      const key = n.key as keyof typeof notifications;
+                      setNotifications(prev => {
+                        const next = { ...prev, [key]: !prev[key] };
+                        void persistNotifications(next);
+                        return next;
+                      });
+                    }}
                     className={clsx(
                       'relative w-10 h-5 rounded-full transition-all duration-200 flex-shrink-0',
                       notifications[n.key as keyof typeof notifications] ? 'bg-brand-500' : 'bg-surface-border'

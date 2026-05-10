@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import enum
 
-from sqlalchemy import Column, DateTime, Enum as SAEnum, String, Text, func
+from sqlalchemy import Column, DateTime, Enum as SAEnum, JSON, String, Text, func
 
 from .base import Base
 
@@ -27,3 +27,6 @@ class User(Base):
     mt5_server = Column(String(255))
     mt5_login = Column(String(64))
     mt5_password_encrypted = Column(Text)
+
+    # Phase 4 — notification toggles (JSON: email, push, drawdownAlerts, dailyReport)
+    notification_prefs = Column(JSON, nullable=True)
