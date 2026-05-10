@@ -81,6 +81,32 @@ export function generateTrades(count = 120): Trade[] {
 export const mockTrades = generateTrades(120);
 
 export function computeMetrics(trades: Trade[]): PerformanceMetrics {
+  if (trades.length === 0) {
+    return {
+      totalPnl: 0,
+      winRate: 0,
+      profitFactor: 0,
+      avgWin: 0,
+      avgLoss: 0,
+      avgRR: 0,
+      maxDrawdown: 0,
+      maxDrawdownPercent: 0,
+      totalTrades: 0,
+      winTrades: 0,
+      lossTrades: 0,
+      breakevenTrades: 0,
+      bestTrade: 0,
+      worstTrade: 0,
+      avgHoldTime: 0,
+      maxConsecutiveWins: 0,
+      maxConsecutiveLosses: 0,
+      sharpeRatio: 0,
+      expectancy: 0,
+      avgDailyPnl: 0,
+      tradingDays: 0,
+    };
+  }
+
   const wins = trades.filter(t => t.status === 'WIN');
   const losses = trades.filter(t => t.status === 'LOSS');
   const totalPnl = trades.reduce((s, t) => s + t.pnl, 0);

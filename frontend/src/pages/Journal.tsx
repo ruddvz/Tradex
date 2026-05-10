@@ -1,15 +1,16 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, Filter, Download, Plus, Clock, Trash2, BarChart3, ImagePlus } from 'lucide-react';
+import { Search, Download, Plus, Clock, Trash2, BarChart3, ImagePlus } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { AddTradeModal } from '../components/journal/AddTradeModal';
 import { useStore } from '../store/useStore';
 import { useToast } from '../components/ui/Toast';
 import { getToken } from '../lib/auth';
 import { mapApiTradeRow } from '../lib/mapApiTrade';
-import { PnlBadge, DirectionBadge, GradeBadge, Badge } from '../components/ui/Badge';
-import { format } from 'date-fns';
+import { DirectionBadge, GradeBadge } from '../components/ui/Badge';
+import { format, parseISO } from 'date-fns';
 import { clsx } from 'clsx';
 import type { Trade } from '../types';
+import { JournalTradeCard } from '../components/journal/JournalTradeCard';
 
 const emotionEmojis: Record<string, string> = {
   Confident: '💪',
@@ -290,8 +291,11 @@ function TradeDrawer({
 export function Journal() {
   const { trades } = useStore();
   const [search, setSearch] = useState('');
-  const [symbolFilter, setSymbolFilter] = useState('all');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [symbolFilter, setSymbolFilter] = useState<string>('all');
+  const [dirFilter, setDirFilter] = useState<'all' | 'BUY' | 'SELL'>('all');
+  const [outFilter, setOutFilter] = useState<'all' | 'WIN' | 'LOSS' | 'BREAKEVEN'>('all');
+  const [gradeFilter, setGradeFilter] = useState<'all' | 'A'>('all');
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const [addTradeOpen, setAddTradeOpen] = useState(false);
 
@@ -314,7 +318,13 @@ export function Journal() {
     };
   }, []);
 
-  const symbols = useMemo(() => ['all', ...Array.from(new Set(trades.map(t => t.symbol)))], [trades]);
+  const symbols = useMemo(() => Array.from(new Set(trades.map(t => t.symbol))).sort(), [trades]);
+
+  const symbolCounts = useMemo(() => {
+    const m = new Map<string, number>();
+    trades.forEach(t => m.set(t.symbol, (m.get(t.symbol) ?? 0) + 1));
+    return m;
+  }, [trades]);
 
   const filtered = useMemo(
     () =>
@@ -325,37 +335,57 @@ export function Journal() {
           t.symbol.toLowerCase().includes(q) ||
           t.strategy.toLowerCase().includes(q) ||
           t.notes.toLowerCase().includes(q);
-        const matchStatus = statusFilter === 'all' || t.status === statusFilter;
-        const matchSymbol = symbolFilter === 'all' || t.symbol === symbolFilter;
-        return matchSearch && matchStatus && matchSymbol;
+        if (!matchSearch) return false;
+        if (symbolFilter !== 'all' && t.symbol !== symbolFilter) return false;
+        if (dirFilter !== 'all' && t.direction !== dirFilter) return false;
+        if (outFilter !== 'all' && t.status !== outFilter) return false;
+        if (gradeFilter === 'A' && t.grade !== 'A') return false;
+        return true;
       }),
-    [trades, search, statusFilter, symbolFilter]
+    [trades, search, symbolFilter, dirFilter, outFilter, gradeFilter]
   );
+
+  const grouped = useMemo(() => {
+    const m = new Map<string, Trade[]>();
+    for (const t of filtered) {
+      const k = format(parseISO(t.entryTime), 'yyyy-MM-dd');
+      if (!m.has(k)) m.set(k, []);
+      m.get(k)!.push(t);
+    }
+    return Array.from(m.entries()).sort((a, b) => b[0].localeCompare(a[0]));
+  }, [filtered]);
 
   const totalPnl = filtered.reduce((s, t) => s + t.pnl, 0);
   const wins = filtered.filter(t => t.status === 'WIN').length;
 
+  const resetQuickFilters = () => {
+    setSymbolFilter('all');
+    setDirFilter('all');
+    setOutFilter('all');
+    setGradeFilter('all');
+  };
+
   return (
     <div className="min-h-screen">
       <Header
-        title="Trade Journal"
+        title="Journal"
         subtitle={`${trades.length} trades recorded`}
         onAddTrade={() => setAddTradeOpen(true)}
       />
 
-      <div className="page-shell p-6 space-y-5">
+      <div className="page-shell p-6 space-y-5 pb-28 md:pb-6">
         {addTradeOpen && <AddTradeModal onClose={() => setAddTradeOpen(false)} />}
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: 'Filtered Trades', value: filtered.length, sub: 'trades' },
+            { label: 'Showing', value: filtered.length, sub: 'trades' },
             {
               label: 'Net P&L',
               value: `${totalPnl >= 0 ? '+' : ''}$${totalPnl.toFixed(0)}`,
               sub: 'filtered',
             },
             {
-              label: 'Win Rate',
+              label: 'Win rate',
               value: filtered.length ? `${((wins / filtered.length) * 100).toFixed(0)}%` : '—',
               sub: `${wins}W / ${filtered.length - wins}L`,
             },
@@ -380,134 +410,171 @@ export function Journal() {
           ))}
         </div>
 
-        <div className="card p-4">
-          <div className="flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input
-                className="input pl-10"
-                placeholder="Search by symbol, strategy, notes..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-            </div>
-            <select className="select" value={symbolFilter} onChange={e => setSymbolFilter(e.target.value)}>
-              {symbols.map(s => (
-                <option key={s} value={s}>
-                  {s === 'all' ? 'All Symbols' : s}
-                </option>
-              ))}
-            </select>
-            <select className="select" value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-              <option value="all">All Results</option>
-              <option value="WIN">Wins Only</option>
-              <option value="LOSS">Losses Only</option>
-              <option value="BREAKEVEN">Breakeven</option>
-            </select>
-            <button type="button" className="btn-secondary">
-              <Filter className="w-4 h-4" /> More Filters
+        <div className="space-y-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <input
+              className="input pl-10 min-h-[48px]"
+              placeholder="Search symbol, strategy, notes…"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
+
+          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
+            <button
+              type="button"
+              className={clsx(
+                'chip',
+                symbolFilter === 'all' &&
+                  dirFilter === 'all' &&
+                  outFilter === 'all' &&
+                  gradeFilter === 'all' &&
+                  !search &&
+                  'chip-active'
+              )}
+              onClick={() => {
+                resetQuickFilters();
+                setSearch('');
+              }}
+            >
+              All {trades.length}
             </button>
-            <button type="button" className="btn-secondary">
+            {symbols.map(sym => (
+              <button
+                key={sym}
+                type="button"
+                className={clsx('chip', symbolFilter === sym && 'chip-active')}
+                onClick={() => setSymbolFilter(prev => (prev === sym ? 'all' : sym))}
+              >
+                {sym}{' '}
+                <span className="text-slate-500">{symbolCounts.get(sym) ?? 0}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className={clsx('chip', dirFilter === 'all' && 'chip-active')}
+              onClick={() => setDirFilter('all')}
+            >
+              Both sides
+            </button>
+            <button
+              type="button"
+              className={clsx('chip', dirFilter === 'BUY' && 'chip-active')}
+              onClick={() => setDirFilter('BUY')}
+            >
+              Long
+            </button>
+            <button
+              type="button"
+              className={clsx('chip', dirFilter === 'SELL' && 'chip-active')}
+              onClick={() => setDirFilter('SELL')}
+            >
+              Short
+            </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className={clsx('chip', outFilter === 'all' && 'chip-active')}
+              onClick={() => setOutFilter('all')}
+            >
+              All results
+            </button>
+            <button
+              type="button"
+              className={clsx('chip', outFilter === 'WIN' && 'chip-active')}
+              onClick={() => setOutFilter('WIN')}
+            >
+              Winners
+            </button>
+            <button
+              type="button"
+              className={clsx('chip', outFilter === 'LOSS' && 'chip-active')}
+              onClick={() => setOutFilter('LOSS')}
+            >
+              Losses
+            </button>
+            <button
+              type="button"
+              className={clsx('chip', outFilter === 'BREAKEVEN' && 'chip-active')}
+              onClick={() => setOutFilter('BREAKEVEN')}
+            >
+              Breakeven
+            </button>
+            <button
+              type="button"
+              className={clsx('chip', gradeFilter === 'A' && 'chip-active')}
+              onClick={() => setGradeFilter(gradeFilter === 'A' ? 'all' : 'A')}
+            >
+              A grade
+            </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2 justify-end">
+            <button type="button" className="btn-secondary text-sm">
               <Download className="w-4 h-4" /> Export CSV
             </button>
           </div>
         </div>
 
-        <div className="card">
+        <div className="card overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-surface-border">
-            <span className="text-sm font-semibold text-white">{filtered.length} Trades</span>
-            <button type="button" className="btn-primary text-sm" onClick={() => setAddTradeOpen(true)}>
-              <Plus className="w-4 h-4" /> Add Trade
+            <span className="text-sm font-semibold text-white">{filtered.length} trades</span>
+            <button type="button" className="btn-primary text-sm hidden sm:inline-flex" onClick={() => setAddTradeOpen(true)}>
+              <Plus className="w-4 h-4" /> Add trade
             </button>
           </div>
 
           {filtered.length === 0 ? (
             <div className="text-center py-16 text-slate-500 px-4">
               <BarChart3 className="w-12 h-12 mx-auto mb-3 opacity-30" />
-              <p className="font-medium text-slate-400">No trades found</p>
-              <p className="text-sm mt-1">Try adjusting your filters or add a new trade</p>
+              <p className="font-medium text-slate-400">No trades match</p>
+              <p className="text-sm mt-1">Adjust chips or clear search</p>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[360px]">
-                <thead>
-                  <tr className="border-b border-surface-border">
-                    <th className="table-header text-left">Symbol</th>
-                    <th className="table-header text-left hidden sm:table-cell">Date</th>
-                    <th className="table-header text-left hidden md:table-cell">Strategy</th>
-                    <th className="table-header text-right">P&L</th>
-                    <th className="table-header text-center">R:R</th>
-                    <th className="table-header text-center">Grade</th>
-                    <th className="table-header text-left hidden lg:table-cell">Emotion</th>
-                    <th className="table-header text-left hidden xl:table-cell">Session</th>
-                    <th className="table-header text-left hidden lg:table-cell">Duration</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map(trade => (
-                    <tr
-                      key={trade.id}
-                      className="table-row cursor-pointer"
-                      onClick={() => setSelectedTrade(trade)}
-                    >
-                      <td className="table-cell">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-surface-light flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
-                            {trade.symbol.slice(0, 2)}
-                          </div>
-                          <div>
-                            <div className="text-sm font-semibold text-white">{trade.symbol}</div>
-                            <DirectionBadge direction={trade.direction} />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="table-cell hidden sm:table-cell">
-                        <div className="text-xs text-slate-400">{format(new Date(trade.entryTime), 'MMM dd')}</div>
-                        <div className="text-xs text-slate-600">{format(new Date(trade.entryTime), 'HH:mm')}</div>
-                      </td>
-                      <td className="table-cell hidden md:table-cell">
-                        <span className="text-xs text-slate-400">{trade.strategy}</span>
-                      </td>
-                      <td className="table-cell text-right">
-                        <PnlBadge value={trade.pnl} />
-                      </td>
-                      <td className="table-cell text-center">
-                        <span
-                          className={clsx(
-                            'text-xs font-mono font-semibold',
-                            trade.rMultiple >= 1 ? 'text-brand-400' : 'text-red-400'
-                          )}
-                        >
-                          {trade.rMultiple >= 0 ? '+' : ''}
-                          {trade.rMultiple}R
-                        </span>
-                      </td>
-                      <td className="table-cell text-center">
-                        <GradeBadge grade={trade.grade} />
-                      </td>
-                      <td className="table-cell hidden lg:table-cell">
-                        <span className="text-sm">{emotionEmojis[trade.emotion] || ''}</span>
-                        <span className="text-xs text-slate-500 ml-1">{trade.emotion}</span>
-                      </td>
-                      <td className="table-cell hidden xl:table-cell">
-                        <Badge variant="neutral" size="xs">
-                          {trade.session}
-                        </Badge>
-                      </td>
-                      <td className="table-cell hidden lg:table-cell">
-                        <div className="flex items-center gap-1 text-xs text-slate-500">
-                          <Clock className="w-3 h-3" />
-                          {trade.duration}m
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="p-4 space-y-8">
+              {grouped.map(([dayKey, dayTrades]) => (
+                <section key={dayKey}>
+                  <div className="flex items-center gap-2 mb-3 px-1">
+                    <Clock className="w-4 h-4 text-slate-500" />
+                    <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                      {format(parseISO(dayKey), 'EEEE, MMM d, yyyy')}
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    {dayTrades.map(trade => (
+                      <JournalTradeCard
+                        key={trade.id}
+                        trade={trade}
+                        expanded={expandedId === trade.id}
+                        onToggle={() =>
+                          setExpandedId(prev => (prev === trade.id ? null : trade.id))
+                        }
+                        onOpenDrawer={() => setSelectedTrade(trade)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              ))}
             </div>
           )}
         </div>
       </div>
+
+      <button
+        type="button"
+        className="fixed z-40 md:z-30 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-5 md:bottom-8 md:right-8 rounded-full btn-primary shadow-glow min-h-[52px] min-w-[52px] px-5 flex items-center gap-2"
+        onClick={() => setAddTradeOpen(true)}
+        aria-label="Add trade"
+      >
+        <Plus className="w-5 h-5" />
+        <span className="hidden sm:inline font-semibold">Add trade</span>
+      </button>
 
       {selectedTrade && <TradeDrawer trade={selectedTrade} onClose={() => setSelectedTrade(null)} />}
     </div>

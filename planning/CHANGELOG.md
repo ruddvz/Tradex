@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — cursor/ui-md-full-tabs-fab-4e43 — feat: Ui.md Journal / Reports / Prop / Calculator
+- Commit: (see git log)
+- Files touched: `frontend/tailwind.config.js`, `frontend/src/index.css`, `frontend/src/data/mockData.ts`, `frontend/src/components/ui/{ProgressRing,SegmentedControl}.tsx`, `frontend/src/components/calculator/RiskPath.tsx`, `frontend/src/components/journal/JournalTradeCard.tsx`, `frontend/src/pages/{Journal,Reports,PropFirm,Calculator}.tsx`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
+- Notes: Implements remaining `planning/Ui.md` slices on **main** baseline: chip filters + grouped expandable journal cards + FAB; Reports timeframe chips + segmented tabs (`overview`…`behavior`) with range-scoped metrics via `computeMetrics`; Prop hero **ProgressRing** + pass probability heuristic; Calculator mode toggle + **RiskPath** + sticky summary + SL-side validation. `computeMetrics([])` now returns zeros (Reports edge cases).
+
 ## 2026-05-10 — main — merge: PR #13 + PR #14 → `main` (fast-forward)
 - Commit: (see git log) — tip includes `b2a7326`
 - Files touched: same as `cursor/hidden-auth-flags-pwa-icons-26d7` slice (feature flags, Auth, icons, `index.css`, `env.sample`)

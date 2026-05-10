@@ -212,9 +212,22 @@
     @apply border-t border-surface-border my-4;
   }
 
-  /* Chip/tag */
+  /* Chip/tag — Ui.md filter chips */
   .chip {
-    @apply inline-flex items-center gap-1 px-2.5 py-1 bg-surface-light rounded-full text-xs font-medium text-slate-300 border border-surface-border;
+    @apply inline-flex items-center justify-center gap-1 shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold text-slate-300 border border-surface-border bg-dark-300/80 transition-colors duration-base ease-out cursor-pointer;
+    min-height: 32px;
+  }
+
+  .chip-active {
+    @apply bg-brand-500/15 border-brand-500/40 text-brand-400;
+  }
+
+  .chip-ai-active {
+    @apply bg-ai/15 border-ai/40 text-ai;
+  }
+
+  .motion-tab {
+    @apply transition-all duration-base ease-out;
   }
 
   /* Modal backdrop */

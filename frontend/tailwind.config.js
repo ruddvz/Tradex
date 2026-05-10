@@ -7,6 +7,11 @@ export default {
   theme: {
     extend: {
       colors: {
+        success: '#2DD4A3',
+        analytics: '#4A9DFF',
+        ai: '#8B5CF6',
+        warning: '#F6B73C',
+        danger: '#EF5F5F',
         brand: {
           50:  '#f0fdf9',
           100: '#ccfbee',
@@ -60,6 +65,11 @@ export default {
         'glow-blue':   '0 0 20px rgba(59,130,246,0.3)',
         'card':        '0 4px 20px rgba(0,0,0,0.4)',
         'card-hover':  '0 8px 30px rgba(0,0,0,0.5)',
+      },
+      transitionDuration: {
+        fast: '120ms',
+        base: '220ms',
+        slow: '360ms',
       },
       animation: {
         'fade-in':     'fadeIn 0.3s ease-in-out',
