@@ -20,7 +20,7 @@ import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
 const navItems = [
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { path: '/', label: 'Home', icon: LayoutDashboard },
   { path: '/journal', label: 'Trade Journal', icon: BookOpen },
   { path: '/playbooks', label: 'AI Playbooks', icon: Brain },
   { path: '/propfirm', label: 'Prop Firm Mode', icon: Target },

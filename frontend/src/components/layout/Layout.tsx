@@ -28,7 +28,7 @@ export function Layout() {
   }, []);
 
   return (
-    <div className="min-h-screen flex bg-dark-400">
+    <div className="min-h-screen flex app-bg">
       <div className="hidden md:block">
         <Sidebar />
       </div>
@@ -37,11 +37,11 @@ export function Layout() {
         className={clsx(
           'relative flex-1 min-h-screen transition-all duration-300 ease-in-out',
           sidebarOpen ? 'md:ml-64' : 'md:ml-16',
-          'pb-20 md:pb-0'
+          'pb-28 md:pb-0'
         )}
       >
         {bootOverlay && (
-          <div className="absolute inset-0 z-[35] bg-dark-400 animate-fade-in">
+          <div className="absolute inset-0 z-[35] bg-bg-primary animate-fade-in">
             <AppShellSkeleton />
           </div>
         )}

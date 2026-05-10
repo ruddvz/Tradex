@@ -61,12 +61,12 @@ export function EquityCurve({ showDrawdown = false, height = 220 }: EquityCurveP
         <AreaChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
           <defs>
             <linearGradient id="equityGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="#10b981" stopOpacity={0.02} />
+              <stop offset="5%" stopColor="#2DD4A3" stopOpacity={0.28} />
+              <stop offset="95%" stopColor="#2DD4A3" stopOpacity={0.02} />
             </linearGradient>
             <linearGradient id="balanceGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
-              <stop offset="95%" stopColor="#3b82f6" stopOpacity={0.02} />
+              <stop offset="5%" stopColor="#4A9DFF" stopOpacity={0.2} />
+              <stop offset="95%" stopColor="#4A9DFF" stopOpacity={0.02} />
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(42,53,80,0.6)" />
@@ -79,8 +79,8 @@ export function EquityCurve({ showDrawdown = false, height = 220 }: EquityCurveP
           />
           <Tooltip content={<CustomTooltip />} />
           <ReferenceLine y={initialEquity} stroke="#2a3550" strokeDasharray="4 4" />
-          <Area type="monotone" dataKey="balance" stroke="#3b82f6" fill="url(#balanceGrad)" strokeWidth={1.5} name="Balance" strokeDasharray="4 2" />
-          <Area type="monotone" dataKey="equity" stroke="#10b981" fill="url(#equityGrad)" strokeWidth={2.5} name="Equity" />
+          <Area type="monotone" dataKey="balance" stroke="#4A9DFF" fill="url(#balanceGrad)" strokeWidth={1.5} name="Balance" strokeDasharray="4 2" />
+          <Area type="monotone" dataKey="equity" stroke="#2DD4A3" fill="url(#equityGrad)" strokeWidth={2.5} name="Equity" />
         </AreaChart>
       )}
     </ResponsiveContainer>

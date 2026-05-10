@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-10 — cursor/design-system-ui-4e43 — feat: premium OS shell + Home hero (`planning/Ui.md`)
+- Commit: (see git log)
+- Files touched: `frontend/tailwind.config.js`, `frontend/index.html`, `frontend/src/index.css`, `frontend/src/lib/tokens.ts`, `frontend/src/components/cards/HeroMetricCard.tsx`, `frontend/src/components/dashboard/WeeklyPerformanceStrip.tsx`, `frontend/src/components/dashboard/TradingConsistencyCard.tsx`, `frontend/src/components/layout/{Header,MobileNav,Layout,Sidebar}.tsx`, `frontend/src/components/ui/StatCard.tsx`, `frontend/src/components/charts/EquityCurve.tsx`, `frontend/src/pages/Dashboard.tsx`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **4** — Daily email reports (`NEXT_STEPS.md` Phase 4)
+- Notes: Tailwind semantic palette (`success`, `analytics`, `ai`, `warning`, `danger`), Inter Tight + layered `.app-bg`, glass cards (`rounded-[22px]`, shadow-card), floating bottom nav (dock), Header icon buttons + optional `showDateRange`. Home: **HeroMetricCard** (P&L + period chips + equity sparkline), consistency + weekly dots, recent activity capped at 3. Further tabs (Journal chips, Reports tabs) still match legacy layouts — iterate against `planning/Ui.md`.
+
 ## 2026-05-10 — main — merge: PR #13 + PR #14 → `main` (fast-forward)
 - Commit: (see git log) — tip includes `b2a7326`
 - Files touched: same as `cursor/hidden-auth-flags-pwa-icons-26d7` slice (feature flags, Auth, icons, `index.css`, `env.sample`)
