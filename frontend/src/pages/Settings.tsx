@@ -216,6 +216,7 @@ export function Settings() {
                 onClick={() => {
                   clearToken();
                   void hydrateLiveSession();
+                  useStore.getState().clearPaperState();
                   showToast(authUiEnabled ? 'Signed out' : 'API session cleared');
                   navigate('/', { replace: true });
                 }}

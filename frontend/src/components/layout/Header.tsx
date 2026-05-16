@@ -27,8 +27,16 @@ export function Header({
   onAddTrade,
 }: HeaderProps) {
   const navigate = useNavigate();
-  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, openMt5SyncModal, aiInsights, dataMode } =
-    useStore();
+  const {
+    sidebarOpen,
+    selectedDateRange,
+    setDateRange,
+    isSyncing,
+    openMt5SyncModal,
+    aiInsights,
+    dataMode,
+    paperModeActive,
+  } = useStore();
 
   return (
     <header
@@ -60,6 +68,14 @@ export function Header({
         >
           {dataMode === 'live' ? 'Live' : 'Demo'}
         </span>
+        {paperModeActive && (
+          <span
+            className="shrink-0 mt-0.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wide border border-analytics/45 bg-analytics/12 text-analytics"
+            title="At least one simulated paper account is active. Orders and fills are not wired yet."
+          >
+            Paper mode
+          </span>
+        )}
       </div>
 
       {/* Date range selector */}

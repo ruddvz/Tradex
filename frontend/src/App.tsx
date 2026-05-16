@@ -41,6 +41,9 @@ const Calculator = lazy(() =>
 const ActionCenter = lazy(() =>
   import('./pages/ActionCenter').then((m) => ({ default: m.ActionCenter }))
 );
+const PaperTrading = lazy(() =>
+  import('./pages/PaperTrading').then((m) => ({ default: m.PaperTrading }))
+);
 const Settings = lazy(() =>
   import('./pages/Settings').then((m) => ({ default: m.Settings }))
 );
@@ -122,6 +125,10 @@ const router = createBrowserRouter(
             {
               path: 'calculator',
               element: <Calculator />,
+            },
+            {
+              path: 'paper-trading',
+              element: <PaperTrading />,
             },
             {
               path: 'settings',

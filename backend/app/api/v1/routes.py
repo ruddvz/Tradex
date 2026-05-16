@@ -1148,3 +1148,7 @@ router.include_router(manual_tasks_router, prefix="/manual-tasks", tags=["manual
 from .setup import router as setup_router
 
 router.include_router(setup_router, prefix="/setup", tags=["setup"])
+
+from .paper_accounts import router as paper_accounts_router
+
+router.include_router(paper_accounts_router, prefix="/paper-accounts", tags=["paper-accounts"])

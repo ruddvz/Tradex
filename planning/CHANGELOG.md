@@ -34,6 +34,24 @@
 
 ## Log (newest first)
 
+## 2026-05-16 — main — merge: open PR stack (#18–#22) into main
+- Commit: (see git log)
+- Files touched: cumulative from `cursor/action-center-manual-tasks-12fb`, `cursor/setup-health-live-data-12fb`, `cursor/pwa-phase5-playbooks-12fb`, `cursor/implement-p0-parallel-7a9e`, `cursor/paper-trading-mvp-12fb` (see merge commits on `main`)
+- Tests added / changed: 0
+- Build: pass (`python3 -m compileall app`, `npm run lint`, `npm run build`)
+- Status: done
+- Next up: **8.2** — Paper orders/fills + journal `source=paper` (see `planning/ACTIVE.md`)
+- Notes: PR #21 + #22 reconciled in `routes.py` (MT5 sync metadata + `paper-accounts` router), `useStore` (`hydrateLiveSession` + paper accounts), `Header` (Live/Demo + Paper mode), `Sidebar` (Paper + Paper Trading + Action Center). Register seeds manual tasks and primary `TradingAccount`.
+
+## 2026-05-16 — cursor/paper-trading-mvp-12fb — feat: Phase 8.1 paper accounts + Paper Trading page
+- Commit: (see git log)
+- Files touched: `backend/app/models/paper_account.py`, `backend/app/schemas/paper_account.py`, `backend/app/api/v1/paper_accounts.py`, `backend/app/api/v1/routes.py`, `backend/app/database.py`, `frontend/src/{App.tsx,store/useStore.ts,types/index.ts,lib/paperAccountsApi.ts,pages/PaperTrading.tsx,components/layout/{Layout,Header,Sidebar}.tsx,pages/Settings.tsx}`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`
+- Tests added / changed: 0
+- Build: pass frontend (`npm run lint`, `npm run build`); backend `python3 -m py_compile` on new modules
+- Status: done
+- Next up: **8.2** — Paper orders/fills stub + journal `source=paper` (or **5** PWA per `ACTIVE.md`)
+- Notes: `GET`/`POST /api/v1/paper-accounts` require Bearer auth. Header shows **Paper mode** when any returned account has `is_active`. Sign-out clears paper state in Zustand. Table `paper_accounts` created via `create_all` on startup.
+
 ## 2026-05-16 — cursor/implement-p0-parallel-7a9e — docs: CHANGELOG commit pointer for P0 slice
 - Commit: eacece0 (docs: record commit sha in CHANGELOG for P0 slice)
 - Files touched: `planning/CHANGELOG.md`
