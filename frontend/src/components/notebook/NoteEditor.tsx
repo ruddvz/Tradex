@@ -29,10 +29,10 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const now = format(new Date(), "yyyy-MM-dd'T'HH:mm:ss");
     if (mode === 'create') {
-      addNotebookEntry({
+      await addNotebookEntry({
         id: `note-${Date.now()}`,
         title: title.trim() || 'Untitled',
         content,
@@ -43,7 +43,7 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
         updatedAt: now,
       });
     } else if (initial) {
-      updateNotebookEntry(initial.id, {
+      await updateNotebookEntry(initial.id, {
         title: title.trim() || 'Untitled',
         content,
         type,

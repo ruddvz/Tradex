@@ -1,11 +1,10 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { Search, Download, Plus, Clock, Trash2, BarChart3, ImagePlus } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { AddTradeModal } from '../components/journal/AddTradeModal';
 import { useStore } from '../store/useStore';
 import { useToast } from '../components/ui/Toast';
 import { getToken } from '../lib/auth';
-import { mapApiTradeRow } from '../lib/mapApiTrade';
 import { DirectionBadge, GradeBadge } from '../components/ui/Badge';
 import { format, parseISO } from 'date-fns';
 import { clsx } from 'clsx';
@@ -298,25 +297,6 @@ export function Journal() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const [addTradeOpen, setAddTradeOpen] = useState(false);
-
-  useEffect(() => {
-    const tok = getToken();
-    if (!tok) return;
-    let cancelled = false;
-    void fetch('/api/v1/trades?limit=500', {
-      headers: { Authorization: `Bearer ${tok}` },
-    })
-      .then(r => (r.ok ? r.json() : null))
-      .then(data => {
-        if (cancelled || !data?.trades || !Array.isArray(data.trades)) return;
-        const mapped = (data.trades as Record<string, unknown>[]).map(mapApiTradeRow);
-        useStore.setState({ trades: mapped });
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const symbols = useMemo(() => Array.from(new Set(trades.map(t => t.symbol))).sort(), [trades]);
 

@@ -786,3 +786,7 @@ async def sync_mt5(
 from .manual_tasks import router as manual_tasks_router
 
 router.include_router(manual_tasks_router, prefix="/manual-tasks", tags=["manual-tasks"])
+
+from .setup import router as setup_router
+
+router.include_router(setup_router, prefix="/setup", tags=["setup"])

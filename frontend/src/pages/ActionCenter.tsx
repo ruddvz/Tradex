@@ -7,6 +7,7 @@ import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { TaskCard } from '../components/tasks/TaskCard';
 import { TaskDrawer } from '../components/tasks/TaskDrawer';
 import { getToken } from '../lib/auth';
+import { fetchSetupHealth, type SetupHealth } from '../lib/liveApi';
 import type { ManualTask } from '../types';
 import { clsx } from 'clsx';
 
@@ -73,10 +74,12 @@ export function ActionCenter() {
   const [drawerTask, setDrawerTask] = useState<ManualTask | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [seeding, setSeeding] = useState(false);
+  const [setupHealth, setSetupHealth] = useState<SetupHealth | null>(null);
 
   const loadTasks = useCallback(async () => {
     if (!token) {
       setTasks([]);
+      setSetupHealth(null);
       setLoading(false);
       return;
     }
@@ -89,6 +92,8 @@ export function ActionCenter() {
         const data = (await res.json()) as ManualTask[];
         setTasks(data);
       }
+      const h = await fetchSetupHealth(token);
+      setSetupHealth(h);
     } finally {
       setLoading(false);
     }
@@ -175,6 +180,47 @@ export function ActionCenter() {
           {statCard('Blocked', blockedOpen, 'Needs attention')}
           {statCard('Completed (7d)', completedThisWeek, 'Done or skipped this week')}
         </div>
+
+        {token && setupHealth && (
+          <div className="rounded-2xl border border-surface-border bg-surface/60 p-4 space-y-3">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <h2 className="text-sm font-semibold text-white">Setup health</h2>
+              {setupHealth.critical_issues.length > 0 && (
+                <span className="text-[10px] font-bold uppercase tracking-wide text-red-400 border border-red-500/30 rounded-lg px-2 py-0.5">
+                  Issues detected
+                </span>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(
+                [
+                  ['Database', setupHealth.database],
+                  ['Redis', setupHealth.redis],
+                  ['OpenAI', setupHealth.openai],
+                  ['MT5 saved', setupHealth.mt5],
+                  ['Paper', setupHealth.paper_account],
+                  ['Risk rules', setupHealth.risk_rules],
+                  ['PWA', setupHealth.pwa],
+                ] as const
+              ).map(([label, val]) => (
+                <span
+                  key={label}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-surface-border bg-dark-300/60 px-2.5 py-1 text-[11px]"
+                >
+                  <span className="text-slate-500">{label}</span>
+                  <span className="font-mono text-slate-200">{val}</span>
+                </span>
+              ))}
+            </div>
+            {setupHealth.critical_issues.length > 0 && (
+              <ul className="text-xs text-red-300 list-disc pl-4 space-y-1">
+                {setupHealth.critical_issues.map((issue) => (
+                  <li key={issue}>{issue}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <SegmentedControl

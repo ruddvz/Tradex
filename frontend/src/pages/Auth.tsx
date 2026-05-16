@@ -3,6 +3,7 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { LogIn, UserPlus } from 'lucide-react';
 import { setToken, getToken } from '../lib/auth';
+import { useStore } from '../store/useStore';
 
 type Tab = 'signin' | 'signup';
 
@@ -44,6 +45,7 @@ export function Auth() {
         return;
       }
       setToken(data.access_token);
+      void useStore.getState().hydrateFromApi();
       navigate('/', { replace: true });
     } catch {
       setError('Network error — is the API running (see vite proxy / docker-compose)?');

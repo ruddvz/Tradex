@@ -2,7 +2,17 @@ import { create } from 'zustand';
 import type { Trade, PerformanceMetrics, PropFirmChallenge, Playbook, NotebookEntry, AIInsight, Account } from '../types';
 import { mockTrades, mockMetrics, mockPropChallenge, mockPlaybooks, mockNotebook, mockAIInsights, mockAccount } from '../data/mockData';
 import { getToken } from '../lib/auth';
-import { mapApiTradeRow } from '../lib/mapApiTrade';
+import {
+  EMPTY_PROP_CHALLENGE,
+  fetchAiInsights,
+  fetchAuthMe,
+  fetchChallenges,
+  fetchMetrics,
+  fetchNotebook,
+  fetchTradesList,
+  mapApiNotebookEntry,
+  type DataSource,
+} from '../lib/liveApi';
 
 export type Mt5CredentialsInput = {
   server?: string;
@@ -19,6 +29,7 @@ export type SyncTradesResult = {
 };
 
 interface AppState {
+  dataSource: DataSource;
   trades: Trade[];
   metrics: PerformanceMetrics;
   propChallenge: PropFirmChallenge;
@@ -31,19 +42,20 @@ interface AppState {
   isSyncing: boolean;
   mt5SyncModalOpen: boolean;
 
-  // Actions
   setSidebarOpen: (open: boolean) => void;
   setDateRange: (range: '7d' | '30d' | '90d' | 'all') => void;
   openMt5SyncModal: () => void;
   closeMt5SyncModal: () => void;
+  hydrateFromApi: () => Promise<void>;
+  resetToDemo: () => void;
   refreshTradesFromApi: () => Promise<void>;
   syncTrades: (credentials?: Mt5CredentialsInput) => Promise<SyncTradesResult>;
   addTrade: (trade: Trade) => void;
   updateTrade: (id: string, updates: Partial<Trade>) => void;
   deleteTrade: (id: string) => void;
-  addNotebookEntry: (entry: NotebookEntry) => void;
-  updateNotebookEntry: (id: string, updates: Partial<NotebookEntry>) => void;
-  deleteNotebookEntry: (id: string) => void;
+  addNotebookEntry: (entry: NotebookEntry) => Promise<void>;
+  updateNotebookEntry: (id: string, updates: Partial<NotebookEntry>) => Promise<void>;
+  deleteNotebookEntry: (id: string) => Promise<void>;
   dismissInsight: (id: string) => void;
   addPlaybook: (pb: Playbook) => void;
   updatePlaybook: (id: string, updates: Partial<Playbook>) => void;
@@ -51,6 +63,7 @@ interface AppState {
 }
 
 export const useStore = create<AppState>((set, get) => ({
+  dataSource: 'demo',
   trades: mockTrades,
   metrics: mockMetrics,
   propChallenge: mockPropChallenge,
@@ -64,24 +77,66 @@ export const useStore = create<AppState>((set, get) => ({
   mt5SyncModalOpen: false,
 
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  setDateRange: (range) => set({ selectedDateRange: range }),
+
+  setDateRange: (range) => {
+    set({ selectedDateRange: range });
+    const token = getToken();
+    if (!token || get().dataSource !== 'live') return;
+    void (async () => {
+      const m = await fetchMetrics(token, range);
+      const ai = await fetchAiInsights(token);
+      set({ metrics: m, aiInsights: ai });
+    })();
+  },
 
   openMt5SyncModal: () => set({ mt5SyncModalOpen: true }),
   closeMt5SyncModal: () => set({ mt5SyncModalOpen: false }),
 
-  refreshTradesFromApi: async () => {
-    const token = getToken();
-    if (!token) return;
-    const res = await fetch('/api/v1/trades', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    const data = (await res.json().catch(() => ({}))) as {
-      trades?: Record<string, unknown>[];
-    };
-    if (!res.ok || !Array.isArray(data.trades)) return;
+  resetToDemo: () =>
     set({
-      trades: data.trades.map((row) => mapApiTradeRow(row)),
-    });
+      dataSource: 'demo',
+      trades: mockTrades,
+      metrics: mockMetrics,
+      propChallenge: mockPropChallenge,
+      playbooks: mockPlaybooks,
+      notebook: mockNotebook,
+      aiInsights: mockAIInsights,
+      account: mockAccount,
+    }),
+
+  hydrateFromApi: async () => {
+    const token = getToken();
+    if (!token) {
+      get().resetToDemo();
+      return;
+    }
+    try {
+      const range = get().selectedDateRange;
+      const [trades, metrics, challenges, entries, aiList, acct] = await Promise.all([
+        fetchTradesList(token),
+        fetchMetrics(token, range),
+        fetchChallenges(token),
+        fetchNotebook(token),
+        fetchAiInsights(token),
+        fetchAuthMe(token),
+      ]);
+      const challenge = challenges.length > 0 ? challenges[0]! : EMPTY_PROP_CHALLENGE;
+      set({
+        dataSource: 'live',
+        trades,
+        metrics,
+        propChallenge: challenge,
+        notebook: entries,
+        aiInsights: aiList,
+        account: acct ?? get().account,
+      });
+    } catch {
+      get().resetToDemo();
+    }
+  },
+
+  refreshTradesFromApi: async () => {
+    await get().hydrateFromApi();
   },
 
   syncTrades: async (credentials) => {
@@ -121,7 +176,7 @@ export const useStore = create<AppState>((set, get) => ({
           detail = data.detail[0].msg;
         return { ok: false, detail };
       }
-      await get().refreshTradesFromApi();
+      await get().hydrateFromApi();
       return {
         ok: true,
         message: typeof data.message === 'string' ? data.message : undefined,
@@ -140,14 +195,77 @@ export const useStore = create<AppState>((set, get) => ({
   deleteTrade: (id) =>
     set((state) => ({ trades: state.trades.filter((t) => t.id !== id) })),
 
-  addNotebookEntry: (entry) =>
-    set((state) => ({ notebook: [entry, ...state.notebook] })),
-  updateNotebookEntry: (id, updates) =>
+  addNotebookEntry: async (entry) => {
+    const token = getToken();
+    if (!token) {
+      set((state) => ({ notebook: [entry, ...state.notebook] }));
+      return;
+    }
+    const res = await fetch('/api/v1/notebook', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: entry.title,
+        content: entry.content,
+        type: entry.type,
+        tags: entry.tags,
+        pinned: entry.pinned,
+      }),
+    });
+    const row = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+    if (!res.ok) return;
+    const mapped = mapApiNotebookEntry(row);
+    set((state) => ({ notebook: [mapped, ...state.notebook] }));
+  },
+
+  updateNotebookEntry: async (id, updates) => {
+    const token = getToken();
+    if (!token) {
+      set((state) => ({
+        notebook: state.notebook.map((n) => (n.id === id ? { ...n, ...updates } : n)),
+      }));
+      return;
+    }
+    const body: Record<string, unknown> = {};
+    if (updates.title != null) body.title = updates.title;
+    if (updates.content != null) body.content = updates.content;
+    if (updates.tags != null) body.tags = updates.tags;
+    if (updates.pinned != null) body.pinned = updates.pinned;
+    if (updates.type != null) body.type = updates.type;
+    const res = await fetch(`/api/v1/notebook/${id}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    const row = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+    if (!res.ok) return;
+    const mapped = mapApiNotebookEntry(row);
     set((state) => ({
-      notebook: state.notebook.map((n) => (n.id === id ? { ...n, ...updates } : n)),
-    })),
-  deleteNotebookEntry: (id) =>
-    set((state) => ({ notebook: state.notebook.filter((n) => n.id !== id) })),
+      notebook: state.notebook.map((n) => (n.id === id ? mapped : n)),
+    }));
+  },
+
+  deleteNotebookEntry: async (id) => {
+    const token = getToken();
+    if (!token) {
+      set((state) => ({ notebook: state.notebook.filter((n) => n.id !== id) }));
+      return;
+    }
+    const res = await fetch(`/api/v1/notebook/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (res.status === 204 || res.ok) {
+      set((state) => ({ notebook: state.notebook.filter((n) => n.id !== id) }));
+    }
+  },
+
   dismissInsight: (id) =>
     set((state) => ({ aiInsights: state.aiInsights.filter((i) => i.id !== id) })),
 
