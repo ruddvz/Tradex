@@ -6,7 +6,7 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ## Current State (Already Done)
 
-- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded shell (**1.3**); **`Mt5SyncModal`**; **`syncTrades`** → **`POST /api/v1/sync/mt5`**; **`useStore.hydrateFromApi`** loads trades, **`/analytics/metrics`**, notebook, challenges, and **`POST /ai/insights`** when a token exists; **Header** shows **Live** vs **Demo**; **Action Center** includes **`GET /api/v1/setup/health`**; **Playbooks** remain mock-first until slice **7.3**
+- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded shell (**1.3**); **`Mt5SyncModal`**; **`syncTrades`** → **`POST /api/v1/sync/mt5`**; **`useStore.hydrateFromApi`** loads trades, **`/analytics/metrics`**, notebook, challenges, and **`POST /ai/insights`** when a token exists; **Header** shows **Live** vs **Demo**; **Action Center** includes **`GET /api/v1/setup/health`**; **Playbooks** use **journal-derived** cards when live (slice **7.3**) and demo mocks when logged out; **PWA** uses **`navigateFallback`** + five-item **mobile nav** (Phase **5**)
 - FastAPI: JWT (**1.1**), PostgreSQL trades / notebook / challenges (**1.2**), trade screenshots (**2.1–2.2**), **`GET`/`PUT /api/v1/settings/mt5`**, **`POST /api/v1/sync/mt5`**, analytics, AI insights, **`GET /api/v1/setup/health`**, manual tasks API
 - **`Authorization: Bearer`** on `/api/v1/*` except `GET /health` and `POST /auth/register` / `POST /auth/login`
 
@@ -96,10 +96,7 @@ This document describes what to build next on the Tradex trading journal platfor
    - Offline fallback page: show a "You're offline — cached data shown" banner
 
 3. **Mobile nav improvements**
-   - Add a bottom navigation bar on mobile (screens < 640px) as an alternative to the sidebar
-   - Show 5 icons: Dashboard, Journal, Playbooks, PropFirm, Settings
-   - The sidebar should be hidden on mobile and replaced with this bottom bar
-   - Edit `frontend/src/components/layout/Layout.tsx` and `Sidebar.tsx`
+   - Bottom bar on small screens: **Home**, **Journal**, **Playbooks**, **Prop Firm**, **Settings** (`MobileNav.tsx`). Wider layouts keep the full sidebar (including Action Center, Reports, etc.).
 
 ---
 

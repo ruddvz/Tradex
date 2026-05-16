@@ -71,6 +71,9 @@ export default defineConfig(({ mode }) => {
         },
         workbox: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          /** SPA reloads while offline (especially on GitHub Pages with `base`). */
+          navigateFallback: `${base}index.html`,
+          navigateFallbackDenylist: [/^\/api\//, /^\/uploads\//],
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

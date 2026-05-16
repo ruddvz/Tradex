@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Brain, Target, Plus, Sparkles, Loader2 } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { CreatePlaybookModal } from '../components/playbooks/CreatePlaybookModal';
@@ -8,6 +8,7 @@ import { Badge, PnlBadge } from '../components/ui/Badge';
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
 import { clsx } from 'clsx';
 import type { Playbook } from '../types';
+import { derivePlaybooksFromTrades } from '../lib/derivePlaybooksFromTrades';
 
 function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
   return (
@@ -154,13 +155,28 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
 
 export function Playbooks() {
   const { showToast } = useToast();
-  const { playbooks, aiInsights, trades } = useStore();
+  const { playbooks, aiInsights, trades, dataSource, hydrateFromApi } = useStore();
   const [selected, setSelected] = useState<Playbook | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
   const psychInsights = aiInsights.filter(i => i.type === 'psychology' || i.type === 'pattern');
 
+  const displayPlaybooks = useMemo(
+    () => (dataSource === 'live' ? derivePlaybooksFromTrades(trades) : playbooks),
+    [dataSource, trades, playbooks]
+  );
+
   const handleAIGenerate = async () => {
+    if (dataSource === 'live') {
+      setGenerating(true);
+      try {
+        await hydrateFromApi();
+        showToast('Insights and trades refreshed from the API.');
+      } finally {
+        setGenerating(false);
+      }
+      return;
+    }
     setGenerating(true);
     await new Promise(r => setTimeout(r, 2000));
     setGenerating(false);
@@ -216,7 +232,7 @@ export function Playbooks() {
           </p>
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div className="text-center">
-              <div className="text-xl font-bold text-brand-400">{playbooks.length}</div>
+              <div className="text-xl font-bold text-brand-400">{displayPlaybooks.length}</div>
               <div className="text-xs text-slate-500">Active Playbooks</div>
             </div>
             <div className="text-center">
@@ -283,14 +299,41 @@ export function Playbooks() {
 
         {/* Playbook Cards */}
         <div>
-          <div className="flex items-center justify-between mb-3">
-            <h2 className="section-title text-base">My Playbooks</h2>
-            <button type="button" className="btn-primary text-sm" onClick={() => setCreateOpen(true)}>
+          <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
+              <h2 className="section-title text-base">My Playbooks</h2>
+              {dataSource === 'live' ? (
+                <Badge variant="info" size="xs">
+                  From journal
+                </Badge>
+              ) : (
+                <Badge variant="neutral" size="xs">
+                  Demo sample
+                </Badge>
+              )}
+            </div>
+            <button
+              type="button"
+              className="btn-primary text-sm shrink-0 disabled:opacity-40 disabled:pointer-events-none"
+              disabled={dataSource === 'live'}
+              title={
+                dataSource === 'live'
+                  ? 'Read-only while using live data — saved playbooks API comes later.'
+                  : undefined
+              }
+              onClick={() => setCreateOpen(true)}
+            >
               <Plus className="w-4 h-4" /> New Playbook
             </button>
           </div>
+          {dataSource === 'live' && displayPlaybooks.length === 0 && (
+            <div className="rounded-xl border border-dashed border-surface-border p-6 text-sm text-slate-500 mb-3">
+              No strategy groups yet. Add a <span className="text-slate-300 font-medium">strategy</span> label to
+              trades in the journal — each distinct strategy becomes a playbook card here.
+            </div>
+          )}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {playbooks.map(pb => (
+            {displayPlaybooks.map(pb => (
               <PlaybookCard key={pb.id} pb={pb} onClick={() => setSelected(pb)} />
             ))}
           </div>
