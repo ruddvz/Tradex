@@ -39,7 +39,7 @@ Implement **`NEXT_STEPS.md` Phase 5**: manifest refinements, offline banner, bot
 | # | Area | Issue | Priority | Status |
 |---|------|-------|----------|--------|
 | 1 | Data / API | API requires `Authorization: Bearer` for data routes | P1 | By design |
-| 2 | Frontend | **Dashboard** (and most pages) still use **`mockData.ts`** — Journal loads live trades when authenticated; broader API wiring is future work | P2 | Open |
+| 2 | Frontend | **Dashboard** (and most pages) still use **`mockData.ts`** — Journal loads live trades when authenticated; broader API wiring is future work | **P0** (see Phase 6) | Open |
 
 ---
 
