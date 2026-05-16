@@ -106,6 +106,10 @@
 
 - [ ] **8.0** Split `routes.py` into domain routers + Alembic-first migrations (audit section 12)
 
+- [x] **5.1** VitePWA manifest + service worker + `index.html` manifest / theme-color
+- [x] **5.2** Offline UX — `navigateFallback` for SPA + offline strip copy in `Layout`
+- [x] **5.3** Mobile bottom nav — five slots per NEXT_STEPS (Home, Journal, Playbooks, Prop, Settings)
+
 ---
 
 ## Phase 6 — Action Center (manual tasks)
@@ -124,7 +128,7 @@
 
 - [x] **7.1** Zustand `hydrateFromApi` + `dataSource` + Header Live/Demo badge + sign-out reset
 - [x] **7.2** Notebook create/update/delete via API when authenticated
-- [ ] **7.3** Remove remaining mock-only surfaces (e.g. Playbooks) or label them explicitly
+- [x] **7.3** Playbooks use **journal-derived** cards when `dataSource === 'live'`; demo mock + manual create when logged out / demo
 
 ---
 

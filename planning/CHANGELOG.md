@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-16 — cursor/pwa-phase5-playbooks-12fb — feat: PWA offline fallback, mobile nav, journal playbooks
+- Commit: (see git log)
+- Files touched: `frontend/vite.config.ts`, `frontend/index.html`, `frontend/src/components/layout/{Layout,MobileNav}.tsx`, `frontend/src/pages/Playbooks.tsx`, `frontend/src/lib/derivePlaybooksFromTrades.ts`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`, `NEXT_STEPS.md`
+- Tests added / changed: 0
+- Build: pass frontend (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **P1** — Paper trading MVP (models + page shell) per `planning/ACTIVE.md`
+- Notes: Workbox `navigateFallback` uses Vite `base` for GitHub Pages. Mobile dock is five items per NEXT_STEPS; sidebar still lists Action Center and Reports on md+. Live playbooks group by `strategy`; New Playbook disabled until a playbooks API exists.
+
 ## 2026-05-16 — cursor/setup-health-live-data-12fb — feat: setup health API + live store hydration
 - Commit: (see git log)
 - Files touched: `backend/app/services/setup_health.py`, `backend/app/api/v1/setup.py`, `backend/app/api/v1/routes.py`, `frontend/src/lib/liveApi.ts`, `frontend/src/store/useStore.ts`, `frontend/src/components/layout/{Layout,Header}.tsx`, `frontend/src/pages/{ActionCenter,Auth,Settings,PropFirm,Journal}.tsx`, `frontend/src/components/notebook/NoteEditor.tsx`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`, `NEXT_STEPS.md`
