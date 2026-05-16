@@ -14,6 +14,10 @@ export function Layout() {
   const [bootOverlay, setBootOverlay] = useState(true);
 
   useEffect(() => {
+    void useStore.getState().refreshPaperAccountsFromApi();
+  }, [location.pathname]);
+
+  useEffect(() => {
     const start = performance.now();
     const minMs = 280;
     const endBoot = () => {

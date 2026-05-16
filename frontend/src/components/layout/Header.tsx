@@ -27,7 +27,7 @@ export function Header({
   onAddTrade,
 }: HeaderProps) {
   const navigate = useNavigate();
-  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, openMt5SyncModal, aiInsights } =
+  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, openMt5SyncModal, aiInsights, paperModeActive } =
     useStore();
 
   return (
@@ -40,9 +40,19 @@ export function Header({
         sidebarOpen ? 'md:left-64' : 'md:left-16'
       )}
     >
-      <div className="flex-1 min-w-0">
-        <h1 className="text-xl font-bold text-text-primary tracking-tight truncate">{title}</h1>
-        {subtitle && <p className="text-xs text-text-muted truncate mt-0.5">{subtitle}</p>}
+      <div className="flex-1 min-w-0 flex items-start gap-2">
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl font-bold text-text-primary tracking-tight truncate">{title}</h1>
+          {subtitle && <p className="text-xs text-text-muted truncate mt-0.5">{subtitle}</p>}
+        </div>
+        {paperModeActive && (
+          <span
+            className="shrink-0 mt-0.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wide border border-analytics/45 bg-analytics/12 text-analytics"
+            title="At least one simulated paper account is active. Orders and fills are not wired yet."
+          >
+            Paper mode
+          </span>
+        )}
       </div>
 
       {/* Date range selector */}

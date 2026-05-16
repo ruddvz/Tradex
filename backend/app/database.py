@@ -42,6 +42,7 @@ def init_db() -> None:
     # Import models so they register metadata before create_all
     from .models import challenge  # noqa: F401
     from .models import notebook  # noqa: F401
+    from .models import paper_account  # noqa: F401
     from .models import trade  # noqa: F401
     from .models import user  # noqa: F401
 

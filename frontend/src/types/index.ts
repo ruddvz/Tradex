@@ -145,6 +145,17 @@ export interface Account {
   lastSync?: string;
 }
 
+/** Simulated paper broker account (API: `paper_accounts`). */
+export interface PaperAccount {
+  id: string;
+  userId: string;
+  name: string;
+  currency: string;
+  startingBalance: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
 export interface CalendarDay {
   date: string;
   pnl: number;

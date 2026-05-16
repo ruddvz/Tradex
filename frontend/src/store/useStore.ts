@@ -1,8 +1,18 @@
 import { create } from 'zustand';
-import type { Trade, PerformanceMetrics, PropFirmChallenge, Playbook, NotebookEntry, AIInsight, Account } from '../types';
+import type {
+  Trade,
+  PerformanceMetrics,
+  PropFirmChallenge,
+  Playbook,
+  NotebookEntry,
+  AIInsight,
+  Account,
+  PaperAccount,
+} from '../types';
 import { mockTrades, mockMetrics, mockPropChallenge, mockPlaybooks, mockNotebook, mockAIInsights, mockAccount } from '../data/mockData';
 import { getToken } from '../lib/auth';
 import { mapApiTradeRow } from '../lib/mapApiTrade';
+import { createPaperAccountApi, fetchPaperAccounts } from '../lib/paperAccountsApi';
 
 export type Mt5CredentialsInput = {
   server?: string;
@@ -26,6 +36,9 @@ interface AppState {
   notebook: NotebookEntry[];
   aiInsights: AIInsight[];
   account: Account;
+  paperAccounts: PaperAccount[];
+  /** True when signed in and at least one paper account is marked active (header badge). */
+  paperModeActive: boolean;
   sidebarOpen: boolean;
   selectedDateRange: '7d' | '30d' | '90d' | 'all';
   isSyncing: boolean;
@@ -37,6 +50,9 @@ interface AppState {
   openMt5SyncModal: () => void;
   closeMt5SyncModal: () => void;
   refreshTradesFromApi: () => Promise<void>;
+  refreshPaperAccountsFromApi: () => Promise<void>;
+  clearPaperState: () => void;
+  createPaperAccount: (opts?: { name?: string }) => Promise<boolean>;
   syncTrades: (credentials?: Mt5CredentialsInput) => Promise<SyncTradesResult>;
   addTrade: (trade: Trade) => void;
   updateTrade: (id: string, updates: Partial<Trade>) => void;
@@ -58,6 +74,8 @@ export const useStore = create<AppState>((set, get) => ({
   notebook: mockNotebook,
   aiInsights: mockAIInsights,
   account: mockAccount,
+  paperAccounts: [],
+  paperModeActive: false,
   sidebarOpen: true,
   selectedDateRange: '90d',
   isSyncing: false,
@@ -68,6 +86,32 @@ export const useStore = create<AppState>((set, get) => ({
 
   openMt5SyncModal: () => set({ mt5SyncModalOpen: true }),
   closeMt5SyncModal: () => set({ mt5SyncModalOpen: false }),
+
+  clearPaperState: () => set({ paperAccounts: [], paperModeActive: false }),
+
+  refreshPaperAccountsFromApi: async () => {
+    const token = getToken();
+    if (!token) {
+      set({ paperAccounts: [], paperModeActive: false });
+      return;
+    }
+    const list = await fetchPaperAccounts(token);
+    set({
+      paperAccounts: list,
+      paperModeActive: list.some((a) => a.isActive),
+    });
+  },
+
+  createPaperAccount: async (opts) => {
+    const token = getToken();
+    if (!token) return false;
+    const created = await createPaperAccountApi(token, {
+      name: opts?.name ?? 'Practice account',
+    });
+    if (!created) return false;
+    await get().refreshPaperAccountsFromApi();
+    return true;
+  },
 
   refreshTradesFromApi: async () => {
     const token = getToken();

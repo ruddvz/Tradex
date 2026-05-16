@@ -6,24 +6,26 @@
 
 ---
 
-## 👉 NEXT UP: **[5]** — PWA & mobile shell polish
+## 👉 NEXT UP: **[8.2]** — Paper orders/fills + journal `source=paper`
 
-Implement **`NEXT_STEPS.md` Phase 5**: manifest refinements, offline banner, bottom-nav polish as needed.
+Extend Sprint 4: stub order lifecycle, optional `source` on trades or export path. See `planning/EXECUTION-PLAN.md` Phase 8.
 
-**Context:** `frontend/public`, `frontend/vite.config.ts`, `frontend/src/components/layout/`  
+**Context:** `backend/app/models/`, `backend/app/api/v1/`, `frontend/src/pages/PaperTrading.tsx`  
 **Blocked by:** nothing
 
 ---
 
 ## 🎯 Current Sprint / Phase
 
-**Phase:** Phase 5 — PWA / mobile (next)  
+**Phase:** Phase 8 — Paper trading (in progress) · Phase **5** PWA still open on `NEXT_STEPS`  
 **Previous:** Phase **4** — Daily email + Celery ✓
 
 ### Open Slices
+- [ ] **8.2** — Paper orders/fills stub + journal `source=paper`
 - [ ] **5** — PWA manifest / SW / mobile nav (see `NEXT_STEPS.md` Phase 5)
 
 ### Recently Done
+- [x] **8.1** — `PaperAccount` + paper-accounts API + Paper Trading page + header Paper mode badge (`planning/CHANGELOG.md`)
 - [x] **4** — Email service + Celery beat + notification prefs API + Settings wiring (`planning/CHANGELOG.md`)
 - [x] **3.1–3.2** MT5 sync merged — JSON `POST /sync/mt5`, `GET`/`PUT /settings/mt5`, Fernet password storage, `Mt5SyncModal`, Settings MT5 form, `refreshTradesFromApi`
 - [x] **2.1–2.2** Trade screenshots — upload endpoint, Journal UI, `/uploads`

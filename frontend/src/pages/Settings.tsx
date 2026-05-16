@@ -215,6 +215,7 @@ export function Settings() {
                 className="btn-secondary mt-3 w-full sm:w-auto"
                 onClick={() => {
                   clearToken();
+                  useStore.getState().clearPaperState();
                   showToast(authUiEnabled ? 'Signed out' : 'API session cleared');
                   navigate('/', { replace: true });
                 }}

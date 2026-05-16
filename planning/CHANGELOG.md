@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-16 — cursor/paper-trading-mvp-12fb — feat: Phase 8.1 paper accounts + Paper Trading page
+- Commit: (see git log)
+- Files touched: `backend/app/models/paper_account.py`, `backend/app/schemas/paper_account.py`, `backend/app/api/v1/paper_accounts.py`, `backend/app/api/v1/routes.py`, `backend/app/database.py`, `frontend/src/{App.tsx,store/useStore.ts,types/index.ts,lib/paperAccountsApi.ts,pages/PaperTrading.tsx,components/layout/{Layout,Header,Sidebar}.tsx,pages/Settings.tsx}`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`
+- Tests added / changed: 0
+- Build: pass frontend (`npm run lint`, `npm run build`); backend `python3 -m py_compile` on new modules
+- Status: done
+- Next up: **8.2** — Paper orders/fills stub + journal `source=paper` (or **5** PWA per `ACTIVE.md`)
+- Notes: `GET`/`POST /api/v1/paper-accounts` require Bearer auth. Header shows **Paper mode** when any returned account has `is_active`. Sign-out clears paper state in Zustand. Table `paper_accounts` created via `create_all` on startup.
+
 ## 2026-05-10 — cursor/phase4-daily-email-4e43 — feat: Phase 4 daily email + Celery + notification prefs
 - Commit: (see git log)
 - Files touched: `backend/app/models/user.py`, `backend/app/database.py`, `backend/app/core/config.py`, `backend/app/services/email_service.py`, `backend/app/celery_app.py`, `backend/app/tasks/notifications.py`, `backend/app/api/v1/routes.py`, `backend/.env.example`, `docker-compose.yml`, `frontend/src/pages/Settings.tsx`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`

@@ -778,3 +778,8 @@ async def sync_mt5(
         else "MetaTrader 5 is not available in this environment; sample trades were imported instead."
     )
     return {"status": status, "synced": len(fetched), "new": added, "message": message}
+
+
+from .paper_accounts import router as paper_accounts_router
+
+router.include_router(paper_accounts_router, prefix="/paper-accounts", tags=["paper-accounts"])
