@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-16 — cursor/full-repo-audit-plan-7a9e — docs: full repository audit + execution phases 6–8
+- Commit: (see git log)
+- Files touched: `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`
+- Tests added / changed: 0
+- Build: n/a (planning docs only)
+- Status: done
+- Next up: **5** — PWA / mobile (`NEXT_STEPS.md` Phase 5) **or** **6.1** — API client layer (`EXECUTION-PLAN.md` Phase 6) if prioritizing P0 stabilization
+- Notes: Single canonical audit doc (positioning, P0 tasks, paper-first, security, testing, UI vision); Known Issues row 2 elevated to P0 with Phase 6 pointer; EXECUTION-PLAN adds Phase 5 slices + Phases 6–8+.
+
 ## 2026-05-10 — cursor/phase4-daily-email-4e43 — feat: Phase 4 daily email + Celery + notification prefs
 - Commit: (see git log)
 - Files touched: `backend/app/models/user.py`, `backend/app/database.py`, `backend/app/core/config.py`, `backend/app/services/email_service.py`, `backend/app/celery_app.py`, `backend/app/tasks/notifications.py`, `backend/app/api/v1/routes.py`, `backend/.env.example`, `docker-compose.yml`, `frontend/src/pages/Settings.tsx`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`
