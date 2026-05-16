@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-16 — cursor/full-repo-audit-plan-7a9e — docs: execution plan section references wording
+- Commit: (see git log)
+- Files touched: `planning/EXECUTION-PLAN.md`, `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: n/a
+- Status: done
+- Next up: **5** — PWA / mobile (`NEXT_STEPS.md` Phase 5) **or** **6.1** — API client layer (`EXECUTION-PLAN.md` Phase 6) if prioritizing P0 stabilization
+- Notes: Replaced Unicode section-sign references with plain "section(s)" in Phase 6–8 blurbs.
+
 ## 2026-05-16 — cursor/full-repo-audit-plan-7a9e — docs: full repository audit + execution phases 6–8
 - Commit: (see git log)
 - Files touched: `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`
