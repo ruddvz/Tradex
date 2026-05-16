@@ -5,17 +5,17 @@ import {
   Brain,
   Target,
   BarChart3,
-  Calculator,
+  ClipboardList,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
 const mobileNavItems = [
   { path: '/', label: 'Home', icon: LayoutDashboard },
+  { path: '/action-center', label: 'Tasks', icon: ClipboardList },
   { path: '/journal', label: 'Journal', icon: BookOpen },
   { path: '/playbooks', label: 'AI', icon: Brain },
   { path: '/propfirm', label: 'Prop', icon: Target },
   { path: '/reports', label: 'Reports', icon: BarChart3 },
-  { path: '/calculator', label: 'Calc', icon: Calculator },
 ];
 
 export function MobileNav() {

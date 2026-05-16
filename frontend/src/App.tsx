@@ -38,6 +38,9 @@ const Reports = lazy(() =>
 const Calculator = lazy(() =>
   import('./pages/Calculator').then((m) => ({ default: m.Calculator }))
 );
+const ActionCenter = lazy(() =>
+  import('./pages/ActionCenter').then((m) => ({ default: m.ActionCenter }))
+);
 const Settings = lazy(() =>
   import('./pages/Settings').then((m) => ({ default: m.Settings }))
 );
@@ -82,6 +85,10 @@ const router = createBrowserRouter(
             {
               index: true,
               element: <Dashboard />,
+            },
+            {
+              path: 'action-center',
+              element: <ActionCenter />,
             },
             {
               path: 'journal',

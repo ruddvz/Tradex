@@ -6,24 +6,26 @@
 
 ---
 
-## 👉 NEXT UP: **[5]** — PWA & mobile shell polish
+## 👉 NEXT UP: **[6.3]** — Setup health API + Action Center card
 
-Implement **`NEXT_STEPS.md` Phase 5**: manifest refinements, offline banner, bottom-nav polish as needed.
+Add **`GET /api/v1/setup/health`** (DB, Redis, optional OpenAI/MT5 flags) and surface a compact health strip on Action Center. Optionally auto-open tasks for missing items.
 
-**Context:** `frontend/public`, `frontend/vite.config.ts`, `frontend/src/components/layout/`  
+**Context:** `backend/app/api/v1/`, `frontend/src/pages/ActionCenter.tsx`  
 **Blocked by:** nothing
 
 ---
 
 ## 🎯 Current Sprint / Phase
 
-**Phase:** Phase 5 — PWA / mobile (next)  
+**Phase:** Phase 6 — Action Center (in progress) · Phase 5 PWA still open  
 **Previous:** Phase **4** — Daily email + Celery ✓
 
 ### Open Slices
 - [ ] **5** — PWA manifest / SW / mobile nav (see `NEXT_STEPS.md` Phase 5)
+- [ ] **6.3** — Setup health endpoint + UI card (`planning/TRADEX-SETUP-AND-ACTION-CENTER-PLAN.md`)
 
 ### Recently Done
+- [x] **6.1–6.2** Action Center — `manual_tasks` API, register seed, Action Center page + nav (`planning/CHANGELOG.md`)
 - [x] **4** — Email service + Celery beat + notification prefs API + Settings wiring (`planning/CHANGELOG.md`)
 - [x] **3.1–3.2** MT5 sync merged — JSON `POST /sync/mt5`, `GET`/`PUT /settings/mt5`, Fernet password storage, `Mt5SyncModal`, Settings MT5 form, `refreshTradesFromApi`
 - [x] **2.1–2.2** Trade screenshots — upload endpoint, Journal UI, `/uploads`
@@ -40,6 +42,7 @@ Implement **`NEXT_STEPS.md` Phase 5**: manifest refinements, offline banner, bot
 |---|------|-------|----------|--------|
 | 1 | Data / API | API requires `Authorization: Bearer` for data routes | P1 | By design |
 | 2 | Frontend | **Dashboard** (and most pages) still use **`mockData.ts`** — Journal loads live trades when authenticated; broader API wiring is future work | P2 | Open |
+| 3 | Product | **Action Center** ships tasks API + UI; **setup health** (`GET /setup/health`) not built yet | P2 | Open |
 
 ---
 

@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-16 — cursor/action-center-manual-tasks-12fb — feat: Action Center manual tasks + product plan doc
+- Commit: (see git log)
+- Files touched: `backend/app/models/manual_task.py`, `backend/app/schemas/manual_task.py`, `backend/app/services/manual_tasks_seed.py`, `backend/app/api/v1/manual_tasks.py`, `backend/app/api/v1/routes.py`, `backend/app/database.py`, `frontend/src/pages/ActionCenter.tsx`, `frontend/src/components/tasks/*`, `frontend/src/{App.tsx,types/index.ts}`, `frontend/src/components/layout/{Sidebar,MobileNav}.tsx`, `planning/{TRADEX-SETUP-AND-ACTION-CENTER-PLAN.md,ACTIVE.md,EXECUTION-PLAN.md,CHANGELOG.md}`
+- Tests added / changed: 0 (backend `pip install` blocked by MetaTrader5 wheel in this environment; `py_compile` on new modules OK)
+- Build: pass frontend (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **6.3** — `GET /api/v1/setup/health` + Action Center health strip (or **5** PWA if prioritizing mobile shell)
+- Notes: New users get default checklist rows on `POST /auth/register`; `POST /api/v1/manual-tasks/generate-defaults` is idempotent by task title. Mobile bottom nav replaces Calc slot with Tasks → Action Center.
+
 ## 2026-05-10 — cursor/phase4-daily-email-4e43 — feat: Phase 4 daily email + Celery + notification prefs
 - Commit: (see git log)
 - Files touched: `backend/app/models/user.py`, `backend/app/database.py`, `backend/app/core/config.py`, `backend/app/services/email_service.py`, `backend/app/celery_app.py`, `backend/app/tasks/notifications.py`, `backend/app/api/v1/routes.py`, `backend/.env.example`, `docker-compose.yml`, `frontend/src/pages/Settings.tsx`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`
