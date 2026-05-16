@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useStore } from '../../store/useStore';
+import { getToken } from '../../lib/auth';
+import { createTradeApi } from '../../lib/api/trades';
 import type { Trade } from '../../types';
 
 const defaultTrade: Partial<Trade> = {
@@ -45,13 +47,17 @@ interface Props {
 }
 
 export function AddTradeModal({ onClose }: Props) {
-  const { addTrade } = useStore();
+  const { addTrade, refreshTradesFromApi, refreshMetricsFromApi, selectedTradingAccountId, dataMode } =
+    useStore();
   const [form, setForm] = useState(defaultTrade);
   const [tagInput, setTagInput] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
   const set = (key: keyof Trade, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    setError(null);
     const pnl = parseFloat(
       (
         (form.direction === 'BUY'
@@ -61,6 +67,61 @@ export function AddTradeModal({ onClose }: Props) {
         100
       ).toFixed(2)
     );
+    if (!form.symbol?.trim()) {
+      setError('Symbol is required.');
+      return;
+    }
+    if (!form.lotSize || form.lotSize <= 0) {
+      setError('Lot size must be greater than zero.');
+      return;
+    }
+    if (!form.entryPrice || form.entryPrice <= 0) {
+      setError('Entry price must be greater than zero.');
+      return;
+    }
+    if (form.exitPrice === undefined || form.exitPrice === null || Number.isNaN(form.exitPrice)) {
+      setError('Exit price is required.');
+      return;
+    }
+
+    const token = getToken();
+    if (token) {
+      setSaving(true);
+      try {
+        await createTradeApi({
+          symbol: form.symbol!,
+          direction: form.direction!,
+          entry_price: form.entryPrice!,
+          exit_price: form.exitPrice!,
+          lot_size: form.lotSize!,
+          entry_time: new Date().toISOString(),
+          exit_time: new Date().toISOString(),
+          pnl,
+          stop_loss: form.stopLoss,
+          take_profit: form.takeProfit,
+          strategy: form.strategy,
+          setup: form.strategy,
+          session: form.session,
+          emotion: form.emotion,
+          emotion_score: form.emotionScore,
+          notes: form.notes ?? '',
+          tags: form.tags ?? [],
+          duration: 60,
+          commission: form.commission!,
+          swap: form.swap!,
+          account_id: selectedTradingAccountId,
+        });
+        await refreshTradesFromApi();
+        await refreshMetricsFromApi();
+        onClose();
+      } catch (e) {
+        setError(e instanceof Error ? e.message : 'Could not save trade');
+      } finally {
+        setSaving(false);
+      }
+      return;
+    }
+
     const status = pnl > 0 ? 'WIN' : pnl < 0 ? 'LOSS' : 'BREAKEVEN';
     const slDist = Math.abs(form.entryPrice! - form.stopLoss!);
     const tpDist = Math.abs(form.takeProfit! - form.entryPrice!);
@@ -95,7 +156,8 @@ export function AddTradeModal({ onClose }: Props) {
       maxDrawdown: 0,
       setup: form.strategy!,
       broker: 'Exness',
-      account: 'PRO-10042',
+      account: 'demo-local',
+      source: 'manual',
     };
 
     addTrade(newTrade);
@@ -136,6 +198,16 @@ export function AddTradeModal({ onClose }: Props) {
         </div>
 
         <div className="p-5 space-y-5">
+          {dataMode === 'demo' && (
+            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-200">
+              Demo mode — trades stay in this browser only until you sign in.
+            </p>
+          )}
+          {error && (
+            <p className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-200">
+              {error}
+            </p>
+          )}
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="label">Symbol</label>
@@ -320,9 +392,14 @@ export function AddTradeModal({ onClose }: Props) {
             <button type="button" onClick={onClose} className="btn-secondary flex-1">
               Cancel
             </button>
-            <button type="button" onClick={handleSubmit} className="btn-primary flex-1">
+            <button
+              type="button"
+              onClick={() => void handleSubmit()}
+              disabled={saving}
+              className="btn-primary flex-1 disabled:opacity-50"
+            >
               <Plus className="w-4 h-4" />
-              Log Trade
+              {saving ? 'Saving…' : 'Log Trade'}
             </button>
           </div>
         </div>

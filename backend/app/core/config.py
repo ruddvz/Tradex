@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     MT5_SERVER: Optional[str] = None
     MT5_LOGIN: Optional[int] = None
     MT5_PASSWORD: Optional[str] = None
+    # When MT5 is unavailable: import sample trades only if True and DEBUG (see /sync/mt5)
+    ALLOW_DEMO_MT5_FALLBACK: bool = False
 
     # CORS
     CORS_ORIGINS: list[str] = ["http://localhost:5173", "http://localhost:3000"]

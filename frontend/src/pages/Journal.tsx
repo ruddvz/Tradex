@@ -273,7 +273,7 @@ function TradeDrawer({
           <button
             type="button"
             onClick={() => {
-              deleteTrade(trade.id);
+              void deleteTrade(trade.id);
               onClose();
             }}
             className="btn-danger w-full justify-center"

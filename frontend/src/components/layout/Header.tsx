@@ -27,7 +27,7 @@ export function Header({
   onAddTrade,
 }: HeaderProps) {
   const navigate = useNavigate();
-  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, openMt5SyncModal, aiInsights, dataSource } =
+  const { sidebarOpen, selectedDateRange, setDateRange, isSyncing, openMt5SyncModal, aiInsights, dataMode } =
     useStore();
 
   return (
@@ -48,17 +48,17 @@ export function Header({
         <span
           className={clsx(
             'shrink-0 mt-0.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wide border',
-            dataSource === 'live'
+            dataMode === 'live'
               ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300'
               : 'border-amber-500/35 bg-amber-500/10 text-amber-200'
           )}
           title={
-            dataSource === 'live'
+            dataMode === 'live'
               ? 'Trades and headline metrics load from your account (API).'
               : 'Sample data — sign in to load your journal from the API.'
           }
         >
-          {dataSource === 'live' ? 'Live' : 'Demo'}
+          {dataMode === 'live' ? 'Live' : 'Demo'}
         </span>
       </div>
 

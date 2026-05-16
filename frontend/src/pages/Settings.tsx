@@ -19,7 +19,7 @@ const brokers = [
 
 export function Settings() {
   const navigate = useNavigate();
-  const { account, syncTrades, isSyncing, openMt5SyncModal, resetToDemo } = useStore();
+  const { account, syncTrades, isSyncing, openMt5SyncModal, hydrateLiveSession } = useStore();
   const { showToast } = useToast();
   const [notifications, setNotifications] = useState({ email: true, push: true, drawdownAlerts: true, dailyReport: false });
   const [connectedBrokers, setConnectedBrokers] = useState(['Exness']);
@@ -215,7 +215,7 @@ export function Settings() {
                 className="btn-secondary mt-3 w-full sm:w-auto"
                 onClick={() => {
                   clearToken();
-                  resetToDemo();
+                  void hydrateLiveSession();
                   showToast(authUiEnabled ? 'Signed out' : 'API session cleared');
                   navigate('/', { replace: true });
                 }}

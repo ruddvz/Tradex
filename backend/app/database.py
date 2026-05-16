@@ -38,6 +38,16 @@ def _ensure_user_mt5_columns() -> None:
             conn.execute(text(sql))
 
 
+def _ensure_trade_source_column() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("trades"):
+        return
+    existing = {c["name"] for c in insp.get_columns("trades")}
+    if "source" not in existing:
+        with engine.begin() as conn:
+            conn.execute(text("ALTER TABLE trades ADD COLUMN source VARCHAR(32) DEFAULT 'manual'"))
+
+
 def init_db() -> None:
     # Import models so they register metadata before create_all
     from .models import challenge  # noqa: F401
@@ -45,6 +55,9 @@ def init_db() -> None:
     from .models import notebook  # noqa: F401
     from .models import trade  # noqa: F401
     from .models import user  # noqa: F401
+    from .models import trading_account  # noqa: F401
+    from .models import paper  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
     _ensure_user_mt5_columns()
+    _ensure_trade_source_column()

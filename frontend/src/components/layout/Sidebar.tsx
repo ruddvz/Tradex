@@ -15,6 +15,7 @@ import {
   RefreshCw,
   TrendingUp,
   Award,
+  Wallet,
   ClipboardList,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
@@ -24,6 +25,7 @@ const navItems = [
   { path: '/', label: 'Home', icon: LayoutDashboard },
   { path: '/action-center', label: 'Action Center', icon: ClipboardList },
   { path: '/journal', label: 'Trade Journal', icon: BookOpen },
+  { path: '/paper', label: 'Paper', icon: Wallet },
   { path: '/playbooks', label: 'AI Playbooks', icon: Brain },
   { path: '/propfirm', label: 'Prop Firm Mode', icon: Target },
   { path: '/notebook', label: 'Notebook', icon: NotebookPen },

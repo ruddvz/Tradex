@@ -9,7 +9,7 @@ import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
 export function Layout() {
-  const { sidebarOpen, mt5SyncModalOpen } = useStore();
+  const { sidebarOpen, mt5SyncModalOpen, hydrateLiveSession } = useStore();
   const location = useLocation();
   const [bootOverlay, setBootOverlay] = useState(true);
   const [online, setOnline] = useState(() =>
@@ -17,13 +17,13 @@ export function Layout() {
   );
 
   useEffect(() => {
-    void useStore.getState().hydrateFromApi();
+    void useStore.getState().hydrateLiveSession();
   }, [location.pathname]);
 
   useEffect(() => {
     const onUp = () => {
       setOnline(true);
-      void useStore.getState().hydrateFromApi();
+      void useStore.getState().hydrateLiveSession();
     };
     const onDown = () => setOnline(false);
     window.addEventListener('online', onUp);
@@ -41,12 +41,16 @@ export function Layout() {
       const elapsed = performance.now() - start;
       window.setTimeout(() => setBootOverlay(false), Math.max(0, minMs - elapsed));
     };
-    if (typeof document !== 'undefined' && document.fonts?.ready) {
-      void document.fonts.ready.then(endBoot);
-    } else {
+    const run = async () => {
+      const fontsReady =
+        typeof document !== 'undefined' && document.fonts?.ready
+          ? document.fonts.ready
+          : Promise.resolve();
+      await Promise.all([hydrateLiveSession(), fontsReady]);
       endBoot();
-    }
-  }, []);
+    };
+    void run();
+  }, [hydrateLiveSession]);
 
   return (
     <div className="min-h-screen flex app-bg">

@@ -30,7 +30,17 @@ import type { AIInsight } from '../types';
 export function Dashboard() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-  const { metrics, trades, aiInsights, dismissInsight } = useStore();
+  const {
+    metrics,
+    trades,
+    aiInsights,
+    dismissInsight,
+    dataMode,
+    bootstrapError,
+    tradingAccounts,
+    selectedTradingAccountId,
+    setSelectedTradingAccountId,
+  } = useStore();
   const recentActivity = trades.slice(0, 3);
   const topInsight = aiInsights[0];
   const [dismissingId, setDismissingId] = useState<string | null>(null);
@@ -59,6 +69,41 @@ export function Dashboard() {
         subtitle="Overview of your trading performance"
         showDateRange={false}
       />
+
+      {(bootstrapError || dataMode === 'demo' || (dataMode === 'live' && tradingAccounts.length > 0)) && (
+        <div className="px-5 pt-4 space-y-2">
+          {dataMode === 'demo' && (
+            <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-2 text-xs text-amber-100">
+              Demo dataset — sign in to load your journal, metrics, and paper accounts from the API.
+            </div>
+          )}
+          {bootstrapError && (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-100">
+              Live data error: {bootstrapError}
+            </div>
+          )}
+          {dataMode === 'live' && tradingAccounts.length > 0 && (
+            <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+              <span className="rounded-md bg-brand-500/15 px-2 py-1 text-brand-300">Live data</span>
+              <label className="sr-only" htmlFor="acct-sel">
+                Trading account
+              </label>
+              <select
+                id="acct-sel"
+                className="select max-w-xs py-1.5 text-xs"
+                value={selectedTradingAccountId ?? ''}
+                onChange={(e) => setSelectedTradingAccountId(e.target.value || null)}
+              >
+                {tradingAccounts.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name} ({a.account_type})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="page-shell px-5 py-6 space-y-7 md:space-y-8">
         <HeroMetricCard

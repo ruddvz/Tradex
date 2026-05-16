@@ -44,6 +44,7 @@ const ActionCenter = lazy(() =>
 const Settings = lazy(() =>
   import('./pages/Settings').then((m) => ({ default: m.Settings }))
 );
+const Paper = lazy(() => import('./pages/Paper').then((m) => ({ default: m.Paper })));
 
 const AppShell = requireLogin ? ProtectedLayout : Layout;
 
@@ -93,6 +94,14 @@ const router = createBrowserRouter(
             {
               path: 'journal',
               element: <Journal />,
+            },
+            {
+              path: 'paper',
+              element: (
+                <Suspense fallback={<RouteFallback />}>
+                  <Paper />
+                </Suspense>
+              ),
             },
             {
               path: 'playbooks',

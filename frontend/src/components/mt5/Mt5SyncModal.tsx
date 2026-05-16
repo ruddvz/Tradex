@@ -61,9 +61,11 @@ export function Mt5SyncModal({ open }: { open: boolean }) {
       return;
     }
     const msg =
-      res.status === 'demo'
-        ? res.message ?? 'Demo trades imported (MT5 terminal not available here).'
-        : `Sync complete${res.message ? ` — ${res.message}` : '.'}`;
+      res.import_kind === 'mt5_demo' || res.demo_fallback_used
+        ? res.message ?? 'Demo sample import — not live broker data.'
+        : res.status === 'demo'
+          ? res.message ?? 'Demo trades imported (MT5 terminal not available here).'
+          : `Sync complete${res.message ? ` — ${res.message}` : '.'}`;
     showToast(msg);
     closeMt5SyncModal();
   };

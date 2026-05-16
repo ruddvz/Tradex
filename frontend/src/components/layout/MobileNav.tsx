@@ -4,17 +4,18 @@ import {
   BookOpen,
   Brain,
   Target,
-  Settings,
+  BarChart3,
+  Wallet,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
-/** NEXT_STEPS Phase 5: five primary destinations on small screens (sidebar on md+). */
 const mobileNavItems = [
   { path: '/', label: 'Home', icon: LayoutDashboard },
   { path: '/journal', label: 'Journal', icon: BookOpen },
-  { path: '/playbooks', label: 'Playbooks', icon: Brain },
+  { path: '/paper', label: 'Paper', icon: Wallet },
+  { path: '/playbooks', label: 'AI', icon: Brain },
   { path: '/propfirm', label: 'Prop', icon: Target },
-  { path: '/settings', label: 'Settings', icon: Settings },
+  { path: '/reports', label: 'Reports', icon: BarChart3 },
 ];
 
 export function MobileNav() {
@@ -40,17 +41,17 @@ export function MobileNav() {
       {mobileNavItems.map(({ path, label, icon: Icon }) => {
         const isActive =
           path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
-        const isPlaybooks = path === '/playbooks';
+        const isAi = path === '/playbooks';
         return (
           <NavLink
             key={path}
             to={path}
-            end={path === '/' || path === '/settings'}
+            end={path === '/'}
             aria-current={isActive ? 'page' : undefined}
             className={clsx(
               'relative flex flex-1 flex-col items-center justify-center gap-1 rounded-[18px] min-h-[48px] px-1 py-2 transition-colors duration-200',
-              isActive && !isPlaybooks && 'bg-success/15 text-success',
-              isActive && isPlaybooks && 'bg-ai/15 text-ai',
+              isActive && !isAi && 'bg-success/15 text-success',
+              isActive && isAi && 'bg-ai/15 text-ai',
               !isActive && 'text-text-muted hover:text-text-secondary'
             )}
           >

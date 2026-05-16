@@ -41,7 +41,7 @@ Add `paper_accounts` (or first slice: models + empty page + `PAPER MODE` badge).
 | # | Area | Issue | Priority | Status |
 |---|------|-------|----------|--------|
 | 1 | Data / API | API requires `Authorization: Bearer` for data routes | P1 | By design |
-| 2 | Frontend | **Dashboard** and several surfaces still use **`mockData.ts`**; Playbooks and some widgets remain mock-only while the core shell hydrates from the API (`hydrateFromApi`) | **P0** (dashboard wire-up) | Open |
+| 2 | Frontend | **Dashboard** and several surfaces still use **`mockData.ts`**; Playbooks and some widgets remain mock-only while the core shell hydrates from the API (`hydrateLiveSession`) | **P0** (dashboard wire-up) | Open |
 | 3 | Product | **Paper trading, risk center, backtesting** not built yet (roadmap Sprints 4–6) | P2 | Open |
 
 ---

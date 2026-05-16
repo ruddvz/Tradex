@@ -45,7 +45,7 @@ export function Auth() {
         return;
       }
       setToken(data.access_token);
-      void useStore.getState().hydrateFromApi();
+      void useStore.getState().hydrateLiveSession();
       navigate('/', { replace: true });
     } catch {
       setError('Network error — is the API running (see vite proxy / docker-compose)?');
