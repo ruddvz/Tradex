@@ -6,25 +6,26 @@
 
 ---
 
-## 👉 NEXT UP: **[6.3]** — Setup health API + Action Center card
+## 👉 NEXT UP: **[5]** — PWA polish (Phase 5)
 
-Add **`GET /api/v1/setup/health`** (DB, Redis, optional OpenAI/MT5 flags) and surface a compact health strip on Action Center. Optionally auto-open tasks for missing items.
+Refine manifest, offline banner behavior, and mobile shell per `NEXT_STEPS.md` Phase 5. Alternatively pick **[7.3]** to label or wire Playbooks off mock data.
 
-**Context:** `backend/app/api/v1/`, `frontend/src/pages/ActionCenter.tsx`  
+**Context:** `frontend/public`, `frontend/vite.config.ts`, `frontend/src/components/layout/`  
 **Blocked by:** nothing
 
 ---
 
 ## 🎯 Current Sprint / Phase
 
-**Phase:** Phase 6 — Action Center (in progress) · Phase 5 PWA still open  
-**Previous:** Phase **4** — Daily email + Celery ✓
+**Phase:** Phase 5 PWA (next) · Phase 7 live-data shell (partial)  
+**Previous:** Phase **6** — Action Center + setup health ✓
 
 ### Open Slices
 - [ ] **5** — PWA manifest / SW / mobile nav (see `NEXT_STEPS.md` Phase 5)
-- [ ] **6.3** — Setup health endpoint + UI card (`planning/TRADEX-SETUP-AND-ACTION-CENTER-PLAN.md`)
+- [ ] **7.3** — Playbooks and other mock-only surfaces (`planning/EXECUTION-PLAN.md`)
 
 ### Recently Done
+- [x] **6.3** + **7.1–7.2** — `GET /api/v1/setup/health`, `hydrateFromApi`, Live/Demo header badge, notebook API writes (`planning/CHANGELOG.md`)
 - [x] **6.1–6.2** Action Center — `manual_tasks` API, register seed, Action Center page + nav (`planning/CHANGELOG.md`)
 - [x] **4** — Email service + Celery beat + notification prefs API + Settings wiring (`planning/CHANGELOG.md`)
 - [x] **3.1–3.2** MT5 sync merged — JSON `POST /sync/mt5`, `GET`/`PUT /settings/mt5`, Fernet password storage, `Mt5SyncModal`, Settings MT5 form, `refreshTradesFromApi`
@@ -41,8 +42,8 @@ Add **`GET /api/v1/setup/health`** (DB, Redis, optional OpenAI/MT5 flags) and su
 | # | Area | Issue | Priority | Status |
 |---|------|-------|----------|--------|
 | 1 | Data / API | API requires `Authorization: Bearer` for data routes | P1 | By design |
-| 2 | Frontend | **Dashboard** (and most pages) still use **`mockData.ts`** — Journal loads live trades when authenticated; broader API wiring is future work | P2 | Open |
-| 3 | Product | **Action Center** ships tasks API + UI; **setup health** (`GET /setup/health`) not built yet | P2 | Open |
+| 2 | Frontend | **Playbooks** (and a few analytics widgets) still use **mock-only** content when logged in; core shell uses API via `hydrateFromApi` | P2 | Open |
+| 3 | Product | **Paper / risk / backtest** domains from the roadmap are not implemented yet | P2 | Open |
 
 ---
 

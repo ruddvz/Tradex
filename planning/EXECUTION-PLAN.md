@@ -79,7 +79,17 @@
 
 - [x] **6.1** `ManualTask` model + `/api/v1/manual-tasks` CRUD + seed on register + `POST .../generate-defaults`
 - [x] **6.2** Action Center UI (tabs, filters, drawer) + sidebar + mobile Tasks entry
-- [ ] **6.3** `GET /api/v1/setup/health` + setup health summary in Action Center
+- [x] **6.3** `GET /api/v1/setup/health` + setup health summary in Action Center
+
+---
+
+## Phase 7 — Live dashboard data (Sprint 1 shell)
+
+> **Goal:** Logged-in shell loads trades, analytics, notebook, challenges, and AI insights from the API; demo badge when logged out.
+
+- [x] **7.1** Zustand `hydrateFromApi` + `dataSource` + Header Live/Demo badge + sign-out reset
+- [x] **7.2** Notebook create/update/delete via API when authenticated
+- [ ] **7.3** Remove remaining mock-only surfaces (e.g. Playbooks) or label them explicitly
 
 ---
 

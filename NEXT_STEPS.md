@@ -6,8 +6,8 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ## Current State (Already Done)
 
-- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded shell (**1.3**); **`Mt5SyncModal`** from header/sidebar; **`syncTrades`** → **`POST /api/v1/sync/mt5`** (JSON) + **`GET /api/v1/trades`** refresh when authenticated; **Journal** uses API trades when logged in; **Dashboard** still largely **`mockData.ts`** until wired
-- FastAPI: JWT (**1.1**), PostgreSQL trades / notebook / challenges (**1.2**), trade screenshots (**2.1–2.2**), **`GET`/`PUT /api/v1/settings/mt5`** with Fernet-encrypted MT5 password, **`POST /api/v1/sync/mt5`** with saved-credentials fallback (imports demo samples when MT5 unavailable), analytics, AI insights
+- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded shell (**1.3**); **`Mt5SyncModal`**; **`syncTrades`** → **`POST /api/v1/sync/mt5`**; **`useStore.hydrateFromApi`** loads trades, **`/analytics/metrics`**, notebook, challenges, and **`POST /ai/insights`** when a token exists; **Header** shows **Live** vs **Demo**; **Action Center** includes **`GET /api/v1/setup/health`**; **Playbooks** remain mock-first until slice **7.3**
+- FastAPI: JWT (**1.1**), PostgreSQL trades / notebook / challenges (**1.2**), trade screenshots (**2.1–2.2**), **`GET`/`PUT /api/v1/settings/mt5`**, **`POST /api/v1/sync/mt5`**, analytics, AI insights, **`GET /api/v1/setup/health`**, manual tasks API
 - **`Authorization: Bearer`** on `/api/v1/*` except `GET /health` and `POST /auth/register` / `POST /auth/login`
 
 ---

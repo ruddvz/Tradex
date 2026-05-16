@@ -80,6 +80,13 @@ export function PropFirm() {
   return (
     <div className="min-h-screen">
       <Header title="Prop Firm Mode" subtitle="Track your funded challenge progress" />
+      {propChallenge.id === '__empty__' && (
+        <div className="px-4 md:px-6 lg:px-8 max-w-6xl mx-auto pt-2">
+          <div className="rounded-xl border border-surface-border bg-dark-300/40 px-4 py-3 text-sm text-slate-400">
+            No prop challenge saved yet. Add one via the API or a future in-app wizard; numbers below are neutral placeholders.
+          </div>
+        </div>
+      )}
 
       <div className="page-shell p-6 space-y-6">
         {/* Challenge selector + hero ring (Ui.md §10.4) */}

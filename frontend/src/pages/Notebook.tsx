@@ -109,7 +109,7 @@ function NoteCard({
               <button
                 type="button"
                 onClick={() => {
-                  deleteNotebookEntry(note.id);
+                  void deleteNotebookEntry(note.id);
                   setConfirmDelete(null);
                 }}
                 className="text-xs text-red-400 hover:text-red-300 font-medium"
@@ -272,9 +272,8 @@ export function Notebook() {
   }, [notebook, search, typeFilter]);
 
   const togglePin = (entry: NotebookEntry) => {
-    updateNotebookEntry(entry.id, {
+    void updateNotebookEntry(entry.id, {
       pinned: !entry.pinned,
-      updatedAt: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
     });
   };
 

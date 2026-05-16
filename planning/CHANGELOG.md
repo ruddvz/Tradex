@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-16 — cursor/setup-health-live-data-12fb — feat: setup health API + live store hydration
+- Commit: (see git log)
+- Files touched: `backend/app/services/setup_health.py`, `backend/app/api/v1/setup.py`, `backend/app/api/v1/routes.py`, `frontend/src/lib/liveApi.ts`, `frontend/src/store/useStore.ts`, `frontend/src/components/layout/{Layout,Header}.tsx`, `frontend/src/pages/{ActionCenter,Auth,Settings,PropFirm,Journal}.tsx`, `frontend/src/components/notebook/NoteEditor.tsx`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`, `NEXT_STEPS.md`
+- Tests added / changed: 0
+- Build: pass frontend (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **5** — PWA Phase 5 polish, or **7.3** — Playbooks / mock labeling
+- Notes: `GET /api/v1/setup/health` checks DB ping, Redis ping, OpenAI key, MT5 saved creds, and flags weak default `SECRET_KEY`. Layout hydrates on route change + online event; sign-out calls `resetToDemo`. Notebook mutations call REST when Bearer present.
+
 ## 2026-05-16 — cursor/action-center-manual-tasks-12fb — feat: Action Center manual tasks + product plan doc
 - Commit: (see git log)
 - Files touched: `backend/app/models/manual_task.py`, `backend/app/schemas/manual_task.py`, `backend/app/services/manual_tasks_seed.py`, `backend/app/api/v1/manual_tasks.py`, `backend/app/api/v1/routes.py`, `backend/app/database.py`, `frontend/src/pages/ActionCenter.tsx`, `frontend/src/components/tasks/*`, `frontend/src/{App.tsx,types/index.ts}`, `frontend/src/components/layout/{Sidebar,MobileNav}.tsx`, `planning/{TRADEX-SETUP-AND-ACTION-CENTER-PLAN.md,ACTIVE.md,EXECUTION-PLAN.md,CHANGELOG.md}`
