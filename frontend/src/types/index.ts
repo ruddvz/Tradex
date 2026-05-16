@@ -33,6 +33,8 @@ export interface Trade {
   setup: string;
   broker: string;
   account: string;
+  /** manual | mt5_live | mt5_demo | csv | paper | backtest */
+  source?: string;
 }
 
 export type EmotionType = 

@@ -15,6 +15,7 @@ import {
   RefreshCw,
   TrendingUp,
   Award,
+  Wallet,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
@@ -22,6 +23,7 @@ import { clsx } from 'clsx';
 const navItems = [
   { path: '/', label: 'Home', icon: LayoutDashboard },
   { path: '/journal', label: 'Trade Journal', icon: BookOpen },
+  { path: '/paper', label: 'Paper', icon: Wallet },
   { path: '/playbooks', label: 'AI Playbooks', icon: Brain },
   { path: '/propfirm', label: 'Prop Firm Mode', icon: Target },
   { path: '/notebook', label: 'Notebook', icon: NotebookPen },

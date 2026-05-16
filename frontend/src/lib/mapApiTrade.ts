@@ -38,6 +38,7 @@ export function mapApiTradeRow(row: Record<string, unknown>): Trade {
     setup: String(row.setup ?? ''),
     broker: String(row.broker ?? ''),
     account: String(row.account_id ?? ''),
+    source: typeof row.source === 'string' ? row.source : 'manual',
     screenshot:
       typeof row.screenshot_url === 'string' ? row.screenshot_url : undefined,
     screenshotBeforeUrl:

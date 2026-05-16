@@ -76,6 +76,8 @@ class Trade(Base):
     broker = Column(String(100))
     mt5_ticket = Column(String, index=True)  # scoped per user in app logic; no global unique (multi-tenant)
 
+    source = Column(String(32), nullable=False, default="manual", index=True)
+
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
 

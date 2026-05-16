@@ -154,7 +154,7 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
 
 export function Playbooks() {
   const { showToast } = useToast();
-  const { playbooks, aiInsights, trades } = useStore();
+  const { playbooks, aiInsights, trades, dataMode } = useStore();
   const [selected, setSelected] = useState<Playbook | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -183,6 +183,11 @@ export function Playbooks() {
       <Header title="AI Playbooks" subtitle="Pattern detection & performance intelligence" />
 
       <div className="page-shell p-6 space-y-6">
+        {dataMode === 'live' && (
+          <p className="rounded-lg border border-slate-600/40 bg-slate-800/40 px-3 py-2 text-xs text-slate-300">
+            Playbook cards are still sample content; trade stats below use your live journal when signed in.
+          </p>
+        )}
         {createOpen && <CreatePlaybookModal onClose={() => setCreateOpen(false)} />}
         {/* AI Banner */}
         <div className="p-5 rounded-xl bg-gradient-to-r from-brand-500/10 to-blue-500/10 border border-brand-500/20">

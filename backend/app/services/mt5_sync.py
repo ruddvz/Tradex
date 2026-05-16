@@ -26,17 +26,17 @@ class MT5SyncService:
                 logger.error("MT5 initialize() failed")
                 return False
             if not mt5.login(self.login, password=self.password, server=self.server):
-                logger.error(f"MT5 login failed: {mt5.last_error()}")
+                logger.error("MT5 login failed: %s", mt5.last_error())
                 mt5.shutdown()
                 return False
             self._connected = True
-            logger.info(f"MT5 connected: {mt5.account_info().name}")
+            logger.info("MT5 connected: %s", mt5.account_info().name)
             return True
         except ImportError:
-            logger.warning("MetaTrader5 package not installed. Using mock data.")
+            logger.warning("MetaTrader5 package not installed.")
             return False
         except Exception as e:
-            logger.error(f"MT5 connection error: {e}")
+            logger.error("MT5 connection error: %s", e)
             return False
 
     def get_account_info(self) -> Optional[Dict[str, Any]]:
@@ -57,7 +57,7 @@ class MT5SyncService:
                 "leverage": info.leverage,
             }
         except Exception as e:
-            logger.error(f"Get account info error: {e}")
+            logger.error("Get account info error: %s", e)
             return None
 
     def fetch_trades(
@@ -65,9 +65,9 @@ class MT5SyncService:
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
     ) -> List[Dict[str, Any]]:
-        """Fetch closed trades from MT5 history."""
+        """Fetch closed trades from MT5 history (empty if not connected)."""
         if not self._connected:
-            return self._mock_trades()
+            return []
 
         try:
             import MetaTrader5 as mt5
@@ -116,7 +116,7 @@ class MT5SyncService:
             return trades
 
         except Exception as e:
-            logger.error(f"Fetch trades error: {e}")
+            logger.error("Fetch trades error: %s", e)
             return []
 
     def disconnect(self):
@@ -128,8 +128,9 @@ class MT5SyncService:
         except Exception:
             pass
 
-    def _mock_trades(self) -> List[Dict[str, Any]]:
-        """Return sample trades when MT5 is not available (dev/demo mode)."""
+    @staticmethod
+    def demo_sample_trades() -> List[Dict[str, Any]]:
+        """Explicit demo payload — only used when sync route allows demo fallback."""
         return [
             {
                 "ticket": "demo-001", "symbol": "XAUUSD", "direction": "BUY",
