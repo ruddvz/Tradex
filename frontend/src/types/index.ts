@@ -158,3 +158,50 @@ export interface EquityPoint {
   balance: number;
   drawdown: number;
 }
+
+export type ManualTaskPriority = 'critical' | 'high' | 'medium' | 'low';
+export type ManualTaskStatus =
+  | 'not_started'
+  | 'in_progress'
+  | 'blocked'
+  | 'done'
+  | 'skipped'
+  | 'failed';
+
+export type ManualTaskCategory =
+  | 'initial_setup'
+  | 'security'
+  | 'broker_connection'
+  | 'paper_trading'
+  | 'risk'
+  | 'journal_cleanup'
+  | 'strategy_testing'
+  | 'pwa_setup'
+  | 'maintenance'
+  | 'critical_issues';
+
+export type ManualTaskActionType = 'internal_route' | 'external_url' | 'command' | 'manual';
+
+export interface ManualTaskChecklistItem {
+  id: string;
+  label: string;
+  completed: boolean;
+}
+
+export interface ManualTask {
+  id: string;
+  user_id: string;
+  title: string;
+  description?: string;
+  category: ManualTaskCategory | string;
+  priority: ManualTaskPriority | string;
+  status: ManualTaskStatus | string;
+  checklist: ManualTaskChecklistItem[];
+  action_type?: ManualTaskActionType | string;
+  action_payload?: Record<string, unknown>;
+  due_at?: string;
+  completed_at?: string;
+  notes?: string;
+  created_at?: string;
+  updated_at?: string;
+}

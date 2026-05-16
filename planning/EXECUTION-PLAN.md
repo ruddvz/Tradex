@@ -108,6 +108,16 @@
 
 ---
 
+## Phase 6 — Action Center (manual tasks)
+
+> Product spec: `planning/TRADEX-SETUP-AND-ACTION-CENTER-PLAN.md`
+
+- [x] **6.1** `ManualTask` model + `/api/v1/manual-tasks` CRUD + seed on register + `POST .../generate-defaults`
+- [x] **6.2** Action Center UI (tabs, filters, drawer) + sidebar + mobile Tasks entry
+- [ ] **6.3** `GET /api/v1/setup/health` + setup health summary in Action Center
+
+---
+
 ## Done (Summary)
 
 | Phase | Slices | Shipped | Date |

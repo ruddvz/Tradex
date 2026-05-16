@@ -38,6 +38,7 @@ from ...services.trade_codec import (
     trade_to_api_dict,
 )
 from ...tasks.notifications import merge_notification_prefs, run_daily_report_cycle
+from ...services.manual_tasks_seed import ensure_default_manual_tasks
 
 router = APIRouter(prefix="/api/v1")
 
@@ -260,6 +261,8 @@ def register(body: UserRegister, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    ensure_default_manual_tasks(db, uid)
 
     token = create_access_token(user.id)
     return TokenResponse(access_token=token)
@@ -778,3 +781,8 @@ async def sync_mt5(
         else "MetaTrader 5 is not available in this environment; sample trades were imported instead."
     )
     return {"status": status, "synced": len(fetched), "new": added, "message": message}
+
+
+from .manual_tasks import router as manual_tasks_router
+
+router.include_router(manual_tasks_router, prefix="/manual-tasks", tags=["manual-tasks"])
