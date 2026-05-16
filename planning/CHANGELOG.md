@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-05-16 — cursor/implement-p0-parallel-7a9e — docs: CHANGELOG commit pointer for P0 slice
+- Commit: eacece0 (docs: record commit sha in CHANGELOG for P0 slice)
+- Files touched: `planning/CHANGELOG.md`
+- Tests added / changed: 0
+- Build: n/a
+- Status: done
+- Next up: Same as previous entry — Reports/Settings live wiring; backend tests.
+- Notes: Cosmetic follow-up to set `Commit:` line for the main P0 commit `5d504c0`.
+
 ## 2026-05-16 — cursor/implement-p0-parallel-7a9e — feat: P0 live stack (trading accounts, trade source, MT5 guard, paper, API client + hydrate)
 - Commit: 5d504c0 (feat: live trading accounts, MT5 demo guard, paper MVP, frontend hydrate)
 - Files touched: `backend/app/api/v1/routes.py`, `backend/app/models/{trade,trading_account,paper}.py`, `backend/app/services/{mt5_sync,trade_codec,paper_service}.py`, `backend/app/{database,core/config}.py`, `backend/.env.example`, `frontend/src/lib/api/*`, `frontend/src/store/useStore.ts`, `frontend/src/{App,components/layout/*,pages/*,types,mount points}.tsx` (see git diff), `planning/CHANGELOG.md`
