@@ -80,7 +80,7 @@
 
 ## Phase 6 — Live data & trust (P0 stabilization)
 
-> **Goal:** Backend as source of truth when authenticated. Acceptance criteria: **`planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md`** §5 (P0.1–P0.3).
+> **Goal:** Backend as source of truth when authenticated. Acceptance criteria: **`planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md`** section 5 (P0.1–P0.3).
 
 - [ ] **6.1** API client layer (`frontend/src/lib/api/*`) + centralized auth headers / errors
 - [ ] **6.2** Replace mock-driven pages when authenticated (Dashboard, Reports, Playbooks, PropFirm, Journal consistency) + loading/error/empty states + demo labels
@@ -92,7 +92,7 @@
 
 ## Phase 7 — Paper trading MVP
 
-> **Goal:** Virtual balance, simulated fills, rule violations, daily loss lockout. See audit §5 P0.5 and §18 Phase 2.
+> **Goal:** Virtual balance, simulated fills, rule violations, daily loss lockout. See audit section 5 (P0.5) and section 18 Phase 2.
 
 - [ ] **7.1** Paper models + migrations (`PaperAccount`, orders, positions, fills, violations)
 - [ ] **7.2** Paper engine + risk pre-checks + REST endpoints
@@ -102,9 +102,9 @@
 
 ## Phase 8+ — Strategy lab, backtest, AI coach, Risk Center
 
-> **Detail:** `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` §6–§10. Split into numbered slices when starting Phase 8.
+> **Detail:** `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` sections 6–10. Split into numbered slices when starting Phase 8.
 
-- [ ] **8.0** Split `routes.py` into domain routers + Alembic-first migrations (audit §12)
+- [ ] **8.0** Split `routes.py` into domain routers + Alembic-first migrations (audit section 12)
 
 ---
 
