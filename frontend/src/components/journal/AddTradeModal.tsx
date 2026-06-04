@@ -4,7 +4,6 @@ import { clsx } from 'clsx';
 import { useStore } from '../../store/useStore';
 import { getToken } from '../../lib/auth';
 import { createTradeApi } from '../../lib/api/trades';
-import { detailMessage } from '../../lib/api/client';
 import type { Trade } from '../../types';
 
 const defaultTrade: Partial<Trade> = {
