@@ -1,23 +1,24 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **8.2** — Alembic revision for incremental schema changes; optional `init_db` → migrate-only
+## 👉 NEXT UP: **6.1** — API client layer polish (`frontend/src/lib/api/*`) + centralized errors
 
-See `backend/MIGRATIONS.md` and `planning/EXECUTION-PLAN.md`.
+See `planning/EXECUTION-PLAN.md` Phase 6 (P0 stabilization).
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **8.1** on `cursor/audit-phase-8-1-parallel-b0b9`  
-**Stack:** audit PRs #23–#28
+**Phase:** **8.2** on `cursor/audit-phase-8-2-parallel-b0b9`  
+**Stack:** audit PRs #23–#29
 
 ### Recently Done
-- [x] **8.1** — Initial Alembic revision (all tables + `audit_logs`); domain route split
+- [x] **8.2** — Docker migrate entrypoint; Alembic-only `init_db`; `ALEMBIC_AUTO_STAMP` for legacy volumes
+- [x] **8.1** — Initial Alembic revision + route split (#29)
 - [x] **5** — iPhone PWA (#28)
-- [x] **8.0** — trades/analytics routers + Alembic env (#28)
 
 ### Open
-- [ ] **8.2** — Stamp/migrate workflow in Docker Compose + drop ad-hoc ALTER when covered by Alembic
+- [ ] **6.1** — API client layer + auth/error handling
+- [ ] **6.3** — AddTradeModal server validation field mapping (422 detail)
 
 ---
 

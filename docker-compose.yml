@@ -45,6 +45,7 @@ services:
       SECRET_KEY: ${SECRET_KEY:-change-me-in-production-32-chars-min}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       DEBUG: "false"
+      ALEMBIC_AUTO_STAMP: "true"
       CORS_ORIGINS: '["http://localhost:5173","http://localhost","http://frontend"]'
     ports:
       - "8000:8000"
@@ -55,7 +56,7 @@ services:
         condition: service_healthy
     volumes:
       - ./backend:/app
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
     restart: unless-stopped
 
   # ── Celery worker (Phase 4 — daily emails) ───────────────────────────────────

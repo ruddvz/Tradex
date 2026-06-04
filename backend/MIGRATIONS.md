@@ -1,27 +1,39 @@
 # Database migrations (Alembic)
 
-Tradex uses **Alembic** for schema versioning. SQLAlchemy models in `app/models/` are the source of truth.
+Tradex uses **Alembic** as the schema source of truth. `init_db()` on API startup runs `alembic upgrade head` (see `app/migrations.py`).
 
-## Fresh database
+## Docker Compose
+
+The backend container runs migrations before Uvicorn:
+
+```bash
+docker compose up -d
+# → waits for Postgres, then `alembic upgrade head`, then API
+```
+
+`ALEMBIC_AUTO_STAMP=true` is set in Compose for dev: if the volume already has tables from an older `create_all` install but no `alembic_version` table, the app **stamps** `head` instead of failing on duplicate DDL.
+
+## Local (no Docker)
 
 From `backend/`:
 
 ```bash
 export DATABASE_URL=postgresql://postgres:password@localhost:5432/tradex
 python3 -m alembic upgrade head
+uvicorn app.main:app --reload
 ```
 
-Or continue using `init_db()` on app startup (`create_all`) for local dev — both paths create the same tables.
+Or rely on lifespan `init_db()` when the API starts.
 
-## Existing database (created with `create_all`)
+## Existing database (manual stamp)
 
-If tables already exist, **stamp** the baseline without re-running DDL:
+If you see duplicate-table errors on upgrade:
 
 ```bash
 python3 -m alembic stamp head
 ```
 
-Then use new revisions for schema changes only.
+Only do this when the schema already matches the initial revision.
 
 ## New revision
 

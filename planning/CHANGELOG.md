@@ -8,6 +8,15 @@
 
 ---
 
+## 2026-06-04 — cursor/audit-phase-8-2-parallel-b0b9 — Phase 8.2: Docker migrations + API validation UX
+- Commit: c875ef1 (feat: Phase 8.2 Alembic-only init_db and Docker migrate entrypoint)
+- Files touched: `backend/app/{database,migrations}.py`, `backend/docker-entrypoint.sh`, `backend/Dockerfile`, `docker-compose.yml`, `backend/MIGRATIONS.md`, `backend/tests/test_migrations_bootstrap.py`, `frontend/src/lib/api/client.ts`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`
+- Tests added / changed: 1 (`test_migrations_bootstrap.py`)
+- Build: pass (pytest migrations x2)
+- Status: done
+- Next up: **6.1** — API client layer polish
+- Notes: Removed create_all + ad-hoc ALTER helpers. Compose sets `ALEMBIC_AUTO_STAMP=true` for legacy volumes. `detailMessage` joins FastAPI 422 field errors.
+
 ## 2026-06-04 — cursor/audit-phase-8-1-parallel-b0b9 — Phase 8.1: Alembic initial + route modularization
 - Commit: 4f3cfa0 (feat: Phase 8.1 Alembic initial schema and full API route split)
 - Files touched: `backend/alembic/versions/6bcb32ddfb52_initial_schema.py`, `backend/alembic/env.py`, `backend/MIGRATIONS.md`, `backend/app/api/v1/{auth,accounts,paper_legacy,ai,notebook,challenges,settings,sync,api_serializers}.py`, `routes.py`, `backend/tests/test_alembic_migrations.py`
