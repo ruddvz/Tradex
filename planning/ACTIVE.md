@@ -1,24 +1,24 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **5** — PWA polish (maskable icons, offline UX refinements)
+## 👉 NEXT UP: **8.1** — Alembic initial revision + further route modularization
 
-See `planning/EXECUTION-PLAN.md` Phase 5.
+See `planning/EXECUTION-PLAN.md` Phase 8.
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **6.2** live surface polish shipped on `cursor/audit-phase-6-parallel-b0b9`  
-**Stack:** audit PRs #23–#26 + this PR
+**Phase:** **5 + 8.0 + trade journal API** on `cursor/audit-pwa-trades-routes-b0b9`  
+**Stack:** audit PRs #23–#27 + this PR
 
 ### Recently Done
-- [x] **6.2** — Reports/Calculator/Journal/Paper live labels; shared `metricsFromTrades`; Dashboard `RiskStatusCard`
-- [x] **F/G** — Strategy runner + live readiness (#26)
-- [x] **E** — Backtests + risk settings (#25)
+- [x] **5** — iPhone PWA: safe-area, 180px icon, install banner, mobile nav
+- [x] **8.0** — `trades_api` / `analytics_api` / `api_common` + Alembic stub
+- [x] Journal — editable drawer + `updateTradeApi` in live mode
+- [x] **6.2** — Reports/Calculator live labels (#27)
 
 ### Open
-- [ ] **5** — PWA manifest / mobile polish
-- [ ] **8.0** — Split `routes.py` + Alembic
+- [ ] **8.1** — First Alembic migration from models
 
 ---
 

@@ -2,27 +2,26 @@
 FastAPI route handlers for Tradex API v1.
 """
 from datetime import datetime, timedelta
-from pathlib import Path
-from typing import Any, Dict, List, Literal, Optional
+from typing import Any, Dict, List, Optional
 import uuid
 
-import aiofiles
-from fastapi import APIRouter, Body, Depends, File, Header, HTTPException, Query, UploadFile
+from fastapi import APIRouter, Body, Depends, Header, HTTPException
 from pydantic import BaseModel, EmailStr, Field
-from sqlalchemy import and_, func as sql_func, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ...database import get_db
 from ...core.config import settings
 from ...models.challenge import PropChallenge
 from ...models.notebook import NotebookEntry
-from ...models.trade import Trade, TradeGrade, TradeStatus
+from ...models.trade import Trade
 from ...models.trading_account import TradingAccount, TradingAccountType
 from ...models.paper import PaperAccount, PaperTrade, PaperOrderDirection
 from ...models.user import User, UserPlan
 from ...core.security import hash_password, verify_password, create_access_token
 from ...core.mt5_crypto import decrypt_mt5_secret, encrypt_mt5_secret
 from ..deps import get_current_user
+from .api_common import ensure_trading_accounts, resolve_owned_account_id, user_trade_dicts
 from ...services.analytics import (
     compute_metrics,
     compute_symbol_stats,
@@ -30,15 +29,7 @@ from ...services.analytics import (
     compute_psychology_stats,
 )
 from ...services.ai_service import generate_ai_insights
-from ...services.trade_codec import (
-    compute_grade_and_rr,
-    grade_from_str,
-    parse_iso_datetime,
-    direction_from_str,
-    status_from_str,
-    trade_from_mt5_dict,
-    trade_to_api_dict,
-)
+from ...services.trade_codec import parse_iso_datetime, trade_from_mt5_dict
 from ...services.paper_service import place_paper_trade
 from ...tasks.notifications import merge_notification_prefs, run_daily_report_cycle
 from ...services.manual_tasks_seed import ensure_default_manual_tasks
@@ -64,29 +55,6 @@ class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
 
-
-class TradeIn(BaseModel):
-    symbol: str
-    direction: str
-    entry_price: float
-    exit_price: Optional[float] = None
-    lot_size: float
-    entry_time: str
-    exit_time: Optional[str] = None
-    pnl: float = 0
-    stop_loss: Optional[float] = None
-    take_profit: Optional[float] = None
-    strategy: Optional[str] = None
-    session: Optional[str] = None
-    emotion: Optional[str] = "Neutral"
-    emotion_score: int = 5
-    notes: Optional[str] = ""
-    tags: List[str] = []
-    duration: int = 0
-    commission: float = 0
-    swap: float = 0
-    account_id: Optional[str] = None
-    setup: Optional[str] = None
 
 
 class TradingAccountCreate(BaseModel):
@@ -120,15 +88,6 @@ class PaperTradeIn(BaseModel):
     exit_time: str
     notes: Optional[str] = None
 
-
-class TradeUpdate(BaseModel):
-    strategy: Optional[str] = None
-    session: Optional[str] = None
-    emotion: Optional[str] = None
-    emotion_score: Optional[int] = None
-    notes: Optional[str] = None
-    tags: Optional[List[str]] = None
-    grade: Optional[str] = None
 
 
 class NotebookEntryIn(BaseModel):
@@ -221,93 +180,6 @@ def _serialize_user(user: User) -> dict:
         "created_at": user.created_at.isoformat() if user.created_at else None,
     }
 
-
-def _norm_day_start(s: str) -> datetime:
-    raw = s.strip()
-    if len(raw) == 10:
-        raw = raw + "T00:00:00"
-    dt = parse_iso_datetime(raw)
-    return dt or datetime.min
-
-
-def _norm_day_end(s: str) -> datetime:
-    raw = s.strip()
-    if len(raw) == 10:
-        raw = raw + "T23:59:59"
-    dt = parse_iso_datetime(raw)
-    return dt or datetime.max
-
-
-def _trading_account_to_dict(a: TradingAccount) -> Dict[str, Any]:
-    return {
-        "id": a.id,
-        "user_id": a.user_id,
-        "name": a.name,
-        "broker": a.broker,
-        "account_type": a.account_type.value if hasattr(a.account_type, "value") else str(a.account_type),
-        "base_currency": a.base_currency,
-        "starting_balance": a.starting_balance,
-        "current_balance": a.current_balance,
-        "current_equity": a.current_equity,
-        "risk_per_trade_default": a.risk_per_trade_default,
-        "max_daily_loss": a.max_daily_loss,
-        "max_total_drawdown": a.max_total_drawdown,
-        "created_at": a.created_at.isoformat() if a.created_at else None,
-    }
-
-
-def ensure_trading_accounts(db: Session, user: User) -> List[TradingAccount]:
-    rows = list(
-        db.execute(
-            select(TradingAccount)
-            .where(TradingAccount.user_id == user.id)
-            .order_by(TradingAccount.created_at.asc())
-        )
-        .scalars()
-        .all()
-    )
-    if rows:
-        return rows
-    acc = TradingAccount(
-        id=str(uuid.uuid4()),
-        user_id=user.id,
-        name="Primary",
-        broker=None,
-        account_type=TradingAccountType.DEMO,
-        base_currency="USD",
-        starting_balance=10000.0,
-        current_balance=10000.0,
-        current_equity=10000.0,
-        risk_per_trade_default=1.0,
-        max_daily_loss=None,
-        max_total_drawdown=None,
-    )
-    db.add(acc)
-    db.commit()
-    db.refresh(acc)
-    return [acc]
-
-
-def resolve_owned_account_id(db: Session, user: User, account_id: Optional[str]) -> str:
-    accs = ensure_trading_accounts(db, user)
-    if account_id:
-        for a in accs:
-            if a.id == account_id:
-                return account_id
-        raise HTTPException(status_code=404, detail="Trading account not found")
-    return accs[0].id
-
-
-def _user_trade_dicts(
-    db: Session,
-    user_id: str,
-    account_id: Optional[str] = None,
-) -> List[Dict[str, Any]]:
-    stmt = select(Trade).where(Trade.user_id == user_id)
-    if account_id:
-        stmt = stmt.where(Trade.account_id == account_id)
-    rows = db.execute(stmt.order_by(Trade.entry_time.desc())).scalars().all()
-    return [trade_to_api_dict(t) for t in rows]
 
 
 def _mt5_settings_public(user: User) -> dict:
@@ -559,229 +431,6 @@ def create_paper_trade_row(
     return _paper_trade_to_dict(trade)
 
 
-# ── Trades ──────────────────────────────────────────────────────────────────────
-
-
-@router.get("/trades")
-async def get_trades(
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-    symbol: Optional[str] = None,
-    status: Optional[str] = None,
-    from_date: Optional[str] = None,
-    to_date: Optional[str] = None,
-    account_id: Optional[str] = None,
-    limit: int = Query(default=100, le=500),
-    offset: int = 0,
-):
-    conditions = [Trade.user_id == user.id]
-    if account_id:
-        _ = resolve_owned_account_id(db, user, account_id)
-        conditions.append(Trade.account_id == account_id)
-    if symbol:
-        conditions.append(Trade.symbol == symbol)
-    if status:
-        try:
-            conditions.append(Trade.status == TradeStatus[status.upper()])
-        except KeyError as exc:
-            raise HTTPException(status_code=400, detail="Invalid status filter") from exc
-    if from_date:
-        conditions.append(Trade.entry_time >= _norm_day_start(from_date))
-    if to_date:
-        conditions.append(Trade.entry_time <= _norm_day_end(to_date))
-
-    base_where = and_(*conditions)
-    total = db.execute(select(sql_func.count()).select_from(Trade).where(base_where)).scalar() or 0
-
-    stmt = (
-        select(Trade)
-        .where(base_where)
-        .order_by(Trade.entry_time.desc())
-        .offset(offset)
-        .limit(limit)
-    )
-    rows = db.execute(stmt).scalars().all()
-    return {"trades": [trade_to_api_dict(t) for t in rows], "total": total}
-
-
-@router.post("/trades", status_code=201)
-async def create_trade(trade: TradeIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    pnl = trade.pnl
-    status_str = "WIN" if pnl > 0 else "LOSS" if pnl < 0 else "BREAKEVEN"
-    grade_s, r_mult = compute_grade_and_rr(pnl, status_str)
-
-    entry_time = parse_iso_datetime(trade.entry_time)
-    if entry_time is None:
-        raise HTTPException(status_code=400, detail="Invalid entry_time")
-    exit_time = parse_iso_datetime(trade.exit_time)
-
-    try:
-        direction = direction_from_str(trade.direction)
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e)) from e
-
-    tid = str(uuid.uuid4())
-    aid = resolve_owned_account_id(db, user, trade.account_id)
-    row = Trade(
-        id=tid,
-        user_id=user.id,
-        account_id=aid,
-        symbol=trade.symbol,
-        direction=direction,
-        entry_price=trade.entry_price,
-        exit_price=trade.exit_price,
-        lot_size=trade.lot_size,
-        entry_time=entry_time,
-        exit_time=exit_time,
-        pnl=trade.pnl,
-        commission=trade.commission,
-        swap=trade.swap,
-        stop_loss=trade.stop_loss,
-        take_profit=trade.take_profit,
-        strategy=trade.strategy,
-        setup=trade.setup or trade.strategy,
-        session=trade.session,
-        emotion=trade.emotion or "Neutral",
-        emotion_score=trade.emotion_score,
-        notes=trade.notes,
-        tags=trade.tags or [],
-        duration=trade.duration,
-        status=status_from_str(status_str),
-        grade=grade_from_str(grade_s),
-        r_multiple=r_mult,
-        source="manual",
-    )
-    db.add(row)
-    db.commit()
-    db.refresh(row)
-    return trade_to_api_dict(row)
-
-
-@router.get("/trades/{trade_id}")
-async def get_trade(trade_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    row = db.execute(
-        select(Trade).where(Trade.id == trade_id, Trade.user_id == user.id)
-    ).scalar_one_or_none()
-    if row is None:
-        raise HTTPException(status_code=404, detail="Trade not found")
-    return trade_to_api_dict(row)
-
-
-@router.patch("/trades/{trade_id}")
-async def update_trade(
-    trade_id: str,
-    updates: TradeUpdate,
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    trade = db.execute(
-        select(Trade).where(Trade.id == trade_id, Trade.user_id == user.id)
-    ).scalar_one_or_none()
-    if trade is None:
-        raise HTTPException(status_code=404, detail="Trade not found")
-
-    for k, v in updates.model_dump(exclude_none=True).items():
-        if k == "grade" and v is not None:
-            trade.grade = grade_from_str(str(v))
-        elif k == "tags":
-            trade.tags = v
-        elif hasattr(trade, k):
-            setattr(trade, k, v)
-
-    db.commit()
-    db.refresh(trade)
-    return trade_to_api_dict(trade)
-
-
-@router.delete("/trades/{trade_id}", status_code=204)
-async def delete_trade(trade_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    trade = db.execute(
-        select(Trade).where(Trade.id == trade_id, Trade.user_id == user.id)
-    ).scalar_one_or_none()
-    if trade is None:
-        raise HTTPException(status_code=404, detail="Trade not found")
-    db.delete(trade)
-    db.commit()
-
-
-# ── Analytics ──────────────────────────────────────────────────────────────────
-
-
-@router.get("/analytics/metrics")
-async def get_metrics(
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-    from_date: Optional[str] = None,
-    to_date: Optional[str] = None,
-    account_id: Optional[str] = None,
-):
-    aid = account_id
-    if aid:
-        _ = resolve_owned_account_id(db, user, aid)
-    trades = _user_trade_dicts(db, user.id, aid)
-    if from_date:
-        trades = [t for t in trades if t.get("entry_time", "") >= _norm_day_start(from_date).isoformat()]
-    if to_date:
-        trades = [t for t in trades if t.get("entry_time", "") <= _norm_day_end(to_date).isoformat()]
-    return compute_metrics(trades)
-
-
-@router.get("/analytics/symbols")
-async def get_symbol_stats(
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-    account_id: Optional[str] = None,
-):
-    aid = account_id
-    if aid:
-        _ = resolve_owned_account_id(db, user, aid)
-    return compute_symbol_stats(_user_trade_dicts(db, user.id, aid))
-
-
-@router.get("/analytics/sessions")
-async def get_session_stats(
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-    account_id: Optional[str] = None,
-):
-    aid = account_id
-    if aid:
-        _ = resolve_owned_account_id(db, user, aid)
-    return compute_session_stats(_user_trade_dicts(db, user.id, aid))
-
-
-@router.get("/analytics/psychology")
-async def get_psychology_stats(
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-    account_id: Optional[str] = None,
-):
-    aid = account_id
-    if aid:
-        _ = resolve_owned_account_id(db, user, aid)
-    return compute_psychology_stats(_user_trade_dicts(db, user.id, aid))
-
-
-@router.get("/analytics/calendar")
-async def get_calendar(
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-    days: int = 90,
-    account_id: Optional[str] = None,
-):
-    aid = account_id
-    if aid:
-        _ = resolve_owned_account_id(db, user, aid)
-    from_dt = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
-    daily_pnl: dict = {}
-    for t in _user_trade_dicts(db, user.id, aid):
-        day = t.get("entry_time", "")[:10]
-        if day >= from_dt:
-            daily_pnl[day] = daily_pnl.get(day, {"pnl": 0, "trades": 0})
-            daily_pnl[day]["pnl"] += t.get("pnl", 0)
-            daily_pnl[day]["trades"] += 1
-    return [{"date": k, **v} for k, v in sorted(daily_pnl.items())]
-
 
 # ── AI Insights ────────────────────────────────────────────────────────────────
 
@@ -795,7 +444,7 @@ async def get_ai_insights(
     aid = account_id
     if aid:
         _ = resolve_owned_account_id(db, user, aid)
-    ut = _user_trade_dicts(db, user.id, aid)
+    ut = user_trade_dicts(db, user.id, aid)
     if not ut:
         return {"insights": []}
     metrics = compute_metrics(ut)
@@ -923,59 +572,6 @@ async def create_challenge(
     db.refresh(row)
     return _challenge_to_dict(row)
 
-
-# ── Trade screenshots (Phase 2) ────────────────────────────────────────────────
-
-_ALLOWED_IMAGE_TYPES = {
-    "image/jpeg": ".jpg",
-    "image/png": ".png",
-    "image/webp": ".webp",
-    "image/gif": ".gif",
-}
-_MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024
-
-
-@router.post("/trades/{trade_id}/screenshot")
-async def upload_trade_screenshot(
-    trade_id: str,
-    user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-    slot: Literal["before", "after"] = Query("before"),
-    file: UploadFile = File(...),
-):
-    """Upload a before/after chart image for a trade. Stored under uploads/screenshots/{user_id}/."""
-    trade = db.execute(
-        select(Trade).where(Trade.id == trade_id, Trade.user_id == user.id)
-    ).scalar_one_or_none()
-    if trade is None:
-        raise HTTPException(status_code=404, detail="Trade not found")
-
-    ct = (file.content_type or "").split(";")[0].strip().lower()
-    if ct not in _ALLOWED_IMAGE_TYPES:
-        raise HTTPException(status_code=400, detail="Use PNG, JPEG, WebP, or GIF")
-
-    raw = await file.read()
-    if len(raw) > _MAX_SCREENSHOT_BYTES:
-        raise HTTPException(status_code=400, detail="Image too large (max 5 MB)")
-
-    base_dir = Path(settings.UPLOAD_ROOT) / "screenshots" / user.id
-    base_dir.mkdir(parents=True, exist_ok=True)
-    ext = _ALLOWED_IMAGE_TYPES[ct]
-    fname = f"{trade_id}_{slot}{ext}"
-    dest = base_dir / fname
-
-    async with aiofiles.open(dest, "wb") as out:
-        await out.write(raw)
-
-    public_path = f"/uploads/screenshots/{user.id}/{fname}"
-    if slot == "before":
-        trade.screenshot_before_url = public_path
-    else:
-        trade.screenshot_after_url = public_path
-
-    db.commit()
-    db.refresh(trade)
-    return trade_to_api_dict(trade)
 
 
 # ── Settings: MT5 credentials ────────────────────────────────────────────────────
@@ -1144,6 +740,12 @@ async def sync_mt5(
         "message": message,
     }
 
+
+from .trades_api import router as trades_router
+from .analytics_api import router as analytics_router
+
+router.include_router(trades_router)
+router.include_router(analytics_router)
 
 from .manual_tasks import router as manual_tasks_router
 

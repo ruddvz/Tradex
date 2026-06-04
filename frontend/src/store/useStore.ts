@@ -23,7 +23,7 @@ import {
   mockDailyStats,
 } from '../data/mockData';
 import { getToken } from '../lib/auth';
-import { fetchTrades, deleteTradeApi } from '../lib/api/trades';
+import { fetchTrades, deleteTradeApi, updateTradeApi, type UpdateTradePayload } from '../lib/api/trades';
 import { fetchAnalyticsBundle, fetchCalendar } from '../lib/api/analytics';
 import { fetchBotStatus, activateKillSwitch, resumePaperOnly, type BotStatus } from '../lib/api/bot';
 import type { EquityPoint, DailyPnlPoint } from '../lib/mapAnalytics';
@@ -385,10 +385,32 @@ export const useStore = create<AppState>((set, get) => ({
   },
 
   addTrade: (trade) => set((state) => ({ trades: [trade, ...state.trades] })),
-  updateTrade: (id, updates) =>
+  updateTrade: (id, updates) => {
     set((state) => ({
       trades: state.trades.map((t) => (t.id === id ? { ...t, ...updates } : t)),
-    })),
+    }));
+    if (!getToken() || get().dataMode !== 'live') return;
+    const patch: UpdateTradePayload = {};
+    if (updates.strategy !== undefined) patch.strategy = updates.strategy;
+    if (updates.session !== undefined) patch.session = updates.session;
+    if (updates.emotion !== undefined) patch.emotion = updates.emotion;
+    if (updates.emotionScore !== undefined) patch.emotion_score = updates.emotionScore;
+    if (updates.notes !== undefined) patch.notes = updates.notes;
+    if (updates.tags !== undefined) patch.tags = updates.tags;
+    if (updates.grade !== undefined) patch.grade = updates.grade;
+    if (Object.keys(patch).length === 0) return;
+    void (async () => {
+      try {
+        const row = await updateTradeApi(id, patch);
+        set((state) => ({
+          trades: state.trades.map((t) => (t.id === id ? row : t)),
+        }));
+        await get().refreshAnalyticsFromApi();
+      } catch {
+        /* optimistic UI kept; user can retry save */
+      }
+    })();
+  },
   deleteTrade: async (id) => {
     if (getToken() && get().dataMode === 'live') {
       await deleteTradeApi(id);
