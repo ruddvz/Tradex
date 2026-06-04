@@ -14,18 +14,8 @@ class PaperOrderDirection(str, enum.Enum):
     SELL = "SELL"
 
 
-class PaperAccount(Base):
-    __tablename__ = "paper_accounts"
-
-    id = Column(String, primary_key=True)
-    user_id = Column(String, nullable=False, index=True)
-    name = Column(String(120), nullable=False)
-    currency = Column(String(8), nullable=False, default="USD")
-    balance = Column(Float, nullable=False)
-    equity = Column(Float, nullable=False)
-    max_daily_loss = Column(Float, nullable=False, default=500.0)
-    max_risk_per_trade_percent = Column(Float, nullable=False, default=1.0)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+# Canonical account model lives in paper_account.py (avoids duplicate mappers).
+from .paper_account import PaperAccount  # noqa: F401
 
 
 class PaperTrade(Base):

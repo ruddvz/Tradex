@@ -1152,3 +1152,7 @@ router.include_router(setup_router, prefix="/setup", tags=["setup"])
 from .paper_accounts import router as paper_accounts_router
 
 router.include_router(paper_accounts_router, prefix="/paper-accounts", tags=["paper-accounts"])
+
+from .paper_execution import router as paper_execution_router
+
+router.include_router(paper_execution_router)

@@ -137,7 +137,7 @@
 > **Goal:** Simulated accounts, PAPER badge, then orders/fills and journal `source=paper`.
 
 - [x] **8.1** `PaperAccount` model + `GET`/`POST /api/v1/paper-accounts` + Paper Trading page + header Paper mode badge when an active account exists
-- [ ] **8.2** Orders/fills stub + journal linkage `source=paper`
+- [x] **8.2** Orders/fills stub + journal linkage `source=paper`
 
 ---
 

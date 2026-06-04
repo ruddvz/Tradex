@@ -154,6 +154,10 @@ export interface PaperAccount {
   name: string;
   currency: string;
   startingBalance: number;
+  balance?: number;
+  equity?: number;
+  maxDailyLoss?: number;
+  maxRiskPerTradePercent?: number;
   isActive: boolean;
   createdAt: string;
 }

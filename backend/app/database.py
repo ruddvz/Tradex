@@ -48,6 +48,35 @@ def _ensure_trade_source_column() -> None:
             conn.execute(text("ALTER TABLE trades ADD COLUMN source VARCHAR(32) DEFAULT 'manual'"))
 
 
+def _ensure_paper_account_columns() -> None:
+    insp = inspect(engine)
+    if not insp.has_table("paper_accounts"):
+        return
+    existing = {c["name"] for c in insp.get_columns("paper_accounts")}
+    alters: list[str] = []
+    if "balance" not in existing:
+        alters.append("ALTER TABLE paper_accounts ADD COLUMN balance DOUBLE PRECISION DEFAULT 100000")
+    if "equity" not in existing:
+        alters.append("ALTER TABLE paper_accounts ADD COLUMN equity DOUBLE PRECISION DEFAULT 100000")
+    if "max_daily_loss" not in existing:
+        alters.append("ALTER TABLE paper_accounts ADD COLUMN max_daily_loss DOUBLE PRECISION DEFAULT 500")
+    if "max_risk_per_trade_percent" not in existing:
+        alters.append(
+            "ALTER TABLE paper_accounts ADD COLUMN max_risk_per_trade_percent DOUBLE PRECISION DEFAULT 1"
+        )
+    for sql in alters:
+        with engine.begin() as conn:
+            conn.execute(text(sql))
+    if alters:
+        with engine.begin() as conn:
+            conn.execute(
+                text(
+                    "UPDATE paper_accounts SET balance = COALESCE(balance, starting_balance), "
+                    "equity = COALESCE(equity, starting_balance) WHERE balance IS NULL OR equity IS NULL"
+                )
+            )
+
+
 def init_db() -> None:
     # Import models so they register metadata before create_all
     from .models import challenge  # noqa: F401
