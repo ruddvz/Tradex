@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-06-04 — cursor/audit-phase-f-g-parallel-b0b9 — F strategy runner + G live readiness
+- Commit: (see git log)
+- Files touched: strategy_run model, strategy_runner, broker_base, live_readiness services/APIs, StrategyRunsPanel, LiveReadiness page, planning docs
+- Tests added / changed: 1 (`test_strategy_runner.py`)
+- Build: pass
+- Status: done
+- Next up: **6.2** — remaining mock-only surfaces when authenticated
+- Notes: Paper-only strategy ticks; live execution remains disabled.
+
 ## 2026-06-04 — cursor/audit-phase-e-settings-live-b0b9 — E + risk settings + live playbooks
 - Commit: (see git log)
 - Files touched: `backend/app/models/{strategy,backtest}.py`, `backend/app/services/backtesting.py`, `backend/app/api/v1/backtests.py`, `backend/app/api/v1/risk.py`, `backend/app/database.py`, `backend/tests/test_backtesting.py`, `frontend/src/pages/Backtests.tsx`, `frontend/src/lib/api/{backtests,risk}.ts`, `frontend/src/store/useStore.ts`, `frontend/src/pages/{Settings,Playbooks,PropFirm}.tsx`, `frontend/src/App.tsx`, `frontend/src/components/layout/Sidebar.tsx`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`

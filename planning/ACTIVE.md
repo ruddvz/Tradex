@@ -1,58 +1,36 @@
 # Active Task Queue
 
-> This file is the live queue. Every agent reads this at startup.
 > Status: `[ ]` pending · `[>]` in progress · `[x]` done
 
 ---
 
-## 👉 NEXT UP: **Phase F** — Strategy runner in paper mode (or **6.x** live page polish)
+## 👉 NEXT UP: **6.2** — Remaining mock surfaces + polish
 
-See `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md` Phase F and `planning/EXECUTION-PLAN.md`.
+Wire Calculator/Reports widgets that still read `mockData` when live; see `planning/EXECUTION-PLAN.md` Phase 6.
 
-**Context:** `backend/app/services/strategy_runner.py` (new), `frontend` strategy events UI  
-**Blocked by:** nothing (Phase E backtest MVP shipped on `cursor/audit-phase-e-settings-live-b0b9`)
+**Blocked by:** nothing
 
 ---
 
-## 🎯 Current Sprint / Phase
+## 🎯 Current Sprint
 
-**Phase:** Audit track — **E** backtesting MVP ✓ · live playbooks + risk settings ✓ · **B/D** on PR #24  
-**Branch:** `cursor/audit-phase-e-settings-live-b0b9`
-
-### Open Slices
-- [ ] **F** — StrategyRun model + paper-only runner + UI events
-- [ ] **5** — PWA manifest / SW / mobile nav polish (see `NEXT_STEPS.md` Phase 5)
-- [ ] **6.2** — Remaining mock surfaces (Calculator, some Reports widgets)
+**Phase:** Audit track **F + G** shipped on `cursor/audit-phase-f-g-parallel-b0b9`  
+**Stack:** #23 → #24 → #25 → **#26** (F/G)
 
 ### Recently Done
-- [x] **E** — Backtest models/API + Backtests page + trust warnings
-- [x] **Risk settings** — `PATCH /risk/profiles/{id}` + Settings editor
-- [x] **Live playbooks** — `derivePlaybooksFromTrades` in `hydrateLiveSession`
-- [x] **8.2** + **B** + **D** — paper execution, live charts, risk engine (PR #23/#24 stack)
-- [x] **8.1** — Paper accounts API + Paper Trading page
+- [x] **F** — StrategyRun model, paper runner (tick/pause/stop), audit events, Paper Trading panel
+- [x] **G** — Live readiness checklist API + page, `broker_base` stub (live disabled)
+- [x] **E** — Backtesting MVP + risk settings + live playbooks (#25)
+- [x] **B/D** — Live charts + risk engine (#24)
+
+### Open
+- [ ] **6.2** — Full live/demo labeling on remaining pages
+- [ ] **5** — PWA polish
+- [ ] Alembic migrations / `routes.py` split (audit 8.0)
 
 ---
 
-## Known Issues / Bugs
+## Notes
 
-| # | Area | Issue | Priority | Status |
-|---|------|-------|----------|--------|
-| 1 | Data / API | API requires `Authorization: Bearer` for data routes | P1 | By design |
-| 2 | Backtest | Uses **synthetic** OHLC only — not historical broker data | P2 | Documented |
-| 3 | Product | Strategy runner + live execution still not built | P2 | Open |
-
----
-
-## Blockers
-
-| Blocker | Waiting for | Owner |
-|---------|-------------|-------|
-| — | — | — |
-
----
-
-## Notes for Next Agent
-
-- Read `planning/CHANGELOG.md` (newest entry) first
-- Merge order: #23 → #24 → new PR for Phase E branch
-- Audit doc: `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md`
+- Read `planning/CHANGELOG.md` (newest) at session start
+- Live execution: **always disabled** — `LiveExecutionDisabledError` on broker adapter

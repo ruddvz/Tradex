@@ -51,6 +51,9 @@ const Paper = lazy(() => import('./pages/Paper').then((m) => ({ default: m.Paper
 const Backtests = lazy(() =>
   import('./pages/Backtests').then((m) => ({ default: m.Backtests }))
 );
+const LiveReadiness = lazy(() =>
+  import('./pages/LiveReadiness').then((m) => ({ default: m.LiveReadiness }))
+);
 
 const AppShell = requireLogin ? ProtectedLayout : Layout;
 
@@ -138,6 +141,14 @@ const router = createBrowserRouter(
               element: (
                 <Suspense fallback={<RouteFallback />}>
                   <Backtests />
+                </Suspense>
+              ),
+            },
+            {
+              path: 'live-readiness',
+              element: (
+                <Suspense fallback={<RouteFallback />}>
+                  <LiveReadiness />
                 </Suspense>
               ),
             },

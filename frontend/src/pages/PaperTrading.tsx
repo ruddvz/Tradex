@@ -20,6 +20,7 @@ import {
   type PaperPositionRow,
 } from '../lib/api/paper';
 import { clsx } from 'clsx';
+import { StrategyRunsPanel } from '../components/paper/StrategyRunsPanel';
 
 type Tab = 'overview' | 'orders' | 'positions';
 
@@ -355,6 +356,7 @@ export function PaperTrading() {
             </>
           )}
         </div>
+        <StrategyRunsPanel paperAccountId={activeAccountId} />
       </div>
     </div>
   );

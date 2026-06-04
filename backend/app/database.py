@@ -94,6 +94,7 @@ def init_db() -> None:
     from .models import audit_log  # noqa: F401
     from .models import bot_control  # noqa: F401
     from .models import backtest  # noqa: F401
+    from .models import strategy_run  # noqa: F401
     from .models import strategy  # noqa: F401
 
     Base.metadata.create_all(bind=engine)

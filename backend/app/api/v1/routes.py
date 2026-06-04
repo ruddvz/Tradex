@@ -1172,3 +1172,11 @@ router.include_router(bot_router)
 from .backtests import router as backtests_router
 
 router.include_router(backtests_router)
+
+from .strategy_runs import router as strategy_runs_router
+
+router.include_router(strategy_runs_router)
+
+from .live_readiness import router as live_readiness_router
+
+router.include_router(live_readiness_router)
