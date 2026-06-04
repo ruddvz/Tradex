@@ -78,6 +78,12 @@ def _ensure_paper_account_columns() -> None:
 
 
 def init_db() -> None:
+    """
+    Create tables via SQLAlchemy metadata (dev convenience).
+
+    For production, prefer Alembic: `python3 -m alembic upgrade head` (see backend/MIGRATIONS.md).
+    Existing DBs created with create_all should run `alembic stamp head` once before new revisions.
+    """
     # Import models so they register metadata before create_all
     from .models import challenge  # noqa: F401
     from .models import manual_task  # noqa: F401

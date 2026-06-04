@@ -8,8 +8,17 @@
 
 ---
 
+## 2026-06-04 — cursor/audit-phase-8-1-parallel-b0b9 — Phase 8.1: Alembic initial + route modularization
+- Commit: 4f3cfa0 (feat: Phase 8.1 Alembic initial schema and full API route split)
+- Files touched: `backend/alembic/versions/6bcb32ddfb52_initial_schema.py`, `backend/alembic/env.py`, `backend/MIGRATIONS.md`, `backend/app/api/v1/{auth,accounts,paper_legacy,ai,notebook,challenges,settings,sync,api_serializers}.py`, `routes.py`, `backend/tests/test_alembic_migrations.py`
+- Tests added / changed: 1 (`test_alembic_migrations.py`)
+- Build: pass (compileall + pytest)
+- Status: done
+- Next up: **8.2** — Docker Compose migrate step; retire ad-hoc ALTER when covered by Alembic
+- Notes: Fixed missing `trading_account_to_dict` / `paper_account_to_dict` via `api_serializers.py`. `routes.py` is now a thin router aggregator.
+
 ## 2026-06-04 — cursor/audit-pwa-trades-routes-b0b9 — Phase 5 + 8.0 + journal API
-- Commit: (pending)
+- Commit: 3f1d38c (feat: iPhone PWA polish, journal API saves, split trades/analytics routes)
 - Files touched: frontend PWA (index.html, vite, Layout, MobileNav, IosInstallBanner, useIsStandalone, index.css, icons), `frontend/src/lib/api/trades.ts`, `useStore.ts`, `Journal.tsx`, `backend/app/api/v1/api_common.py`, `trades_api.py`, `analytics_api.py`, `routes.py`, `backend/alembic/*`
 - Tests added / changed: 0 (compileall + frontend build)
 - Build: pass
