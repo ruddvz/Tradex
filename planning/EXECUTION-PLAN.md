@@ -104,7 +104,8 @@
 
 > **Detail:** `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` sections 6–10. Split into numbered slices when starting Phase 8.
 
-- [ ] **8.0** Split `routes.py` into domain routers + Alembic-first migrations (audit section 12)
+- [x] **8.0** Split `routes.py` into domain routers + Alembic-first migrations (audit section 12)
+- [x] **8.1** Initial Alembic revision (`6bcb32ddfb52`) + auth/accounts/notebook/challenges/settings/sync/ai/paper routers
 
 - [x] **5.1** VitePWA manifest + service worker + `index.html` manifest / theme-color
 - [x] **5.2** Offline UX — `navigateFallback` for SPA + offline strip copy in `Layout`

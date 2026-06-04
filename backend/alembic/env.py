@@ -1,5 +1,8 @@
-"""Alembic environment — reads DATABASE_URL from app settings."""
+"""Alembic environment — DATABASE_URL from env, alembic.ini, or app settings."""
 
+from __future__ import annotations
+
+import os
 from logging.config import fileConfig
 
 from alembic import context
@@ -10,6 +13,7 @@ from app.models.base import Base
 
 # Import models so metadata is populated for autogenerate.
 from app.models import (  # noqa: F401
+    audit_log,
     backtest,
     bot_control,
     challenge,
@@ -32,7 +36,16 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+def _database_url() -> str:
+    if os.environ.get("DATABASE_URL"):
+        return os.environ["DATABASE_URL"]
+    ini_url = config.get_main_option("sqlalchemy.url")
+    if ini_url and not ini_url.startswith("driver://"):
+        return ini_url
+    return settings.DATABASE_URL
+
+
+config.set_main_option("sqlalchemy.url", _database_url())
 
 target_metadata = Base.metadata
 

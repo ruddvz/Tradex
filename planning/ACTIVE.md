@@ -1,24 +1,23 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **8.1** — Alembic initial revision + further route modularization
+## 👉 NEXT UP: **8.2** — Alembic revision for incremental schema changes; optional `init_db` → migrate-only
 
-See `planning/EXECUTION-PLAN.md` Phase 8.
+See `backend/MIGRATIONS.md` and `planning/EXECUTION-PLAN.md`.
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **5 + 8.0 + trade journal API** on `cursor/audit-pwa-trades-routes-b0b9`  
-**Stack:** audit PRs #23–#27 + this PR
+**Phase:** **8.1** on `cursor/audit-phase-8-1-parallel-b0b9`  
+**Stack:** audit PRs #23–#28
 
 ### Recently Done
-- [x] **5** — iPhone PWA: safe-area, 180px icon, install banner, mobile nav
-- [x] **8.0** — `trades_api` / `analytics_api` / `api_common` + Alembic stub
-- [x] Journal — editable drawer + `updateTradeApi` in live mode
-- [x] **6.2** — Reports/Calculator live labels (#27)
+- [x] **8.1** — Initial Alembic revision (all tables + `audit_logs`); domain route split
+- [x] **5** — iPhone PWA (#28)
+- [x] **8.0** — trades/analytics routers + Alembic env (#28)
 
 ### Open
-- [ ] **8.1** — First Alembic migration from models
+- [ ] **8.2** — Stamp/migrate workflow in Docker Compose + drop ad-hoc ALTER when covered by Alembic
 
 ---
 
