@@ -34,6 +34,15 @@
 
 ## Log (newest first)
 
+## 2026-06-04 — cursor/audit-phase-6-parallel-b0b9 — 6.2 live surface polish
+- Commit: (see git log)
+- Files touched: `frontend/src/lib/metricsFromTrades.ts`, `frontend/src/pages/{Reports,Calculator,Journal,Paper,Dashboard}.tsx`, `frontend/src/data/mockData.ts`, `planning/*`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
+- Status: done
+- Next up: **5** PWA polish
+- Notes: Reports uses API metrics when live; Calculator seeds balance/risk from account; Journal empty state for live zero trades.
+
 ## 2026-06-04 — cursor/audit-phase-f-g-parallel-b0b9 — F strategy runner + G live readiness
 - Commit: (see git log)
 - Files touched: strategy_run model, strategy_runner, broker_base, live_readiness services/APIs, StrategyRunsPanel, LiveReadiness page, planning docs

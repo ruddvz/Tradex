@@ -1,8 +1,12 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Calculator as CalcIcon, AlertTriangle, CheckCircle2, TrendingUp, Copy, Check } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { RiskPath } from '../components/calculator/RiskPath';
 import { clsx } from 'clsx';
+import { useStore } from '../store/useStore';
+import { getToken } from '../lib/auth';
+import { fetchRiskProfiles } from '../lib/api/risk';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 
 const instruments = [
   { name: 'XAUUSD', pip: 0.01, pipValue: 1.0 },
@@ -18,6 +22,7 @@ const instruments = [
 type CalcMode = 'position' | 'risk';
 
 export function Calculator() {
+  const { account, dataMode } = useStore();
   const [mode, setMode] = useState<CalcMode>('position');
   const [accountBalance, setAccountBalance] = useState(10000);
   const [riskPercent, setRiskPercent] = useState(1);
@@ -57,11 +62,37 @@ export function Calculator() {
 
   const presetRisks = [0.5, 1, 1.5, 2];
 
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      if (dataMode !== 'live' || !getToken()) return;
+      if (account.balance > 0) setAccountBalance(Math.round(account.balance));
+      try {
+        const profiles = await fetchRiskProfiles();
+        const p = profiles[0];
+        if (!cancelled && p?.max_risk_per_trade_percent) {
+          setRiskPercent(p.max_risk_per_trade_percent);
+        }
+      } catch {
+        /* keep defaults */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [dataMode, account.balance]);
+
   return (
     <div className="min-h-screen">
       <Header title="Risk Calculator" subtitle="Position sizing & risk engine (Ui.md §10.6)" />
 
       <div className="page-shell p-6 pb-28">
+        <div className="flex flex-wrap items-center gap-2 mb-4 max-w-3xl mx-auto">
+          <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
+          {dataMode === 'live' && (
+            <span className="text-xs text-slate-500">Balance and risk % seeded from your account and risk profile.</span>
+          )}
+        </div>
         <div className="max-w-3xl mx-auto space-y-5">
           <div className="flex gap-2">
             <button
