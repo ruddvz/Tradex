@@ -9,6 +9,8 @@ import { DirectionBadge, GradeBadge } from '../components/ui/Badge';
 import { format, parseISO } from 'date-fns';
 import { clsx } from 'clsx';
 import type { Trade } from '../types';
+import { EmptyState } from '../components/common/EmptyState';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { JournalTradeCard } from '../components/journal/JournalTradeCard';
 
 const emotionEmojis: Record<string, string> = {
@@ -288,7 +290,7 @@ function TradeDrawer({
 }
 
 export function Journal() {
-  const { trades } = useStore();
+  const { trades, dataMode } = useStore();
   const [search, setSearch] = useState('');
   const [symbolFilter, setSymbolFilter] = useState<string>('all');
   const [dirFilter, setDirFilter] = useState<'all' | 'BUY' | 'SELL'>('all');
@@ -354,6 +356,22 @@ export function Journal() {
       />
 
       <div className="page-shell p-6 space-y-5 pb-28 md:pb-6">
+        {dataMode === 'live' && (
+          <div className="flex flex-wrap items-center gap-2">
+            <DataSourceBadge source="live" />
+          </div>
+        )}
+        {dataMode === 'live' && trades.length === 0 && (
+          <EmptyState
+            title="No trades in your journal"
+            body="Sync from MT5 or add a trade manually to populate this view."
+            actions={
+              <button type="button" className="btn-primary text-sm" onClick={() => setAddTradeOpen(true)}>
+                Add trade
+              </button>
+            }
+          />
+        )}
         {addTradeOpen && <AddTradeModal onClose={() => setAddTradeOpen(false)} />}
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
