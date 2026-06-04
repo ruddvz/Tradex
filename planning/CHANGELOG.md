@@ -8,6 +8,42 @@
 
 ---
 
+## 2026-06-04 — cursor/audit-complete-plan-parallel-b0b9 — Phase 6 + 7 completion (parallel)
+- Commit: (pending)
+- Files touched: `frontend/src/lib/api/{client,settings,sync,paperAccounts,trades,accounts}.ts`, `useStore.ts`, `Header.tsx`, `AccountSelector.tsx`, `TradeSourceBadge.tsx`, `Journal.tsx`, `PaperTrading.tsx`, `Settings.tsx`, `Dashboard.tsx`, `Playbooks.tsx`, `Layout.tsx`, `planning/{ACTIVE,EXECUTION-PLAN}.md`
+- Tests added / changed: 0 (frontend build)
+- Build: pass
+- Status: done
+- Next up: merge audit PR stack; optional Plan0 QA
+- Notes: EXECUTION-PLAN Phases 6.1–6.5 and 7.1–7.3 marked complete. Live mode no longer falls back to mock chart data when API returns empty series.
+
+## 2026-06-04 — cursor/audit-phase-8-2-parallel-b0b9 — Phase 8.2: Docker migrations + API validation UX
+- Commit: c875ef1 (feat: Phase 8.2 Alembic-only init_db and Docker migrate entrypoint)
+- Files touched: `backend/app/{database,migrations}.py`, `backend/docker-entrypoint.sh`, `backend/Dockerfile`, `docker-compose.yml`, `backend/MIGRATIONS.md`, `backend/tests/test_migrations_bootstrap.py`, `frontend/src/lib/api/client.ts`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`
+- Tests added / changed: 1 (`test_migrations_bootstrap.py`)
+- Build: pass (pytest migrations x2)
+- Status: done
+- Next up: **6.1** — API client layer polish
+- Notes: Removed create_all + ad-hoc ALTER helpers. Compose sets `ALEMBIC_AUTO_STAMP=true` for legacy volumes. `detailMessage` joins FastAPI 422 field errors.
+
+## 2026-06-04 — cursor/audit-phase-8-1-parallel-b0b9 — Phase 8.1: Alembic initial + route modularization
+- Commit: 4f3cfa0 (feat: Phase 8.1 Alembic initial schema and full API route split)
+- Files touched: `backend/alembic/versions/6bcb32ddfb52_initial_schema.py`, `backend/alembic/env.py`, `backend/MIGRATIONS.md`, `backend/app/api/v1/{auth,accounts,paper_legacy,ai,notebook,challenges,settings,sync,api_serializers}.py`, `routes.py`, `backend/tests/test_alembic_migrations.py`
+- Tests added / changed: 1 (`test_alembic_migrations.py`)
+- Build: pass (compileall + pytest)
+- Status: done
+- Next up: **8.2** — Docker Compose migrate step; retire ad-hoc ALTER when covered by Alembic
+- Notes: Fixed missing `trading_account_to_dict` / `paper_account_to_dict` via `api_serializers.py`. `routes.py` is now a thin router aggregator.
+
+## 2026-06-04 — cursor/audit-pwa-trades-routes-b0b9 — Phase 5 + 8.0 + journal API
+- Commit: 3f1d38c (feat: iPhone PWA polish, journal API saves, split trades/analytics routes)
+- Files touched: frontend PWA (index.html, vite, Layout, MobileNav, IosInstallBanner, useIsStandalone, index.css, icons), `frontend/src/lib/api/trades.ts`, `useStore.ts`, `Journal.tsx`, `backend/app/api/v1/api_common.py`, `trades_api.py`, `analytics_api.py`, `routes.py`, `backend/alembic/*`
+- Tests added / changed: 0 (compileall + frontend build)
+- Build: pass
+- Status: done
+- Next up: **8.1** — first Alembic revision from SQLAlchemy models
+- Notes: iPhone-focused PWA (safe-area, 180px apple-touch-icon, install banner). Trades/analytics extracted from monolithic routes.py. Journal drawer saves notes/session/emotion via PATCH in live mode.
+
 ## Entry Format (copy / paste this block)
 
 ```
@@ -34,14 +70,32 @@
 
 ## Log (newest first)
 
-## 2026-06-04 — cursor/audit-phase-b-d-parallel-b0b9 — feat: Phase B live charts + Phase D risk engine
+## 2026-06-04 — cursor/audit-phase-6-parallel-b0b9 — 6.2 live surface polish
 - Commit: (see git log)
-- Files touched: `frontend/src/lib/{mapAnalytics,api/analytics}.ts`, `frontend/src/store/useStore.ts`, chart components, `backend/app/services/{risk_engine,analytics}.py`, `backend/app/models/{risk_profile,audit_log,bot_control}.py`, `backend/app/api/v1/{risk,bot}.py`, `RiskStatusCard`, Header kill switch
-- Tests added / changed: 5 (`backend/tests/test_*.py`)
-- Build: pass (`pytest tests/`, `npm run lint`, `npm run build`)
+- Files touched: `frontend/src/lib/metricsFromTrades.ts`, `frontend/src/pages/{Reports,Calculator,Journal,Paper,Dashboard}.tsx`, `frontend/src/data/mockData.ts`, `planning/*`
+- Tests added / changed: 0
+- Build: pass (`npm run lint`, `npm run build`)
 - Status: done
-- Next up: Backtesting MVP (Phase E) per `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md`
-- Notes: Charts use API series when `dataMode=live`; date range re-fetches analytics. Kill switch blocks paper via `risk_engine` + audit log.
+- Next up: **5** PWA polish
+- Notes: Reports uses API metrics when live; Calculator seeds balance/risk from account; Journal empty state for live zero trades.
+
+## 2026-06-04 — cursor/audit-phase-f-g-parallel-b0b9 — F strategy runner + G live readiness
+- Commit: (see git log)
+- Files touched: strategy_run model, strategy_runner, broker_base, live_readiness services/APIs, StrategyRunsPanel, LiveReadiness page, planning docs
+- Tests added / changed: 1 (`test_strategy_runner.py`)
+- Build: pass
+- Status: done
+- Next up: **6.2** — remaining mock-only surfaces when authenticated
+- Notes: Paper-only strategy ticks; live execution remains disabled.
+
+## 2026-06-04 — cursor/audit-phase-e-settings-live-b0b9 — E + risk settings + live playbooks
+- Commit: (see git log)
+- Files touched: `backend/app/models/{strategy,backtest}.py`, `backend/app/services/backtesting.py`, `backend/app/api/v1/backtests.py`, `backend/app/api/v1/risk.py`, `backend/app/database.py`, `backend/tests/test_backtesting.py`, `frontend/src/pages/Backtests.tsx`, `frontend/src/lib/api/{backtests,risk}.ts`, `frontend/src/store/useStore.ts`, `frontend/src/pages/{Settings,Playbooks,PropFirm}.tsx`, `frontend/src/App.tsx`, `frontend/src/components/layout/Sidebar.tsx`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`
+- Tests added / changed: 2 (`test_backtesting.py`)
+- Build: pass (`python3 -m compileall app`, `npm run lint`, `npm run build`)
+- Status: done
+- Next up: **Phase F** — strategy runner in paper mode (audit §10)
+- Notes: Backtests use synthetic candles (`data_label: synthetic_demo`). Playbooks derive from journal `strategy` when live. Risk PATCH applies to paper/future execution limits.
 
 ## 2026-05-16 — main — merge: open PR stack (#18–#22) into main
 - Commit: (see git log)

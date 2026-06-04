@@ -1,14 +1,17 @@
 import { useState, useMemo, useRef } from 'react';
-import { Search, Download, Plus, Clock, Trash2, BarChart3, ImagePlus } from 'lucide-react';
+import { Search, Download, Plus, Clock, Trash2, BarChart3, ImagePlus, Save } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { AddTradeModal } from '../components/journal/AddTradeModal';
 import { useStore } from '../store/useStore';
 import { useToast } from '../components/ui/Toast';
 import { getToken } from '../lib/auth';
+import { uploadTradeScreenshot } from '../lib/api/trades';
 import { DirectionBadge, GradeBadge } from '../components/ui/Badge';
 import { format, parseISO } from 'date-fns';
 import { clsx } from 'clsx';
 import type { Trade } from '../types';
+import { EmptyState } from '../components/common/EmptyState';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { JournalTradeCard } from '../components/journal/JournalTradeCard';
 
 const emotionEmojis: Record<string, string> = {
@@ -54,28 +57,14 @@ function ScreenshotUploadZone({
     }
     setBusy(true);
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch(`/api/v1/trades/${tradeId}/screenshot?slot=${slot}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
-      const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-      if (!res.ok) {
-        const detail = data.detail;
-        showToast(typeof detail === 'string' ? detail : 'Upload failed');
-        return;
-      }
+      const row = await uploadTradeScreenshot(tradeId, slot, file);
       const patch: Partial<Trade> = {};
-      if (typeof data.screenshot_before_url === 'string')
-        patch.screenshotBeforeUrl = data.screenshot_before_url;
-      if (typeof data.screenshot_after_url === 'string')
-        patch.screenshotAfterUrl = data.screenshot_after_url;
+      if (row.screenshotBeforeUrl) patch.screenshotBeforeUrl = row.screenshotBeforeUrl;
+      if (row.screenshotAfterUrl) patch.screenshotAfterUrl = row.screenshotAfterUrl;
       if (Object.keys(patch).length > 0) onUploaded(patch);
       showToast('Screenshot saved');
-    } catch {
-      showToast('Upload failed — is the API running?');
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : 'Upload failed — is the API running?', 'warning');
     } finally {
       setBusy(false);
       e.target.value = '';
@@ -118,6 +107,9 @@ function ScreenshotUploadZone({
   );
 }
 
+const SESSION_OPTIONS: Trade['session'][] = ['London', 'New York', 'Tokyo', 'Sydney', 'Overlap'];
+const GRADE_OPTIONS = ['A', 'B', 'C', 'D', 'F'] as const;
+
 function TradeDrawer({
   trade,
   onClose,
@@ -125,7 +117,32 @@ function TradeDrawer({
   trade: Trade;
   onClose: () => void;
 }) {
-  const { deleteTrade, updateTrade } = useStore();
+  const { deleteTrade, updateTrade, dataMode } = useStore();
+  const { showToast } = useToast();
+  const [notes, setNotes] = useState(trade.notes ?? '');
+  const [session, setSession] = useState<Trade['session']>(trade.session);
+  const [emotion, setEmotion] = useState<Trade['emotion']>(trade.emotion);
+  const [emotionScore, setEmotionScore] = useState(trade.emotionScore);
+  const [strategy, setStrategy] = useState(trade.strategy ?? '');
+  const [grade, setGrade] = useState(trade.grade);
+  const [saving, setSaving] = useState(false);
+
+  const saveJournalFields = async () => {
+    setSaving(true);
+    try {
+      updateTrade(trade.id, {
+        notes,
+        session,
+        emotion,
+        emotionScore,
+        strategy,
+        grade,
+      });
+      showToast(dataMode === 'live' ? 'Trade journal saved' : 'Trade updated (demo)');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const beforeSrc = trade.screenshotBeforeUrl || trade.screenshot;
   const afterSrc = trade.screenshotAfterUrl;
@@ -204,26 +221,89 @@ function TradeDrawer({
             ))}
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-dark-300 rounded-lg">
-            <span className="text-2xl">{emotionEmojis[trade.emotion] || '😐'}</span>
-            <div>
-              <div className="text-xs text-slate-500">Emotion</div>
-              <div className="text-sm font-semibold text-white">{trade.emotion}</div>
+          <div className="space-y-3 p-3 bg-dark-300 rounded-lg">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="block">
+                <span className="text-xs text-slate-500">Session</span>
+                <select
+                  value={session}
+                  onChange={e => setSession(e.target.value as Trade['session'])}
+                  className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white min-h-[44px]"
+                >
+                  {SESSION_OPTIONS.map(s => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block">
+                <span className="text-xs text-slate-500">Grade</span>
+                <select
+                  value={grade}
+                  onChange={e => setGrade(e.target.value as Trade['grade'])}
+                  className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white min-h-[44px]"
+                >
+                  {GRADE_OPTIONS.map(g => (
+                    <option key={g} value={g}>
+                      {g}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
-            <div className="ml-auto">
-              <div className="text-xs text-slate-500 mb-1">Discipline Score</div>
-              <div className="flex gap-0.5">
-                {Array.from({ length: 10 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className={clsx(
-                      'w-2 h-4 rounded-sm',
-                      i < trade.emotionScore ? 'bg-brand-500' : 'bg-surface-border'
-                    )}
-                  />
+            <label className="block">
+              <span className="text-xs text-slate-500">Strategy / setup</span>
+              <input
+                value={strategy}
+                onChange={e => setStrategy(e.target.value)}
+                className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white min-h-[44px]"
+              />
+            </label>
+            <label className="block">
+              <span className="text-xs text-slate-500">Emotion</span>
+              <select
+                value={emotion}
+                onChange={e => setEmotion(e.target.value as Trade['emotion'])}
+                className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white min-h-[44px]"
+              >
+                {Object.keys(emotionEmojis).map(e => (
+                  <option key={e} value={e}>
+                    {emotionEmojis[e]} {e}
+                  </option>
                 ))}
-              </div>
+              </select>
+            </label>
+            <div>
+              <div className="text-xs text-slate-500 mb-2">Discipline score (1–10)</div>
+              <input
+                type="range"
+                min={1}
+                max={10}
+                value={emotionScore}
+                onChange={e => setEmotionScore(Number(e.target.value))}
+                className="w-full accent-brand-500 min-h-[44px]"
+              />
             </div>
+            <label className="block">
+              <span className="text-xs text-slate-500">Trade notes</span>
+              <textarea
+                value={notes}
+                onChange={e => setNotes(e.target.value)}
+                rows={4}
+                className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white resize-y"
+                placeholder="What went well? What to improve?"
+              />
+            </label>
+            <button
+              type="button"
+              onClick={() => void saveJournalFields()}
+              disabled={saving}
+              className="btn-primary w-full justify-center min-h-[48px]"
+            >
+              <Save className="w-4 h-4" />
+              {saving ? 'Saving…' : 'Save journal'}
+            </button>
           </div>
 
           {trade.tags.length > 0 && (
@@ -236,13 +316,6 @@ function TradeDrawer({
                   #{tag}
                 </span>
               ))}
-            </div>
-          )}
-
-          {trade.notes && (
-            <div className="p-3 bg-dark-300 rounded-lg">
-              <div className="text-xs text-slate-500 mb-1.5">Trade Notes</div>
-              <p className="text-sm text-slate-300">{trade.notes}</p>
             </div>
           )}
 
@@ -288,7 +361,7 @@ function TradeDrawer({
 }
 
 export function Journal() {
-  const { trades } = useStore();
+  const { trades, dataMode } = useStore();
   const [search, setSearch] = useState('');
   const [symbolFilter, setSymbolFilter] = useState<string>('all');
   const [dirFilter, setDirFilter] = useState<'all' | 'BUY' | 'SELL'>('all');
@@ -354,6 +427,22 @@ export function Journal() {
       />
 
       <div className="page-shell p-6 space-y-5 pb-28 md:pb-6">
+        {dataMode === 'live' && (
+          <div className="flex flex-wrap items-center gap-2">
+            <DataSourceBadge source="live" />
+          </div>
+        )}
+        {dataMode === 'live' && trades.length === 0 && (
+          <EmptyState
+            title="No trades in your journal"
+            body="Sync from MT5 or add a trade manually to populate this view."
+            actions={
+              <button type="button" className="btn-primary text-sm" onClick={() => setAddTradeOpen(true)}>
+                Add trade
+              </button>
+            }
+          />
+        )}
         {addTradeOpen && <AddTradeModal onClose={() => setAddTradeOpen(false)} />}
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -556,7 +645,16 @@ export function Journal() {
         <span className="hidden sm:inline font-semibold">Add trade</span>
       </button>
 
-      {selectedTrade && <TradeDrawer trade={selectedTrade} onClose={() => setSelectedTrade(null)} />}
+      {selectedTrade && (() => {
+        const drawerTrade = trades.find(t => t.id === selectedTrade.id) ?? selectedTrade;
+        return (
+          <TradeDrawer
+            key={drawerTrade.id}
+            trade={drawerTrade}
+            onClose={() => setSelectedTrade(null)}
+          />
+        );
+      })()}
     </div>
   );
 }

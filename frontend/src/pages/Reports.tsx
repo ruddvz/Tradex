@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BarChart3, Download, TrendingUp, TrendingDown, Target, Zap, Clock } from 'lucide-react';
 import { subDays, parseISO } from 'date-fns';
 import { Header } from '../components/layout/Header';
@@ -9,7 +9,7 @@ import { WinRateDonut } from '../components/charts/WinRateDonut';
 import { SessionHeatmap } from '../components/charts/SessionHeatmap';
 import { Badge } from '../components/ui/Badge';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
-import { computeMetrics } from '../data/mockData';
+import { computeMetrics } from '../lib/metricsFromTrades';
 import {
   BarChart,
   Bar,
@@ -25,6 +25,7 @@ import {
   Radar,
 } from 'recharts';
 import { clsx } from 'clsx';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 
 const CustomTooltip = ({
   active,
@@ -63,7 +64,12 @@ const TAB_ITEMS = [
 ];
 
 export function Reports() {
-  const { trades, selectedDateRange, setDateRange, dataMode, metrics } = useStore();
+  const { trades, selectedDateRange, setDateRange, dataMode, metrics, refreshAnalyticsFromApi } = useStore();
+  
+  useEffect(() => {
+    if (dataMode === 'live') void refreshAnalyticsFromApi();
+  }, [dataMode, selectedDateRange, refreshAnalyticsFromApi]);
+
   const [tab, setTab] = useState('overview');
 
   const tradesInRange = useMemo(() => {
@@ -151,7 +157,7 @@ export function Reports() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div className="card p-5 lg:col-span-2 min-h-[280px]">
         <h3 className="section-title text-base mb-1">Equity curve</h3>
-        <p className="section-subtitle mb-4">Selected range (demo uses full equity series)</p>
+        <p className="section-subtitle mb-4">Selected range — live equity from API when signed in</p>
         <EquityCurve height={220} />
       </div>
       <div className="card p-5">
@@ -306,6 +312,12 @@ export function Reports() {
       />
 
       <div className="page-shell px-6 pt-4 pb-8 space-y-5">
+        <div className="flex flex-wrap items-center gap-2">
+          <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
+          {dataMode === 'live' && (
+            <span className="text-xs text-slate-500">KPIs from API metrics; charts use live series when available.</span>
+          )}
+        </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap gap-2">
             {RANGE_KEYS.map(({ key, label }) => (

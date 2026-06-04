@@ -4,6 +4,8 @@ import { useStore } from '../store/useStore';
 import { getToken } from '../lib/auth';
 import { listPaperAccounts, createPaperAccount, type PaperAccountRow } from '../lib/api/paper';
 import { clsx } from 'clsx';
+import { Link } from 'react-router-dom';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 
 export function Paper() {
   const { dataMode } = useStore();
@@ -85,6 +87,10 @@ export function Paper() {
     <div className="min-h-screen">
       <Header title="Paper" subtitle="Virtual balance and risk-gated simulated trades" showDateRange={false} />
       <div className="page-shell px-5 py-6 space-y-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
+          <Link to="/paper-trading" className="text-xs text-analytics hover:underline">Open Paper Trading →</Link>
+        </div>
         {dataMode === 'demo' && (
           <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
             Sign in to use paper accounts on the server. Demo mode below is read-only for this screen.

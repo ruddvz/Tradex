@@ -8,6 +8,17 @@ import { clsx } from 'clsx';
 import { useState, useEffect } from 'react';
 import { clearToken, getToken } from '../lib/auth';
 import { authUiEnabled } from '../lib/featureFlags';
+import {
+  fetchRiskProfiles,
+  updateRiskProfile,
+  type RiskProfileRow,
+} from '../lib/api/risk';
+import {
+  fetchMt5Settings,
+  fetchNotificationSettings,
+  updateMt5Settings,
+  updateNotificationSettings,
+} from '../lib/api/settings';
 
 const brokers = [
   { name: 'Exness', logo: 'EX', connected: true },
@@ -39,19 +50,12 @@ export function Settings() {
       }
       setMt5Loading(true);
       try {
-        const res = await fetch('/api/v1/settings/mt5', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = (await res.json()) as {
-          server?: string | null;
-          login?: string | null;
-          has_password?: boolean;
-        };
-        if (res.ok) {
-          setMt5Server(data.server ?? '');
-          setMt5Login(data.login ?? '');
-          setMt5HasPassword(Boolean(data.has_password));
-        }
+        const data = await fetchMt5Settings();
+        setMt5Server(data.server ?? '');
+        setMt5Login(data.login ?? '');
+        setMt5HasPassword(Boolean(data.has_password));
+      } catch {
+        /* demo / offline */
       } finally {
         setMt5Loading(false);
       }
@@ -69,20 +73,13 @@ export function Settings() {
       login: mt5Login.trim(),
     };
     if (mt5Password.trim()) body.password = mt5Password.trim();
-    const res = await fetch('/api/v1/settings/mt5', {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-    const data = (await res.json()) as { has_password?: boolean };
-    if (!res.ok) {
-      showToast('Could not save MT5 settings');
+    try {
+      const data = await updateMt5Settings(body);
+      setMt5HasPassword(Boolean(data.has_password));
+    } catch {
+      showToast('Could not save MT5 settings', 'warning');
       return;
     }
-    setMt5HasPassword(Boolean(data.has_password));
     setMt5Password('');
     showToast('MT5 settings saved');
   };
@@ -90,16 +87,10 @@ export function Settings() {
   const disconnectMt5 = async () => {
     const token = getToken();
     if (!token) return;
-    const res = await fetch('/api/v1/settings/mt5', {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ server: '', login: '', password: '' }),
-    });
-    if (!res.ok) {
-      showToast('Could not clear MT5 credentials');
+    try {
+      await updateMt5Settings({ server: '', login: '', password: '' });
+    } catch {
+      showToast('Could not clear MT5 credentials', 'warning');
       return;
     }
     setMt5Server('');
@@ -126,12 +117,8 @@ export function Settings() {
   useEffect(() => {
     const token = getToken();
     if (!token) return;
-    void fetch('/api/v1/settings/notifications', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(r => (r.ok ? r.json() : null))
+    void fetchNotificationSettings()
       .then(data => {
-        if (!data || typeof data !== 'object') return;
         setNotifications({
           email: Boolean(data.email),
           push: Boolean(data.push),
@@ -145,16 +132,12 @@ export function Settings() {
   const persistNotifications = async (next: typeof notifications) => {
     const token = getToken();
     if (!token) return;
-    const res = await fetch('/api/v1/settings/notifications', {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(next),
-    });
-    if (res.ok) showToast('Notifications saved');
-    else showToast('Could not save notifications');
+    try {
+      await updateNotificationSettings(next);
+      showToast('Notifications saved');
+    } catch {
+      showToast('Could not save notifications', 'warning');
+    }
   };
 
   const toggleBroker = (name: string) => {
@@ -405,36 +388,8 @@ export function Settings() {
             </div>
           </div>
 
-          {/* Risk Settings */}
-          <div className="card p-6">
-            <div className="flex items-center gap-2 mb-4">
-              <Shield className="w-4 h-4 text-brand-400" />
-              <h3 className="font-semibold text-white">Risk Management Defaults</h3>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: 'Default Risk %', defaultValue: '1', suffix: '%' },
-                { label: 'Max Daily Loss', defaultValue: '3', suffix: '%' },
-                { label: 'Max Drawdown Alert', defaultValue: '10', suffix: '%' },
-                { label: 'Daily Trade Limit', defaultValue: '5', suffix: 'trades' },
-              ].map(s => (
-                <div key={s.label}>
-                  <label className="label">{s.label}</label>
-                  <div className="relative">
-                    <input type="number" className="input pr-12" defaultValue={s.defaultValue} />
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500">{s.suffix}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <button
-              type="button"
-              className="btn-primary mt-4"
-              onClick={() => showToast('Risk settings saved')}
-            >
-              Save Risk Settings
-            </button>
-          </div>
+          {/* Risk profile (paper / future execution) */}
+          <RiskProfileSettings showToast={showToast} />
 
           {/* Data */}
           <div className="card p-6">
@@ -456,6 +411,188 @@ export function Settings() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+
+function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }) {
+  const [profiles, setProfiles] = useState<RiskProfileRow[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({
+    max_risk_per_trade_percent: 1,
+    max_daily_loss_percent: 5,
+    max_open_positions: 5,
+    max_positions_per_symbol: 2,
+    require_stop_loss: true,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const token = getToken();
+      if (!token) {
+        if (!cancelled) setLoading(false);
+        return;
+      }
+      if (!cancelled) setLoading(true);
+      try {
+        const rows = await fetchRiskProfiles();
+        if (cancelled) return;
+        setProfiles(rows);
+        const first = rows[0];
+        if (first) {
+          setActiveId(first.id);
+          setForm({
+            max_risk_per_trade_percent: first.max_risk_per_trade_percent,
+            max_daily_loss_percent: first.max_daily_loss_percent,
+            max_open_positions: first.max_open_positions,
+            max_positions_per_symbol: first.max_positions_per_symbol,
+            require_stop_loss: first.require_stop_loss,
+          });
+        }
+      } catch {
+        if (!cancelled) showToast('Could not load risk profiles');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [showToast]);
+
+  const saveRisk = async () => {
+    if (!activeId) {
+      showToast('Sign in to save risk profile');
+      return;
+    }
+    setSaving(true);
+    try {
+      const updated = await updateRiskProfile(activeId, form);
+      setProfiles((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      showToast('Risk profile saved');
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : 'Save failed');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="card p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Shield className="w-4 h-4 text-brand-400" />
+        <h3 className="font-semibold text-white">Risk profile</h3>
+      </div>
+      <p className="text-xs text-slate-500 mb-4">
+        Limits apply to paper orders and future automation. Journal-only trading is not blocked here.
+      </p>
+      {loading ? (
+        <p className="text-sm text-slate-500">Loading…</p>
+      ) : !getToken() ? (
+        <p className="text-sm text-slate-500">Sign in to edit your risk profile.</p>
+      ) : profiles.length === 0 ? (
+        <p className="text-sm text-slate-500">No profile yet — register or refresh to seed defaults.</p>
+      ) : (
+        <>
+          {profiles.length > 1 && (
+            <div className="mb-4">
+              <label className="label">Profile</label>
+              <select
+                className="input w-full"
+                value={activeId ?? ''}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setActiveId(id);
+                  const row = profiles.find((p) => p.id === id);
+                  if (row) {
+                    setForm({
+                      max_risk_per_trade_percent: row.max_risk_per_trade_percent,
+                      max_daily_loss_percent: row.max_daily_loss_percent,
+                      max_open_positions: row.max_open_positions,
+                      max_positions_per_symbol: row.max_positions_per_symbol,
+                      require_stop_loss: row.require_stop_loss,
+                    });
+                  }
+                }}
+              >
+                {profiles.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="label">Max risk per trade %</label>
+              <input
+                type="number"
+                step="0.1"
+                className="input w-full"
+                value={form.max_risk_per_trade_percent}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, max_risk_per_trade_percent: Number(e.target.value) }))
+                }
+              />
+            </div>
+            <div>
+              <label className="label">Max daily loss %</label>
+              <input
+                type="number"
+                step="0.1"
+                className="input w-full"
+                value={form.max_daily_loss_percent}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, max_daily_loss_percent: Number(e.target.value) }))
+                }
+              />
+            </div>
+            <div>
+              <label className="label">Max open positions</label>
+              <input
+                type="number"
+                className="input w-full"
+                value={form.max_open_positions}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, max_open_positions: Number(e.target.value) }))
+                }
+              />
+            </div>
+            <div>
+              <label className="label">Max per symbol</label>
+              <input
+                type="number"
+                className="input w-full"
+                value={form.max_positions_per_symbol}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, max_positions_per_symbol: Number(e.target.value) }))
+                }
+              />
+            </div>
+          </div>
+          <label className="flex items-center gap-2 mt-4 text-sm text-slate-300">
+            <input
+              type="checkbox"
+              checked={form.require_stop_loss}
+              onChange={(e) => setForm((f) => ({ ...f, require_stop_loss: e.target.checked }))}
+            />
+            Require stop loss on paper orders
+          </label>
+          <button
+            type="button"
+            className="btn-primary mt-4"
+            disabled={saving}
+            onClick={() => void saveRisk()}
+          >
+            {saving ? 'Saving…' : 'Save risk profile'}
+          </button>
+        </>
+      )}
     </div>
   );
 }

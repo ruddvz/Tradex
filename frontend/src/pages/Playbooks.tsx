@@ -8,6 +8,7 @@ import { Badge, PnlBadge } from '../components/ui/Badge';
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
 import { clsx } from 'clsx';
 import type { Playbook } from '../types';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 
 function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
   return (
@@ -183,9 +184,15 @@ export function Playbooks() {
       <Header title="AI Playbooks" subtitle="Pattern detection & performance intelligence" />
 
       <div className="page-shell p-6 space-y-6">
-        {dataMode === 'live' && (
-          <p className="rounded-lg border border-slate-600/40 bg-slate-800/40 px-3 py-2 text-xs text-slate-300">
-            Playbook cards are still sample content; trade stats below use your live journal when signed in.
+        {dataMode === 'live' ? (
+          <p className="rounded-lg border border-brand-500/25 bg-brand-500/5 px-3 py-2 text-xs text-slate-300 flex flex-wrap items-center gap-2">
+            <DataSourceBadge source="live" />
+            Playbooks are built from your journal strategy tags ({playbooks.length} groups). New Playbook still saves locally until a playbooks API ships.
+          </p>
+        ) : (
+          <p className="rounded-lg border border-amber-500/25 bg-amber-500/5 px-3 py-2 text-xs text-slate-300 flex flex-wrap items-center gap-2">
+            <DataSourceBadge source="demo" />
+            Demo playbooks — sign in to derive cards from your live journal.
           </p>
         )}
         {createOpen && <CreatePlaybookModal onClose={() => setCreateOpen(false)} />}

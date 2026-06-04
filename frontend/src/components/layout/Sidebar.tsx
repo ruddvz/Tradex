@@ -18,6 +18,8 @@ import {
   Wallet,
   ClipboardList,
   Landmark,
+  FlaskConical,
+  ShieldCheck,
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
@@ -29,6 +31,8 @@ const navItems = [
   { path: '/paper', label: 'Paper', icon: Wallet },
   { path: '/playbooks', label: 'AI Playbooks', icon: Brain },
   { path: '/paper-trading', label: 'Paper Trading', icon: Landmark },
+  { path: '/backtests', label: 'Backtests', icon: FlaskConical },
+  { path: '/live-readiness', label: 'Live readiness', icon: ShieldCheck },
   { path: '/propfirm', label: 'Prop Firm Mode', icon: Target },
   { path: '/notebook', label: 'Notebook', icon: NotebookPen },
   { path: '/reports', label: 'Reports', icon: BarChart3 },

@@ -72,9 +72,9 @@
 > **Goal:** manifest, service worker, bottom nav. See `NEXT_STEPS.md` Phase 5.  
 > **Strategic context:** `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` — P0 stabilization may take priority over pure UI polish.
 
-- [ ] **5.1** Manifest refinements (maskable icons, theme color, Apple touch icon)
-- [ ] **5.2** Offline banner + cached shell / safe-area padding for mobile
-- [ ] **5.3** Bottom-nav polish (no clash with home indicator)
+- [x] **5.1** Manifest refinements (maskable icons, theme color, Apple touch icon)
+- [x] **5.2** Offline banner + cached shell / safe-area padding for mobile
+- [x] **5.3** Bottom-nav polish (no clash with home indicator)
 
 ---
 
@@ -82,11 +82,11 @@
 
 > **Goal:** Backend as source of truth when authenticated. Acceptance criteria: **`planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md`** section 5 (P0.1–P0.3).
 
-- [ ] **6.1** API client layer (`frontend/src/lib/api/*`) + centralized auth headers / errors
-- [ ] **6.2** Replace mock-driven pages when authenticated (Dashboard, Reports, Playbooks, PropFirm, Journal consistency) + loading/error/empty states + demo labels
-- [ ] **6.3** `AddTradeModal` → `POST/PUT/DELETE` trades API + server validation display + store refresh
-- [ ] **6.4** `ALLOW_DEMO_MT5_FALLBACK` (default false) + production-safe MT5 errors + import `source` + UI badges
-- [ ] **6.5** `Account` model + `trade.account_id` + accounts API + per-account analytics + account selector in shell
+- [x] **6.1** API client layer (`frontend/src/lib/api/*`) + centralized auth headers / errors
+- [x] **6.2** Replace mock-driven pages when authenticated (Dashboard, Reports, Playbooks, PropFirm, Journal consistency) + loading/error/empty states + demo labels
+- [x] **6.3** `AddTradeModal` → `POST/PUT/DELETE` trades API + server validation display + store refresh
+- [x] **6.4** `ALLOW_DEMO_MT5_FALLBACK` (default false) + production-safe MT5 errors + import `source` + UI badges
+- [x] **6.5** `Account` model + `trade.account_id` + accounts API + per-account analytics + account selector in shell
 
 ---
 
@@ -94,9 +94,9 @@
 
 > **Goal:** Virtual balance, simulated fills, rule violations, daily loss lockout. See audit section 5 (P0.5) and section 18 Phase 2.
 
-- [ ] **7.1** Paper models + migrations (`PaperAccount`, orders, positions, fills, violations)
-- [ ] **7.2** Paper engine + risk pre-checks + REST endpoints
-- [ ] **7.3** Paper trading UI + store; reject oversized orders with explicit reason
+- [x] **7.1** Paper models + migrations (`PaperAccount`, orders, positions, fills, violations)
+- [x] **7.2** Paper engine + risk pre-checks + REST endpoints
+- [x] **7.3** Paper trading UI + store; reject oversized orders with explicit reason
 
 ---
 
@@ -104,7 +104,9 @@
 
 > **Detail:** `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` sections 6–10. Split into numbered slices when starting Phase 8.
 
-- [ ] **8.0** Split `routes.py` into domain routers + Alembic-first migrations (audit section 12)
+- [x] **8.0** Split `routes.py` into domain routers + Alembic-first migrations (audit section 12)
+- [x] **8.1** Initial Alembic revision (`6bcb32ddfb52`) + auth/accounts/notebook/challenges/settings/sync/ai/paper routers
+- [x] **8.2** Docker entrypoint migrations + `init_db` → Alembic-only (removed ad-hoc ALTER helpers)
 
 - [x] **5.1** VitePWA manifest + service worker + `index.html` manifest / theme-color
 - [x] **5.2** Offline UX — `navigateFallback` for SPA + offline strip copy in `Layout`
@@ -137,7 +139,15 @@
 > **Goal:** Simulated accounts, PAPER badge, then orders/fills and journal `source=paper`.
 
 - [x] **8.1** `PaperAccount` model + `GET`/`POST /api/v1/paper-accounts` + Paper Trading page + header Paper mode badge when an active account exists
-- [x] **8.2** Orders/fills stub + journal linkage `source=paper`
+- [x] **8.2** Orders/fills stub + journal linkage `source=paper` (audit branch)
+
+## Phase E — Backtesting MVP (audit)
+
+- [x] **E.1** `Strategy` + `Backtest` models + `backtesting` service (synthetic OHLC)
+- [x] **E.2** `GET`/`POST`/`DELETE` `/api/v1/backtests` + equity/trades sub-routes
+- [x] **E.3** `Backtests.tsx` + nav + trust warnings on results
+- [x] **E.4** `PATCH /risk/profiles/{id}` + Settings risk profile editor
+- [x] **E.5** Live playbooks from journal strategies + PropFirm data source badge
 
 ---
 

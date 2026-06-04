@@ -2,7 +2,10 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
 
     <!-- PWA Core -->
     <meta name="theme-color" content="#0b0f16" media="(prefers-color-scheme: dark)" />
@@ -12,6 +15,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Tradex" />
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
 
     <!-- SEO + Share -->
     <meta name="description" content="Tradex — AI-Powered Trading Journal for Forex, Gold, Indices & Stock Traders." />
@@ -20,9 +24,13 @@
     <meta property="og:description" content="Journal, analyze, and improve your trading edge with AI-powered insights." />
     <meta property="og:type" content="website" />
 
-    <!-- Icons -->
+    <!-- Icons (iOS prefers 180×180 apple-touch-icon) -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="apple-touch-icon" href="/pwa-192.png" sizes="192x192" />
+    <!-- iPhone splash (standalone launch) — dark brand background -->
+    <link rel="apple-touch-startup-image" href="/pwa-512.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)" />
+    <link rel="apple-touch-startup-image" href="/pwa-512.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
     <link rel="manifest" href="/manifest.webmanifest" />
 
     <!-- Fonts — preconnect first, then preload critical weight -->

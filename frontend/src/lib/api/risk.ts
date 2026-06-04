@@ -31,3 +31,25 @@ export async function fetchRiskEvents(limit = 20): Promise<AuditEventRow[]> {
   if (!ok) throw new Error(detailMessage(data));
   return Array.isArray(data) ? data : [];
 }
+
+
+export type RiskProfileUpdate = {
+  name?: string;
+  max_risk_per_trade_percent?: number;
+  max_daily_loss_percent?: number;
+  max_open_positions?: number;
+  max_positions_per_symbol?: number;
+  require_stop_loss?: boolean;
+};
+
+export async function updateRiskProfile(
+  profileId: string,
+  patch: RiskProfileUpdate
+): Promise<RiskProfileRow> {
+  const { ok, data } = await apiFetch<RiskProfileRow>(`/risk/profiles/${profileId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patch),
+  });
+  if (!ok) throw new Error(detailMessage(data));
+  return data;
+}

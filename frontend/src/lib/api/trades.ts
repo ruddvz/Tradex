@@ -53,7 +53,41 @@ export async function createTradeApi(body: CreateTradePayload): Promise<Trade> {
   return mapApiTradeRow(data);
 }
 
+export type UpdateTradePayload = {
+  strategy?: string;
+  session?: string;
+  emotion?: string;
+  emotion_score?: number;
+  notes?: string;
+  tags?: string[];
+  grade?: string;
+};
+
+export async function updateTradeApi(id: string, patch: UpdateTradePayload): Promise<Trade> {
+  const { ok, data } = await apiFetch<Record<string, unknown>>(`/trades/${encodeURIComponent(id)}`, {
+    method: 'PATCH',
+    body: JSON.stringify(patch),
+  });
+  if (!ok) throw new Error(detailMessage(data));
+  return mapApiTradeRow(data);
+}
+
 export async function deleteTradeApi(id: string): Promise<void> {
   const { ok, data } = await apiFetch(`/trades/${encodeURIComponent(id)}`, { method: 'DELETE' });
   if (!ok) throw new Error(detailMessage(data));
+}
+
+export async function uploadTradeScreenshot(
+  tradeId: string,
+  slot: 'before' | 'after',
+  file: File
+): Promise<Trade> {
+  const fd = new FormData();
+  fd.append('file', file);
+  const { ok, data } = await apiFetch<Record<string, unknown>>(
+    `/trades/${encodeURIComponent(tradeId)}/screenshot?slot=${slot}`,
+    { method: 'POST', body: fd }
+  );
+  if (!ok) throw new Error(detailMessage(data));
+  return mapApiTradeRow(data);
 }
