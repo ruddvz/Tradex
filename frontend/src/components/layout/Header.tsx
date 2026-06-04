@@ -2,6 +2,8 @@ import { Bell, Plus, RefreshCw, ChevronDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
+import { ModeBadge } from '../status/ModeBadge';
+import { resolveAppMode } from '../../lib/resolveAppMode';
 
 const ranges = [
   { key: '7d', label: '7 Days' },
@@ -53,29 +55,10 @@ export function Header({
           <h1 className="text-xl font-bold text-text-primary tracking-tight truncate">{title}</h1>
           {subtitle && <p className="text-xs text-text-muted truncate mt-0.5">{subtitle}</p>}
         </div>
-        <span
-          className={clsx(
-            'shrink-0 mt-0.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wide border',
-            dataMode === 'live'
-              ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-300'
-              : 'border-amber-500/35 bg-amber-500/10 text-amber-200'
-          )}
-          title={
-            dataMode === 'live'
-              ? 'Trades and headline metrics load from your account (API).'
-              : 'Sample data — sign in to load your journal from the API.'
-          }
-        >
-          {dataMode === 'live' ? 'Live' : 'Demo'}
-        </span>
-        {paperModeActive && (
-          <span
-            className="shrink-0 mt-0.5 px-2 py-0.5 rounded-lg text-[10px] font-bold uppercase tracking-wide border border-analytics/45 bg-analytics/12 text-analytics"
-            title="At least one simulated paper account is active. Orders and fills are not wired yet."
-          >
-            Paper mode
-          </span>
-        )}
+        <ModeBadge
+          mode={resolveAppMode({ dataMode, paperModeActive })}
+          className="mt-0.5"
+        />
       </div>
 
       {/* Date range selector */}

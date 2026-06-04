@@ -6,11 +6,11 @@
 
 ---
 
-## 👉 NEXT UP: **[8.2]** — Paper orders/fills + journal `source=paper`
+## 👉 NEXT UP: **[6.2]** — Wire Dashboard/Reports charts to live analytics (not `mockData.ts`)
 
-Extend Sprint 4: stub order lifecycle, optional `source` on trades or export path. See `planning/EXECUTION-PLAN.md` Phase 8.
+Phase A truth labels + **8.2** paper order/fill engine shipped on branch `cursor/implement-audit-phase-a-c-b0b9`. See `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md` Phase B.
 
-**Context:** `backend/app/models/`, `backend/app/api/v1/`, `frontend/src/pages/PaperTrading.tsx`, `frontend/src/pages/Paper.tsx`  
+**Context:** `frontend/src/pages/Dashboard.tsx`, `frontend/src/components/charts/*`, `frontend/src/lib/api/analytics.ts`  
 **Blocked by:** nothing
 
 ---

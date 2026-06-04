@@ -11,6 +11,8 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { Header } from '../components/layout/Header';
+import { EmptyState } from '../components/common/EmptyState';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { HeroMetricCard } from '../components/cards/HeroMetricCard';
 import { StatCard } from '../components/ui/StatCard';
 import { EquityCurve } from '../components/charts/EquityCurve';
@@ -309,6 +311,28 @@ export function Dashboard() {
               </button>
             </div>
             <div className="p-5 space-y-4">
+              {trades.length === 0 && dataMode === 'live' && (
+                <EmptyState
+                  title="No trades yet"
+                  body="Import from MT5, add a manual trade, or close a paper position to journal a simulated fill."
+                  actions={
+                    <>
+                      <button type="button" className="btn-secondary text-sm" onClick={() => navigate('/journal')}>
+                        Add trade
+                      </button>
+                      <button type="button" className="btn-primary text-sm" onClick={() => navigate('/paper-trading')}>
+                        Paper trading
+                      </button>
+                    </>
+                  }
+                />
+              )}
+              {dataMode === 'demo' && (
+                <div className="flex items-center gap-2 mb-2">
+                  <DataSourceBadge source="demo" />
+                  <span className="text-xs text-text-muted">Sample performance — not your account.</span>
+                </div>
+              )}
               {recentActivity.map(trade => (
                 <button
                   key={trade.id}

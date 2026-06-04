@@ -8,7 +8,8 @@ from typing import Optional, Tuple
 from sqlalchemy import select, func as sql_func
 from sqlalchemy.orm import Session
 
-from ..models.paper import PaperAccount, PaperTrade, PaperOrderDirection
+from ..models.paper import PaperTrade, PaperOrderDirection
+from ..models.paper_account import PaperAccount
 
 
 def _risk_dollars_at_sl(

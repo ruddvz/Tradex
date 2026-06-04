@@ -43,6 +43,10 @@ def create_paper_account(
         name=body.name.strip(),
         currency=body.currency.strip().upper()[:8] or "USD",
         starting_balance=body.starting_balance,
+        balance=body.starting_balance,
+        equity=body.starting_balance,
+        max_daily_loss=body.max_daily_loss,
+        max_risk_per_trade_percent=body.max_risk_per_trade_percent,
         is_active=body.is_active,
     )
     db.add(row)
