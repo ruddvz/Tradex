@@ -6,11 +6,11 @@
 
 ---
 
-## 👉 NEXT UP: **[6.2]** — Wire Dashboard/Reports charts to live analytics (not `mockData.ts`)
+## 👉 NEXT UP: **Backtesting MVP (Phase E)** or **Strategy model**
 
-Phase A truth labels + **8.2** paper order/fill engine shipped on branch `cursor/implement-audit-phase-a-c-b0b9`. See `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md` Phase B.
+Phase B (live chart wiring) + Phase D (risk engine + kill switch) shipped on `cursor/audit-phase-b-d-parallel-b0b9`. See `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md`.
 
-**Context:** `frontend/src/pages/Dashboard.tsx`, `frontend/src/components/charts/*`, `frontend/src/lib/api/analytics.ts`  
+**Context:** `backend/app/models/strategy.py`, `backend/app/services/backtesting.py`, `frontend/src/pages/Backtests.tsx`  
 **Blocked by:** nothing
 
 ---

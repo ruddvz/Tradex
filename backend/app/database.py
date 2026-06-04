@@ -87,7 +87,14 @@ def init_db() -> None:
     from .models import user  # noqa: F401
     from .models import trading_account  # noqa: F401
     from .models import paper  # noqa: F401
+    from .models import paper_order  # noqa: F401
+    from .models import paper_position  # noqa: F401
+    from .models import paper_fill  # noqa: F401
+    from .models import risk_profile  # noqa: F401
+    from .models import audit_log  # noqa: F401
+    from .models import bot_control  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
     _ensure_user_mt5_columns()
     _ensure_trade_source_column()
+    _ensure_paper_account_columns()

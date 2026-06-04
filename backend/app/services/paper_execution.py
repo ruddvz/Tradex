@@ -21,6 +21,7 @@ from ..models.paper_position import PaperPosition, PaperPositionStatus
 from ..models.trade import Trade, TradeDirection, TradeStatus
 from .fill_simulator import simulate_market_fill
 from .trade_codec import compute_grade_and_rr, status_from_str, grade_from_str
+from .risk_engine import evaluate_paper_order as evaluate_risk_engine
 
 # Coarse $ / (price point × lot) — matches paper_service MVP scaling
 _PNL_UNIT = 100.0
@@ -62,6 +63,8 @@ def _pnl_for_close(side: PaperOrderSide, entry: float, exit_price: float, lot_si
 def evaluate_paper_order_risk(
     account: PaperAccount,
     *,
+    user_id: str,
+    symbol: str,
     side: PaperOrderSide,
     entry_price: float,
     stop_loss: Optional[float],
@@ -72,21 +75,53 @@ def evaluate_paper_order_risk(
         return "Lot size must be positive."
     if entry_price <= 0:
         return "Price must be positive."
-    if stop_loss is None or stop_loss <= 0:
-        return "Stop loss is required for paper orders."
 
     risk = _risk_dollars_at_sl(side, entry_price, stop_loss, lot_size)
-    max_risk = account.balance * (account.max_risk_per_trade_percent / 100.0)
-    if risk > max_risk:
-        return (
-            f"Order blocked: risk at stop is about ${risk:.0f}, "
-            f"but max is {account.max_risk_per_trade_percent:.1f}% of balance (${max_risk:.0f})."
-        )
+
+    open_count = int(
+        db.execute(
+            select(sql_func.count())
+            .select_from(PaperPosition)
+            .where(
+                PaperPosition.paper_account_id == account.id,
+                PaperPosition.status == PaperPositionStatus.OPEN,
+            )
+        ).scalar()
+        or 0
+    )
+
+    same_sym = int(
+        db.execute(
+            select(sql_func.count())
+            .select_from(PaperPosition)
+            .where(
+                PaperPosition.paper_account_id == account.id,
+                PaperPosition.status == PaperPositionStatus.OPEN,
+                PaperPosition.symbol == symbol.upper(),
+            )
+        ).scalar()
+        or 0
+    )
 
     today_pnl = _today_realized_pnl(db, account.id)
     if today_pnl <= -account.max_daily_loss:
         return "Order blocked: daily loss limit already reached."
 
+    approved, reason = evaluate_risk_engine(
+        db,
+        user_id=user_id,
+        symbol=symbol.upper(),
+        side=side,
+        lot_size=lot_size,
+        entry_price=entry_price,
+        stop_loss=stop_loss,
+        account_balance=account.balance,
+        open_positions_count=open_count,
+        open_positions_same_symbol=same_sym,
+        risk_at_stop_dollars=risk,
+    )
+    if not approved:
+        return reason
     return None
 
 
@@ -104,6 +139,8 @@ def submit_paper_market_order(
 ) -> Tuple[Optional[PaperOrder], Optional[PaperPosition], Optional[str]]:
     err = evaluate_paper_order_risk(
         account,
+        user_id=user_id,
+        symbol=symbol,
         side=side,
         entry_price=reference_price,
         stop_loss=stop_loss,

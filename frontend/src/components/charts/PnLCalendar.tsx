@@ -1,9 +1,11 @@
 import { useMemo } from 'react';
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, getDay } from 'date-fns';
 import { mockCalendar } from '../../data/mockData';
+import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
+import type { CalendarDay as CalDay } from '../../types';
 
-const CalendarDay = ({ day, data }: { day: Date; data: typeof mockCalendar[0] | undefined }) => {
+const CalendarDayCell = ({ day, data }: { day: Date; data: CalDay | undefined }) => {
   if (!data || !data.isTrading) {
     return (
       <div className="aspect-square rounded-md bg-transparent flex flex-col items-center justify-center p-0.5">
@@ -33,7 +35,6 @@ const CalendarDay = ({ day, data }: { day: Date; data: typeof mockCalendar[0] | 
         {isProfit ? '+' : ''}{data.pnl >= 0 ? '' : '-'}${Math.abs(data.pnl).toFixed(0)}
       </span>
 
-      {/* Tooltip */}
       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 pointer-events-none">
         <div className="bg-surface border border-surface-border rounded-lg p-2 text-xs whitespace-nowrap shadow-card">
           <div className="text-slate-400">{format(day, 'MMM dd, yyyy')}</div>
@@ -48,13 +49,15 @@ const CalendarDay = ({ day, data }: { day: Date; data: typeof mockCalendar[0] | 
 };
 
 export function PnLCalendar() {
+  const { dataMode, calendarDays } = useStore();
+  const calendarSource = dataMode === 'live' && calendarDays.length > 0 ? calendarDays : mockCalendar;
   const today = new Date();
   const days = eachDayOfInterval({ start: startOfMonth(today), end: endOfMonth(today) });
   const dataMap = useMemo(() => {
-    const m = new Map<string, typeof mockCalendar[0]>();
-    mockCalendar.forEach(d => m.set(d.date, d));
+    const m = new Map<string, CalDay>();
+    calendarSource.forEach((d) => m.set(d.date, d));
     return m;
-  }, []);
+  }, [calendarSource]);
 
   const firstDayOfWeek = getDay(days[0]);
   const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -88,7 +91,7 @@ export function PnLCalendar() {
         {days.map(day => {
           const dateStr = format(day, 'yyyy-MM-dd');
           return (
-            <CalendarDay key={dateStr} day={day} data={dataMap.get(dateStr)} />
+            <CalendarDayCell key={dateStr} day={day} data={dataMap.get(dateStr)} />
           );
         })}
       </div>

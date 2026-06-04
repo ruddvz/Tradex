@@ -1,4 +1,4 @@
-import { Bell, Plus, RefreshCw, ChevronDown } from 'lucide-react';
+import { Bell, Plus, RefreshCw, ChevronDown, Octagon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
@@ -15,7 +15,6 @@ const ranges = [
 interface HeaderProps {
   title: string;
   subtitle?: string;
-  /** When false, hides the header date-range chips (e.g. Home hero owns period selection). */
   showDateRange?: boolean;
   action?: React.ReactNode;
   onAddTrade?: () => void;
@@ -38,6 +37,9 @@ export function Header({
     aiInsights,
     dataMode,
     paperModeActive,
+    botStatus,
+    triggerKillSwitch,
+    resumePaperTrading,
   } = useStore();
 
   return (
@@ -55,13 +57,9 @@ export function Header({
           <h1 className="text-xl font-bold text-text-primary tracking-tight truncate">{title}</h1>
           {subtitle && <p className="text-xs text-text-muted truncate mt-0.5">{subtitle}</p>}
         </div>
-        <ModeBadge
-          mode={resolveAppMode({ dataMode, paperModeActive })}
-          className="mt-0.5"
-        />
+        <ModeBadge mode={resolveAppMode({ dataMode, paperModeActive })} className="mt-0.5" />
       </div>
 
-      {/* Date range selector */}
       {showDateRange && (
         <div className="hidden sm:flex items-center gap-1 bg-surface/80 rounded-xl p-1 border border-[rgba(126,146,185,0.18)]">
           {ranges.map(r => (
@@ -82,7 +80,24 @@ export function Header({
         </div>
       )}
 
-      {/* Sync button */}
+      {dataMode === 'live' && (
+        <button
+          type="button"
+          onClick={() => void (botStatus?.kill_switch_active ? resumePaperTrading() : triggerKillSwitch())}
+          className={clsx(
+            'header-icon-button',
+            botStatus?.kill_switch_active && 'text-loss border-loss/40'
+          )}
+          title={
+            botStatus?.kill_switch_active
+              ? 'Resume paper trading'
+              : 'Kill switch — stop new paper orders'
+          }
+        >
+          <Octagon className="w-[21px] h-[21px]" />
+        </button>
+      )}
+
       <button
         type="button"
         onClick={() => openMt5SyncModal()}
@@ -93,7 +108,6 @@ export function Header({
         <RefreshCw className={clsx('w-[21px] h-[21px]', isSyncing && 'animate-spin text-success')} />
       </button>
 
-      {/* Notifications */}
       <button type="button" className="header-icon-button relative">
         <Bell className="w-[21px] h-[21px]" />
         {aiInsights.length > 0 && (
@@ -101,19 +115,13 @@ export function Header({
         )}
       </button>
 
-      {/* Add Trade */}
       {action ?? (
-        <button
-          type="button"
-          className="btn-primary text-sm hidden sm:flex"
-          onClick={onAddTrade}
-        >
+        <button type="button" className="btn-primary text-sm hidden sm:flex" onClick={onAddTrade}>
           <Plus className="w-4 h-4" />
           Add Trade
         </button>
       )}
 
-      {/* Profile */}
       <button
         type="button"
         className="header-icon-button sm:hidden p-0 overflow-hidden"

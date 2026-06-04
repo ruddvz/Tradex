@@ -63,7 +63,7 @@ const TAB_ITEMS = [
 ];
 
 export function Reports() {
-  const { trades, selectedDateRange, setDateRange } = useStore();
+  const { trades, selectedDateRange, setDateRange, dataMode, metrics } = useStore();
   const [tab, setTab] = useState('overview');
 
   const tradesInRange = useMemo(() => {
@@ -74,7 +74,10 @@ export function Reports() {
     return trades.filter(t => parseISO(t.entryTime) >= cutoff);
   }, [trades, selectedDateRange]);
 
-  const m = useMemo(() => computeMetrics(tradesInRange), [tradesInRange]);
+  const m = useMemo(() => {
+    if (dataMode === 'live') return metrics;
+    return computeMetrics(tradesInRange);
+  }, [dataMode, metrics, tradesInRange]);
 
   const strategyData = useMemo(() => {
     const map = new Map<string, { wins: number; losses: number; pnl: number }>();

@@ -56,6 +56,8 @@ def test_risk_blocks_missing_stop_loss(db):
     db.commit()
     err = evaluate_paper_order_risk(
         ac,
+        user_id="user-1",
+        symbol="EURUSD",
         side=PaperOrderSide.BUY,
         entry_price=1.09,
         stop_loss=None,
