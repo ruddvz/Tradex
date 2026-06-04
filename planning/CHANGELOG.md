@@ -34,14 +34,14 @@
 
 ## Log (newest first)
 
-## 2026-06-04 — cursor/audit-phase-b-d-parallel-b0b9 — feat: Phase B live charts + Phase D risk engine
+## 2026-06-04 — cursor/audit-phase-e-settings-live-b0b9 — E + risk settings + live playbooks
 - Commit: (see git log)
-- Files touched: `frontend/src/lib/{mapAnalytics,api/analytics}.ts`, `frontend/src/store/useStore.ts`, chart components, `backend/app/services/{risk_engine,analytics}.py`, `backend/app/models/{risk_profile,audit_log,bot_control}.py`, `backend/app/api/v1/{risk,bot}.py`, `RiskStatusCard`, Header kill switch
-- Tests added / changed: 5 (`backend/tests/test_*.py`)
-- Build: pass (`pytest tests/`, `npm run lint`, `npm run build`)
+- Files touched: `backend/app/models/{strategy,backtest}.py`, `backend/app/services/backtesting.py`, `backend/app/api/v1/backtests.py`, `backend/app/api/v1/risk.py`, `backend/app/database.py`, `backend/tests/test_backtesting.py`, `frontend/src/pages/Backtests.tsx`, `frontend/src/lib/api/{backtests,risk}.ts`, `frontend/src/store/useStore.ts`, `frontend/src/pages/{Settings,Playbooks,PropFirm}.tsx`, `frontend/src/App.tsx`, `frontend/src/components/layout/Sidebar.tsx`, `planning/{CHANGELOG,ACTIVE,EXECUTION-PLAN}.md`
+- Tests added / changed: 2 (`test_backtesting.py`)
+- Build: pass (`python3 -m compileall app`, `npm run lint`, `npm run build`)
 - Status: done
-- Next up: Backtesting MVP (Phase E) per `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md`
-- Notes: Charts use API series when `dataMode=live`; date range re-fetches analytics. Kill switch blocks paper via `risk_engine` + audit log.
+- Next up: **Phase F** — strategy runner in paper mode (audit §10)
+- Notes: Backtests use synthetic candles (`data_label: synthetic_demo`). Playbooks derive from journal `strategy` when live. Risk PATCH applies to paper/future execution limits.
 
 ## 2026-05-16 — main — merge: open PR stack (#18–#22) into main
 - Commit: (see git log)

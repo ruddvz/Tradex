@@ -48,6 +48,9 @@ const Settings = lazy(() =>
   import('./pages/Settings').then((m) => ({ default: m.Settings }))
 );
 const Paper = lazy(() => import('./pages/Paper').then((m) => ({ default: m.Paper })));
+const Backtests = lazy(() =>
+  import('./pages/Backtests').then((m) => ({ default: m.Backtests }))
+);
 
 const AppShell = requireLogin ? ProtectedLayout : Layout;
 
@@ -129,6 +132,14 @@ const router = createBrowserRouter(
             {
               path: 'paper-trading',
               element: <PaperTrading />,
+            },
+            {
+              path: 'backtests',
+              element: (
+                <Suspense fallback={<RouteFallback />}>
+                  <Backtests />
+                </Suspense>
+              ),
             },
             {
               path: 'settings',
