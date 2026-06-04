@@ -1168,3 +1168,7 @@ router.include_router(risk_router)
 from .bot import router as bot_router
 
 router.include_router(bot_router)
+
+from .backtests import router as backtests_router
+
+router.include_router(backtests_router)

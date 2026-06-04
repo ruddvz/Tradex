@@ -3,6 +3,7 @@ import { Header } from '../components/layout/Header';
 import { ProgressRing } from '../components/ui/ProgressRing';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { PnLBarChart } from '../components/charts/PnLBarChart';
 import { clsx } from 'clsx';
 import { format, differenceInDays } from 'date-fns';
@@ -41,7 +42,7 @@ const statusConfig = {
 };
 
 export function PropFirm() {
-  const { propChallenge, trades } = useStore();
+  const { propChallenge, trades, dataMode } = useStore();
   const cfg = statusConfig[propChallenge.status];
   const StatusIcon = cfg.icon;
 
@@ -89,6 +90,12 @@ export function PropFirm() {
       )}
 
       <div className="page-shell p-6 space-y-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
+          {dataMode === 'live' && (
+            <span className="text-xs text-slate-500">Challenge from API when configured; otherwise demo challenge shape.</span>
+          )}
+        </div>
         {/* Challenge selector + hero ring (Ui.md §10.4) */}
         <div className="flex flex-wrap items-center gap-3">
           <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Challenge</span>

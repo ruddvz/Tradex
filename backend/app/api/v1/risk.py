@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -84,3 +84,47 @@ def list_risk_events(
         )
         for r in rows
     ]
+
+class RiskProfileUpdate(BaseModel):
+    name: Optional[str] = None
+    max_risk_per_trade_percent: Optional[float] = None
+    max_daily_loss_percent: Optional[float] = None
+    max_open_positions: Optional[int] = None
+    max_positions_per_symbol: Optional[int] = None
+    require_stop_loss: Optional[bool] = None
+
+
+@router.patch("/profiles/{profile_id}", response_model=RiskProfileOut)
+def update_risk_profile(
+    profile_id: str,
+    body: RiskProfileUpdate,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    row = db.get(RiskProfile, profile_id)
+    if not row or row.user_id != user.id:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail="Risk profile not found")
+    if body.name is not None:
+        row.name = body.name.strip()
+    if body.max_risk_per_trade_percent is not None:
+        row.max_risk_per_trade_percent = body.max_risk_per_trade_percent
+    if body.max_daily_loss_percent is not None:
+        row.max_daily_loss_percent = body.max_daily_loss_percent
+    if body.max_open_positions is not None:
+        row.max_open_positions = body.max_open_positions
+    if body.max_positions_per_symbol is not None:
+        row.max_positions_per_symbol = body.max_positions_per_symbol
+    if body.require_stop_loss is not None:
+        row.require_stop_loss = 1 if body.require_stop_loss else 0
+    db.commit()
+    db.refresh(row)
+    return RiskProfileOut(
+        id=row.id,
+        name=row.name,
+        max_risk_per_trade_percent=row.max_risk_per_trade_percent,
+        max_daily_loss_percent=row.max_daily_loss_percent,
+        max_open_positions=row.max_open_positions,
+        max_positions_per_symbol=row.max_positions_per_symbol,
+        require_stop_loss=bool(row.require_stop_loss),
+    )

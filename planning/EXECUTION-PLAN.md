@@ -137,7 +137,15 @@
 > **Goal:** Simulated accounts, PAPER badge, then orders/fills and journal `source=paper`.
 
 - [x] **8.1** `PaperAccount` model + `GET`/`POST /api/v1/paper-accounts` + Paper Trading page + header Paper mode badge when an active account exists
-- [x] **8.2** Orders/fills stub + journal linkage `source=paper`
+- [x] **8.2** Orders/fills stub + journal linkage `source=paper` (audit branch)
+
+## Phase E — Backtesting MVP (audit)
+
+- [x] **E.1** `Strategy` + `Backtest` models + `backtesting` service (synthetic OHLC)
+- [x] **E.2** `GET`/`POST`/`DELETE` `/api/v1/backtests` + equity/trades sub-routes
+- [x] **E.3** `Backtests.tsx` + nav + trust warnings on results
+- [x] **E.4** `PATCH /risk/profiles/{id}` + Settings risk profile editor
+- [x] **E.5** Live playbooks from journal strategies + PropFirm data source badge
 
 ---
 

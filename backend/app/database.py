@@ -93,6 +93,8 @@ def init_db() -> None:
     from .models import risk_profile  # noqa: F401
     from .models import audit_log  # noqa: F401
     from .models import bot_control  # noqa: F401
+    from .models import backtest  # noqa: F401
+    from .models import strategy  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
     _ensure_user_mt5_columns()

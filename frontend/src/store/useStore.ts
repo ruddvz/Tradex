@@ -32,6 +32,7 @@ import { fetchNotebook } from '../lib/api/notebook';
 import { fetchChallenges } from '../lib/api/challenges';
 import { fetchAiInsights } from '../lib/api/ai';
 import { createPaperAccountApi, fetchPaperAccounts } from '../lib/paperAccountsApi';
+import { derivePlaybooksFromTrades } from '../lib/derivePlaybooksFromTrades';
 
 export type Mt5CredentialsInput = {
   server?: string;
@@ -160,6 +161,7 @@ export const useStore = create<AppState>((set, get) => ({
     void get().refreshTradesFromApi();
     void get().refreshAnalyticsFromApi();
     void get().refreshAiFromApi();
+    void get().refreshChallengesFromApi();
   },
 
   openMt5SyncModal: () => set({ mt5SyncModalOpen: true }),
@@ -185,6 +187,7 @@ export const useStore = create<AppState>((set, get) => ({
         paperAccounts: [],
         paperModeActive: false,
         botStatus: null,
+        playbooks: mockPlaybooks,
       });
       return;
     }
@@ -199,7 +202,7 @@ export const useStore = create<AppState>((set, get) => ({
       });
 
       const { trades } = await fetchTrades({ accountId: firstId, limit: 500 });
-      set({ trades });
+      set({ trades, playbooks: derivePlaybooksFromTrades(trades) });
 
       await get().refreshAnalyticsFromApi();
 
@@ -257,7 +260,7 @@ export const useStore = create<AppState>((set, get) => ({
     if (!token) return;
     const aid = get().selectedTradingAccountId;
     const { trades } = await fetchTrades({ accountId: aid, limit: 500 });
-    set({ trades });
+    set({ trades, playbooks: derivePlaybooksFromTrades(trades) });
   },
 
   refreshAnalyticsFromApi: async () => {
