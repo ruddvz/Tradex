@@ -27,6 +27,7 @@ import { format, parseISO } from 'date-fns';
 import { clsx } from 'clsx';
 import { useIsMobile } from '../hooks/useBreakpoint';
 import type { AIInsight } from '../types';
+import { DataSourceBadge } from '../components/status/DataSourceBadge';
 
 export function Dashboard() {
   const navigate = useNavigate();
@@ -74,7 +75,8 @@ export function Dashboard() {
       {(bootstrapError || dataMode === 'demo' || (dataMode === 'live' && tradingAccounts.length > 0)) && (
         <div className="px-5 pt-4 space-y-2">
           {dataMode === 'demo' && (
-            <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-2 text-xs text-amber-100">
+            <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-2 text-xs text-amber-100 flex flex-wrap items-center gap-2">
+              <DataSourceBadge source="demo" />
               Demo dataset — sign in to load your journal, metrics, and paper accounts from the API.
             </div>
           )}
@@ -85,7 +87,7 @@ export function Dashboard() {
           )}
           {dataMode === 'live' && tradingAccounts.length > 0 && (
             <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-              <span className="rounded-md bg-brand-500/15 px-2 py-1 text-brand-300">Live data</span>
+              <DataSourceBadge source="live" />
               <label className="sr-only" htmlFor="acct-sel">
                 Trading account
               </label>

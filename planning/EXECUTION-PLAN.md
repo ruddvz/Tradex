@@ -82,11 +82,11 @@
 
 > **Goal:** Backend as source of truth when authenticated. Acceptance criteria: **`planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md`** section 5 (P0.1–P0.3).
 
-- [ ] **6.1** API client layer (`frontend/src/lib/api/*`) + centralized auth headers / errors
-- [ ] **6.2** Replace mock-driven pages when authenticated (Dashboard, Reports, Playbooks, PropFirm, Journal consistency) + loading/error/empty states + demo labels
-- [ ] **6.3** `AddTradeModal` → `POST/PUT/DELETE` trades API + server validation display + store refresh
-- [ ] **6.4** `ALLOW_DEMO_MT5_FALLBACK` (default false) + production-safe MT5 errors + import `source` + UI badges
-- [ ] **6.5** `Account` model + `trade.account_id` + accounts API + per-account analytics + account selector in shell
+- [x] **6.1** API client layer (`frontend/src/lib/api/*`) + centralized auth headers / errors
+- [x] **6.2** Replace mock-driven pages when authenticated (Dashboard, Reports, Playbooks, PropFirm, Journal consistency) + loading/error/empty states + demo labels
+- [x] **6.3** `AddTradeModal` → `POST/PUT/DELETE` trades API + server validation display + store refresh
+- [x] **6.4** `ALLOW_DEMO_MT5_FALLBACK` (default false) + production-safe MT5 errors + import `source` + UI badges
+- [x] **6.5** `Account` model + `trade.account_id` + accounts API + per-account analytics + account selector in shell
 
 ---
 
@@ -94,9 +94,9 @@
 
 > **Goal:** Virtual balance, simulated fills, rule violations, daily loss lockout. See audit section 5 (P0.5) and section 18 Phase 2.
 
-- [ ] **7.1** Paper models + migrations (`PaperAccount`, orders, positions, fills, violations)
-- [ ] **7.2** Paper engine + risk pre-checks + REST endpoints
-- [ ] **7.3** Paper trading UI + store; reject oversized orders with explicit reason
+- [x] **7.1** Paper models + migrations (`PaperAccount`, orders, positions, fills, violations)
+- [x] **7.2** Paper engine + risk pre-checks + REST endpoints
+- [x] **7.3** Paper trading UI + store; reject oversized orders with explicit reason
 
 ---
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { AppShellSkeleton } from './AppShellSkeleton';
@@ -11,15 +11,15 @@ import { clsx } from 'clsx';
 
 export function Layout() {
   const { sidebarOpen, mt5SyncModalOpen, hydrateLiveSession } = useStore();
-  const location = useLocation();
   const [bootOverlay, setBootOverlay] = useState(true);
   const [online, setOnline] = useState(() =>
     typeof navigator === 'undefined' ? true : navigator.onLine
   );
 
   useEffect(() => {
-    void useStore.getState().hydrateLiveSession();
-  }, [location.pathname]);
+    void hydrateLiveSession();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- boot once; online handler re-hydrates
+  }, []);
 
   useEffect(() => {
     const onUp = () => {

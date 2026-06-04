@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Landmark, Plus, RefreshCw } from 'lucide-react';
 import { Header } from '../components/layout/Header';
@@ -77,6 +77,14 @@ export function PaperTrading() {
     }
   }, [token, selected]);
 
+  useEffect(() => {
+    if (!activeAccountId || !token) return;
+    const id = window.setTimeout(() => {
+      void loadBook();
+    }, 0);
+    return () => window.clearTimeout(id);
+  }, [activeAccountId, token, loadBook]);
+
   const onCreate = async () => {
     if (!token) {
       showToast(authUiEnabled ? 'Sign in to create a paper account.' : 'Save an API session token first.');
@@ -108,8 +116,10 @@ export function PaperTrading() {
         reference_price: parseFloat(refPrice),
         stop_loss: parseFloat(stopLoss),
       });
-      if (res.error) showToast(res.error);
-      else showToast(res.position ? 'Order filled — position opened' : 'Order recorded');
+      if (res.error) showToast(res.error, 'warning');
+      else if (res.order?.status === 'rejected' && res.order.rejection_reason) {
+        showToast(res.order.rejection_reason, 'warning');
+      } else showToast(res.position ? 'Order filled — position opened' : 'Order recorded');
       await loadBook();
       await refreshPaperAccountsFromApi();
     } catch (e) {
@@ -308,13 +318,31 @@ export function PaperTrading() {
                     <p className="text-sm text-text-muted">No orders yet.</p>
                   ) : (
                     orders.map((o) => (
-                      <li key={o.id} className="rounded-lg border border-surface-border px-3 py-2 text-sm flex justify-between gap-2">
-                        <span>
-                          {o.symbol} {o.side.toUpperCase()} · {o.lot_size} lot
-                        </span>
-                        <span className={clsx('text-xs font-semibold uppercase', o.status === 'rejected' ? 'text-loss' : 'text-analytics')}>
-                          {o.status}
-                        </span>
+                      <li
+                        key={o.id}
+                        className={clsx(
+                          'rounded-lg border px-3 py-2 text-sm',
+                          o.status === 'rejected'
+                            ? 'border-loss/30 bg-loss/5'
+                            : 'border-surface-border'
+                        )}
+                      >
+                        <div className="flex justify-between gap-2">
+                          <span>
+                            {o.symbol} {o.side.toUpperCase()} · {o.lot_size} lot
+                          </span>
+                          <span
+                            className={clsx(
+                              'text-xs font-semibold uppercase shrink-0',
+                              o.status === 'rejected' ? 'text-loss' : 'text-analytics'
+                            )}
+                          >
+                            {o.status}
+                          </span>
+                        </div>
+                        {o.rejection_reason && (
+                          <p className="text-xs text-loss mt-1 leading-relaxed">{o.rejection_reason}</p>
+                        )}
                       </li>
                     ))
                   )}

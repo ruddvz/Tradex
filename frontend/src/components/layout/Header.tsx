@@ -4,6 +4,8 @@ import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 import { ModeBadge } from '../status/ModeBadge';
 import { resolveAppMode } from '../../lib/resolveAppMode';
+import { AccountSelector } from './AccountSelector';
+import { DataSourceBadge } from '../status/DataSourceBadge';
 
 const ranges = [
   { key: '7d', label: '7 Days' },
@@ -40,6 +42,7 @@ export function Header({
     botStatus,
     triggerKillSwitch,
     resumePaperTrading,
+    lastMt5Sync,
   } = useStore();
 
   return (
@@ -58,7 +61,13 @@ export function Header({
           {subtitle && <p className="text-xs text-text-muted truncate mt-0.5">{subtitle}</p>}
         </div>
         <ModeBadge mode={resolveAppMode({ dataMode, paperModeActive })} className="mt-0.5" />
+        {dataMode === 'live' && <DataSourceBadge source="live" />}
+        {lastMt5Sync?.demo_fallback_used && (
+          <DataSourceBadge source="demo" className="!text-amber-200" />
+        )}
       </div>
+
+      <AccountSelector />
 
       {showDateRange && (
         <div className="hidden sm:flex items-center gap-1 bg-surface/80 rounded-xl p-1 border border-[rgba(126,146,185,0.18)]">

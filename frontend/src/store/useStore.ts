@@ -31,7 +31,11 @@ import { listTradingAccounts, type TradingAccountRow } from '../lib/api/accounts
 import { fetchNotebook } from '../lib/api/notebook';
 import { fetchChallenges } from '../lib/api/challenges';
 import { fetchAiInsights } from '../lib/api/ai';
-import { createPaperAccountApi, fetchPaperAccounts } from '../lib/paperAccountsApi';
+import {
+  createPaperAccount as createPaperAccountApi,
+  fetchPaperAccounts,
+} from '../lib/api/paperAccounts';
+import { syncMt5Trades } from '../lib/api/sync';
 import { derivePlaybooksFromTrades } from '../lib/derivePlaybooksFromTrades';
 
 export type Mt5CredentialsInput = {
@@ -76,6 +80,12 @@ interface AppState {
   selectedDateRange: '7d' | '30d' | '90d' | 'all';
   isSyncing: boolean;
   mt5SyncModalOpen: boolean;
+  lastMt5Sync: {
+    import_kind?: string;
+    demo_fallback_used?: boolean;
+    connected?: boolean;
+    at: string;
+  } | null;
 
   setSidebarOpen: (open: boolean) => void;
   setDateRange: (range: '7d' | '30d' | '90d' | 'all') => void;
@@ -148,6 +158,7 @@ export const useStore = create<AppState>((set, get) => ({
   selectedDateRange: '90d',
   isSyncing: false,
   mt5SyncModalOpen: false,
+  lastMt5Sync: null,
 
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   setDateRange: (range) => {
@@ -188,6 +199,7 @@ export const useStore = create<AppState>((set, get) => ({
         paperModeActive: false,
         botStatus: null,
         playbooks: mockPlaybooks,
+        lastMt5Sync: null,
       });
       return;
     }
@@ -237,7 +249,7 @@ export const useStore = create<AppState>((set, get) => ({
       set({ paperAccounts: [], paperModeActive: false });
       return;
     }
-    const list = await fetchPaperAccounts(token);
+    const list = await fetchPaperAccounts();
     set({
       paperAccounts: list,
       paperModeActive: list.some((a) => a.isActive),
@@ -247,12 +259,15 @@ export const useStore = create<AppState>((set, get) => ({
   createPaperAccount: async (opts) => {
     const token = getToken();
     if (!token) return false;
-    const created = await createPaperAccountApi(token, {
-      name: opts?.name ?? 'Practice account',
-    });
-    if (!created) return false;
-    await get().refreshPaperAccountsFromApi();
-    return true;
+    try {
+      await createPaperAccountApi({
+        name: opts?.name ?? 'Practice account',
+      });
+      await get().refreshPaperAccountsFromApi();
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   refreshTradesFromApi: async () => {
@@ -273,9 +288,9 @@ export const useStore = create<AppState>((set, get) => ({
     const calendar = await fetchCalendar(days, aid, range);
     set({
       metrics: bundle.metrics,
-      equityCurve: bundle.equityCurve.length ? bundle.equityCurve : mockEquityCurve,
-      dailyPnl: bundle.dailyPnl.length ? bundle.dailyPnl : demoDailyPnl,
-      calendarDays: calendar.length ? calendar : mockCalendar,
+      equityCurve: bundle.equityCurve,
+      dailyPnl: bundle.dailyPnl,
+      calendarDays: calendar,
     });
   },
 
@@ -334,51 +349,40 @@ export const useStore = create<AppState>((set, get) => ({
     }
     set({ isSyncing: true });
     try {
-      const body: Record<string, unknown> = { days: credentials?.days ?? 90 };
-      const server = credentials?.server?.trim();
       const loginStr = credentials?.login?.trim();
-      if (server) body.server = server;
+      let login: number | undefined;
       if (loginStr) {
         const n = parseInt(loginStr, 10);
-        if (!Number.isNaN(n)) body.login = n;
+        if (!Number.isNaN(n)) login = n;
       }
-      if (credentials?.password) body.password = credentials.password;
-      const aid = get().selectedTradingAccountId;
-      if (aid) body.account_id = aid;
-
-      const res = await fetch('/api/v1/sync/mt5', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
+      const data = await syncMt5Trades({
+        days: credentials?.days ?? 90,
+        server: credentials?.server?.trim() || undefined,
+        login,
+        password: credentials?.password,
+        account_id: get().selectedTradingAccountId,
       });
-      const data = (await res.json().catch(() => ({}))) as {
-        detail?: string | { msg: string }[];
-        message?: string;
-        status?: string;
-        import_kind?: string;
-        demo_fallback_used?: boolean;
-        connected?: boolean;
-      };
-      if (!res.ok) {
-        let detail = 'Sync failed';
-        if (typeof data.detail === 'string') detail = data.detail;
-        else if (Array.isArray(data.detail) && data.detail[0]?.msg)
-          detail = data.detail[0].msg;
-        return { ok: false, detail };
-      }
+      set({
+        lastMt5Sync: {
+          import_kind: data.import_kind,
+          demo_fallback_used: data.demo_fallback_used,
+          connected: data.connected,
+          at: new Date().toISOString(),
+        },
+      });
       await get().refreshTradesFromApi();
       await get().refreshAnalyticsFromApi();
       return {
         ok: true,
-        message: typeof data.message === 'string' ? data.message : undefined,
-        status: typeof data.status === 'string' ? data.status : undefined,
-        import_kind: typeof data.import_kind === 'string' ? data.import_kind : undefined,
-        demo_fallback_used: Boolean(data.demo_fallback_used),
-        connected: typeof data.connected === 'boolean' ? data.connected : undefined,
+        message: data.message ?? undefined,
+        status: data.status,
+        import_kind: data.import_kind,
+        demo_fallback_used: data.demo_fallback_used,
+        connected: data.connected,
       };
+    } catch (e) {
+      const detail = e instanceof Error ? e.message : 'Sync failed';
+      return { ok: false, detail };
     } finally {
       set({ isSyncing: false });
     }

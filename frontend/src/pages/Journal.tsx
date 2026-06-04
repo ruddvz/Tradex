@@ -5,6 +5,7 @@ import { AddTradeModal } from '../components/journal/AddTradeModal';
 import { useStore } from '../store/useStore';
 import { useToast } from '../components/ui/Toast';
 import { getToken } from '../lib/auth';
+import { uploadTradeScreenshot } from '../lib/api/trades';
 import { DirectionBadge, GradeBadge } from '../components/ui/Badge';
 import { format, parseISO } from 'date-fns';
 import { clsx } from 'clsx';
@@ -56,28 +57,14 @@ function ScreenshotUploadZone({
     }
     setBusy(true);
     try {
-      const fd = new FormData();
-      fd.append('file', file);
-      const res = await fetch(`/api/v1/trades/${tradeId}/screenshot?slot=${slot}`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd,
-      });
-      const data = (await res.json().catch(() => ({}))) as Record<string, unknown>;
-      if (!res.ok) {
-        const detail = data.detail;
-        showToast(typeof detail === 'string' ? detail : 'Upload failed');
-        return;
-      }
+      const row = await uploadTradeScreenshot(tradeId, slot, file);
       const patch: Partial<Trade> = {};
-      if (typeof data.screenshot_before_url === 'string')
-        patch.screenshotBeforeUrl = data.screenshot_before_url;
-      if (typeof data.screenshot_after_url === 'string')
-        patch.screenshotAfterUrl = data.screenshot_after_url;
+      if (row.screenshotBeforeUrl) patch.screenshotBeforeUrl = row.screenshotBeforeUrl;
+      if (row.screenshotAfterUrl) patch.screenshotAfterUrl = row.screenshotAfterUrl;
       if (Object.keys(patch).length > 0) onUploaded(patch);
       showToast('Screenshot saved');
-    } catch {
-      showToast('Upload failed — is the API running?');
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : 'Upload failed — is the API running?', 'warning');
     } finally {
       setBusy(false);
       e.target.value = '';
