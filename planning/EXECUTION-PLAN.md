@@ -72,9 +72,9 @@
 > **Goal:** manifest, service worker, bottom nav. See `NEXT_STEPS.md` Phase 5.  
 > **Strategic context:** `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` — P0 stabilization may take priority over pure UI polish.
 
-- [ ] **5.1** Manifest refinements (maskable icons, theme color, Apple touch icon)
-- [ ] **5.2** Offline banner + cached shell / safe-area padding for mobile
-- [ ] **5.3** Bottom-nav polish (no clash with home indicator)
+- [x] **5.1** Manifest refinements (maskable icons, theme color, Apple touch icon)
+- [x] **5.2** Offline banner + cached shell / safe-area padding for mobile
+- [x] **5.3** Bottom-nav polish (no clash with home indicator)
 
 ---
 
@@ -106,6 +106,7 @@
 
 - [x] **8.0** Split `routes.py` into domain routers + Alembic-first migrations (audit section 12)
 - [x] **8.1** Initial Alembic revision (`6bcb32ddfb52`) + auth/accounts/notebook/challenges/settings/sync/ai/paper routers
+- [x] **8.2** Docker entrypoint migrations + `init_db` → Alembic-only (removed ad-hoc ALTER helpers)
 
 - [x] **5.1** VitePWA manifest + service worker + `index.html` manifest / theme-color
 - [x] **5.2** Offline UX — `navigateFallback` for SPA + offline strip copy in `Layout`

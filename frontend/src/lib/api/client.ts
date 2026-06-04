@@ -39,8 +39,19 @@ export function detailMessage(data: unknown): string {
   const d = data as { detail?: unknown };
   const det = d.detail;
   if (typeof det === 'string') return det;
-  if (Array.isArray(det) && det[0] && typeof det[0] === 'object' && 'msg' in det[0]) {
-    return String((det[0] as { msg: string }).msg);
+  if (Array.isArray(det)) {
+    const parts = det
+      .map(item => {
+        if (!item || typeof item !== 'object') return null;
+        const row = item as { msg?: string; loc?: (string | number)[] };
+        if (!row.msg) return null;
+        const field = Array.isArray(row.loc)
+          ? row.loc.filter(x => typeof x === 'string' && x !== 'body').join('.')
+          : '';
+        return field ? `${field}: ${row.msg}` : row.msg;
+      })
+      .filter((x): x is string => Boolean(x));
+    if (parts.length > 0) return parts.join(' · ');
   }
   return 'Request failed';
 }
