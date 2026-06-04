@@ -10,6 +10,7 @@ from .auth_api import router as auth_router
 from .accounts_api import router as accounts_router
 from .paper_legacy_api import router as paper_legacy_router
 from .ai_api import router as ai_router
+from .playbooks_api import router as playbooks_router
 from .notebook_api import router as notebook_router
 from .challenges_api import router as challenges_router
 from .settings_api import router as settings_router
@@ -21,6 +22,7 @@ router.include_router(auth_router)
 router.include_router(accounts_router)
 router.include_router(paper_legacy_router)
 router.include_router(ai_router)
+router.include_router(playbooks_router)
 router.include_router(notebook_router)
 router.include_router(challenges_router)
 router.include_router(settings_router)

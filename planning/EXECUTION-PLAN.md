@@ -151,6 +151,19 @@
 
 ---
 
+## Phase 9 — Post-plan completion
+
+> Follow-ups from audit / ACTIVE queue after Phases 0–8.2 shipped to `main`.
+
+- [x] **9.1** `PaperViolation` model + Alembic migration + `/risk/violations` + risk-engine logging
+- [x] **9.2** Playbooks API (`GET`/`POST`/`PATCH`/`DELETE` `/playbooks`) + live merge with journal-derived cards
+- [x] **9.3** Playbooks “Run AI Analysis” → `POST /ai/insights` (no fake timeout)
+- [x] **9.4** Settings UI — create trading account via `POST /accounts`
+- [x] **9.5** Paper equity mark-to-market on open positions (balance + unrealized)
+- [x] **9.6** Legacy `/paper/*` routes — `Deprecation` + `Link` successor headers
+
+---
+
 ## Done (Summary)
 
 | Phase | Slices | Shipped | Date |

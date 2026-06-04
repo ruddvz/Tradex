@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 
 from ...database import get_db
 from ...models.paper_account import PaperAccount
+from ...services.paper_equity import refresh_paper_account_equity
 from ...models.user import User
 from ...schemas.paper_account import PaperAccountCreate, PaperAccountOut
 from ..deps import get_current_user
@@ -28,6 +29,9 @@ def list_paper_accounts(user: User = Depends(get_current_user), db: Session = De
         .where(PaperAccount.user_id == user.id)
         .order_by(PaperAccount.created_at.desc())
     ).scalars().all()
+    for row in rows:
+        refresh_paper_account_equity(db, row)
+    db.commit()
     return [_out(r) for r in rows]
 
 

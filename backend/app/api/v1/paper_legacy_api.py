@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Any, Dict
 import uuid
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -19,6 +19,13 @@ from ..deps import get_current_user
 from .api_serializers import paper_account_to_dict
 
 router = APIRouter(tags=["paper-legacy"])
+
+_DEPRECATION = "true; use /api/v1/paper-accounts and /api/v1/paper/orders"
+
+
+def _deprecate(response) -> None:
+    response.headers["Deprecation"] = _DEPRECATION
+    response.headers["Link"] = '</api/v1/paper-accounts>; rel="successor-version"'
 
 
 class PaperAccountCreate(BaseModel):
@@ -63,7 +70,12 @@ def paper_trade_to_dict(t: PaperTrade) -> Dict[str, Any]:
 
 
 @router.get("/paper/accounts")
-def list_paper_accounts(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def list_paper_accounts(
+    response: Response,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    _deprecate(response)
     rows = db.execute(
         select(PaperAccount).where(PaperAccount.user_id == user.id).order_by(PaperAccount.created_at.desc())
     ).scalars().all()
@@ -73,9 +85,11 @@ def list_paper_accounts(user: User = Depends(get_current_user), db: Session = De
 @router.post("/paper/accounts", status_code=201)
 def create_paper_account(
     body: PaperAccountCreate,
+    response: Response,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    _deprecate(response)
     row = PaperAccount(
         id=str(uuid.uuid4()),
         user_id=user.id,
@@ -94,10 +108,12 @@ def create_paper_account(
 
 @router.get("/paper/trades")
 def list_paper_trades(
+    response: Response,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
     paper_account_id: str = Query(..., min_length=8),
 ):
+    _deprecate(response)
     ac = db.execute(
         select(PaperAccount).where(PaperAccount.id == paper_account_id, PaperAccount.user_id == user.id)
     ).scalar_one_or_none()
@@ -114,9 +130,11 @@ def list_paper_trades(
 @router.post("/paper/trades", status_code=201)
 def create_paper_trade_row(
     body: PaperTradeIn,
+    response: Response,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    _deprecate(response)
     ac = db.execute(
         select(PaperAccount).where(PaperAccount.id == body.paper_account_id, PaperAccount.user_id == user.id)
     ).scalar_one_or_none()

@@ -12,6 +12,8 @@ from app.models.base import Base
 from app.models.bot_control import BotControl
 from app.models.paper_order import PaperOrderSide
 from app.models.risk_profile import RiskProfile
+from app.models.paper_account import PaperAccount  # noqa: F401
+from app.models.paper_violation import PaperViolation  # noqa: F401
 from app.models.user import User  # noqa: F401
 from app.services.risk_engine import (
     ensure_default_risk_profile,

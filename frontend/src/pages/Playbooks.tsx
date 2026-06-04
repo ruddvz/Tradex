@@ -155,17 +155,30 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
 
 export function Playbooks() {
   const { showToast } = useToast();
-  const { playbooks, aiInsights, trades, dataMode } = useStore();
+  const { playbooks, aiInsights, trades, dataMode, refreshAiFromApi } = useStore();
   const [selected, setSelected] = useState<Playbook | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
   const psychInsights = aiInsights.filter(i => i.type === 'psychology' || i.type === 'pattern');
 
   const handleAIGenerate = async () => {
+    if (dataMode !== 'live') {
+      showToast('Sign in to run live AI analysis', 'warning');
+      return;
+    }
     setGenerating(true);
-    await new Promise(r => setTimeout(r, 2000));
-    setGenerating(false);
-    showToast('AI analysis complete — 2 new insights generated');
+    try {
+      const insights = await refreshAiFromApi();
+      showToast(
+        insights.length > 0
+          ? `AI analysis complete — ${insights.length} insight${insights.length === 1 ? '' : 's'} loaded`
+          : 'AI analysis complete — no new patterns yet (add more trades)'
+      );
+    } catch {
+      showToast('Could not run AI analysis', 'warning');
+    } finally {
+      setGenerating(false);
+    }
   };
 
   const symbolStats = Array.from(new Set(trades.map(t => t.symbol))).map(sym => {
@@ -187,7 +200,7 @@ export function Playbooks() {
         {dataMode === 'live' ? (
           <p className="rounded-lg border border-brand-500/25 bg-brand-500/5 px-3 py-2 text-xs text-slate-300 flex flex-wrap items-center gap-2">
             <DataSourceBadge source="live" />
-            Playbooks are built from your journal strategy tags ({playbooks.length} groups). New Playbook still saves locally until a playbooks API ships.
+            Saved playbooks sync to your account; journal strategy groups fill in automatically ({playbooks.length} cards).
           </p>
         ) : (
           <p className="rounded-lg border border-amber-500/25 bg-amber-500/5 px-3 py-2 text-xs text-slate-300 flex flex-wrap items-center gap-2">

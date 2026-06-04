@@ -1,29 +1,27 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **Maintenance** — merge audit stack PRs #23–#30; optional Plan0 device QA
+## 👉 NEXT UP: **Plan0 manual device QA** (optional human checklist)
 
-See `planning/PHASE0-INVENTORY.md` and `planning/Plan0-AUDIT.md` for human QA.
+See `planning/Plan0-AUDIT.md` for browser/Lighthouse checks. Automated build/lint already pass in CI.
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **Plan complete (Phases 0–8.2, E, Action Center, Live shell)** on `cursor/audit-complete-plan-parallel-b0b9`  
-**Stack:** audit PRs #23–#30
+**Phase:** **Post-plan (Phase 9)** on `cursor/post-plan-completion-b0b9`  
+**Base:** `main` (audit stack merged)
 
-### Recently Done (parallel completion)
-- [x] **6.1–6.5** — API client (`settings`, `sync`, `paperAccounts`), shell account selector, live analytics without mock bleed, trade source badges, MT5 sync via API
-- [x] **7.1–7.3** — Paper engine + UI rejection reasons + auto-load book (models/routes pre-existing)
-- [x] **8.0–8.2** — Route split + Alembic + Docker migrate
+### Recently Done
+- [x] **9.1–9.6** — Violations model/API, playbooks CRUD, AI generate, account UI, paper equity, legacy deprecation headers
+- [x] Merge audit stack to `main`
 
-### Open (post-plan / polish)
-- [ ] Merge PR stack to `main`
-- [ ] Plan0 manual device QA (optional)
-- [ ] Dedicated `PaperViolation` model (deferred — audit events cover rejections today)
+### Open (optional / long-range)
+- [ ] Plan0 manual device QA
+- [ ] Long-range: `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` (live broker execution, deeper strategy lab)
 
 ---
 
 ## Notes
 
 - `computeMetrics` lives in `frontend/src/lib/metricsFromTrades.ts` (re-exported from `mockData` for demo).
-- Long-range ideas: `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` (beyond EXECUTION-PLAN slices).
+- Playbooks: saved via API + journal-derived merge (`frontend/src/lib/mergePlaybooks.ts`).

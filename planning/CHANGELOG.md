@@ -8,6 +8,15 @@
 
 ---
 
+## 2026-06-04 — cursor/post-plan-completion-b0b9 — Phase 9: post-plan backlog
+- Commit: (pending)
+- Files touched: `backend/app/models/{paper_violation,playbook}.py`, `backend/app/services/{risk_engine,paper_execution,paper_equity,playbook_stats}.py`, `backend/app/api/v1/{playbooks_api,risk,paper_legacy_api,paper_accounts}.py`, `backend/alembic/versions/f7a8b9c0d1e2_*.py`, `frontend/src/lib/api/{playbooks,risk}.ts`, `frontend/src/lib/mergePlaybooks.ts`, `frontend/src/store/useStore.ts`, `frontend/src/pages/{Playbooks,Settings}.tsx`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`
+- Tests added / changed: 2 (`test_paper_violations.py`, `test_playbooks_api.py` stats)
+- Build: pass (frontend build; backend unit tests for risk/violations/stats)
+- Status: done
+- Next up: Plan0 manual device QA (human)
+- Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
+
 ## 2026-06-04 — cursor/audit-complete-plan-parallel-b0b9 — Phase 6 + 7 completion (parallel)
 - Commit: (pending)
 - Files touched: `frontend/src/lib/api/{client,settings,sync,paperAccounts,trades,accounts}.ts`, `useStore.ts`, `Header.tsx`, `AccountSelector.tsx`, `TradeSourceBadge.tsx`, `Journal.tsx`, `PaperTrading.tsx`, `Settings.tsx`, `Dashboard.tsx`, `Playbooks.tsx`, `Layout.tsx`, `planning/{ACTIVE,EXECUTION-PLAN}.md`

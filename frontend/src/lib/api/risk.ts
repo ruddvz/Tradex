@@ -26,6 +26,22 @@ export async function fetchRiskProfiles(): Promise<RiskProfileRow[]> {
   return Array.isArray(data) ? data : [];
 }
 
+export type PaperViolationRow = {
+  id: string;
+  violation_type: string;
+  reason: string;
+  severity: string;
+  paper_account_id?: string | null;
+  paper_order_id?: string | null;
+  created_at?: string | null;
+};
+
+export async function fetchPaperViolations(limit = 20): Promise<PaperViolationRow[]> {
+  const { ok, data } = await apiFetch<PaperViolationRow[]>(`/risk/violations?limit=${limit}`);
+  if (!ok) throw new Error(detailMessage(data));
+  return Array.isArray(data) ? data : [];
+}
+
 export async function fetchRiskEvents(limit = 20): Promise<AuditEventRow[]> {
   const { ok, data } = await apiFetch<AuditEventRow[]>(`/risk/events?limit=${limit}`);
   if (!ok) throw new Error(detailMessage(data));
