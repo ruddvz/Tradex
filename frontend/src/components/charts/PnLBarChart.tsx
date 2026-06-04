@@ -1,8 +1,9 @@
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine
 } from 'recharts';
+import { format, parseISO } from 'date-fns';
+import { useStore } from '../../store/useStore';
 import { mockDailyStats } from '../../data/mockData';
-import { format } from 'date-fns';
 
 const CustomTooltip = ({
   active,
@@ -27,11 +28,22 @@ const CustomTooltip = ({
   );
 };
 
+function formatBarDate(date: string) {
+  try {
+    return date.includes('T') ? format(parseISO(date), 'MMM d') : format(new Date(date), 'MMM d');
+  } catch {
+    return date;
+  }
+}
+
 export function PnLBarChart({ height = 180 }: { height?: number }) {
-  const data = mockDailyStats.slice(-21).map(d => ({
-    ...d,
-    date: format(new Date(d.date), 'MMM d'),
-  }));
+  const { dataMode, dailyPnl } = useStore();
+  const raw =
+    dataMode === 'live' && dailyPnl.length > 0
+      ? dailyPnl
+      : mockDailyStats.slice(-21).map((d) => ({ date: d.date, pnl: d.pnl, trades: d.trades }));
+
+  const data = raw.slice(-21).map(d => ({ ...d, date: formatBarDate(d.date) }));
 
   return (
     <ResponsiveContainer width="100%" height={height}>

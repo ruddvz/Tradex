@@ -8,6 +8,7 @@ import type {
   AIInsight,
   Account,
   PaperAccount,
+  CalendarDay,
 } from '../types';
 import {
   mockTrades,
@@ -17,10 +18,15 @@ import {
   mockNotebook,
   mockAIInsights,
   mockAccount,
+  mockEquityCurve,
+  mockCalendar,
+  mockDailyStats,
 } from '../data/mockData';
 import { getToken } from '../lib/auth';
 import { fetchTrades, deleteTradeApi } from '../lib/api/trades';
-import { fetchMetrics } from '../lib/api/analytics';
+import { fetchAnalyticsBundle, fetchCalendar } from '../lib/api/analytics';
+import { fetchBotStatus, activateKillSwitch, resumePaperOnly, type BotStatus } from '../lib/api/bot';
+import type { EquityPoint, DailyPnlPoint } from '../lib/mapAnalytics';
 import { listTradingAccounts, type TradingAccountRow } from '../lib/api/accounts';
 import { fetchNotebook } from '../lib/api/notebook';
 import { fetchChallenges } from '../lib/api/challenges';
@@ -54,14 +60,17 @@ interface AppState {
 
   trades: Trade[];
   metrics: PerformanceMetrics;
+  equityCurve: EquityPoint[];
+  dailyPnl: DailyPnlPoint[];
+  calendarDays: CalendarDay[];
   propChallenge: PropFirmChallenge;
   playbooks: Playbook[];
   notebook: NotebookEntry[];
   aiInsights: AIInsight[];
   account: Account;
   paperAccounts: PaperAccount[];
-  /** True when signed in and at least one paper account is marked active (header badge). */
   paperModeActive: boolean;
+  botStatus: BotStatus | null;
   sidebarOpen: boolean;
   selectedDateRange: '7d' | '30d' | '90d' | 'all';
   isSyncing: boolean;
@@ -74,7 +83,11 @@ interface AppState {
   closeMt5SyncModal: () => void;
   hydrateLiveSession: () => Promise<void>;
   refreshTradesFromApi: () => Promise<void>;
+  refreshAnalyticsFromApi: () => Promise<void>;
   refreshMetricsFromApi: () => Promise<void>;
+  refreshBotStatusFromApi: () => Promise<void>;
+  triggerKillSwitch: () => Promise<void>;
+  resumePaperTrading: () => Promise<void>;
   refreshNotebookFromApi: () => Promise<void>;
   refreshChallengesFromApi: () => Promise<void>;
   refreshAiFromApi: () => Promise<void>;
@@ -109,6 +122,8 @@ function mapShellAccount(primary: TradingAccountRow | undefined): Account {
   };
 }
 
+const demoDailyPnl = mockDailyStats.map((d) => ({ date: d.date, pnl: d.pnl, trades: d.trades }));
+
 export const useStore = create<AppState>((set, get) => ({
   dataMode: 'demo',
   bootstrapError: null,
@@ -117,6 +132,9 @@ export const useStore = create<AppState>((set, get) => ({
 
   trades: mockTrades,
   metrics: mockMetrics,
+  equityCurve: mockEquityCurve,
+  dailyPnl: demoDailyPnl,
+  calendarDays: mockCalendar,
   propChallenge: mockPropChallenge,
   playbooks: mockPlaybooks,
   notebook: mockNotebook,
@@ -124,19 +142,23 @@ export const useStore = create<AppState>((set, get) => ({
   account: mockAccount,
   paperAccounts: [],
   paperModeActive: false,
+  botStatus: null,
   sidebarOpen: true,
   selectedDateRange: '90d',
   isSyncing: false,
   mt5SyncModalOpen: false,
 
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
-  setDateRange: (range) => set({ selectedDateRange: range }),
+  setDateRange: (range) => {
+    set({ selectedDateRange: range });
+    if (get().dataMode === 'live') void get().refreshAnalyticsFromApi();
+  },
   setSelectedTradingAccountId: (id) => {
     set({ selectedTradingAccountId: id });
     const ac = get().tradingAccounts.find((a) => a.id === id);
     set({ account: mapShellAccount(ac ?? get().tradingAccounts[0]) });
     void get().refreshTradesFromApi();
-    void get().refreshMetricsFromApi();
+    void get().refreshAnalyticsFromApi();
     void get().refreshAiFromApi();
   },
 
@@ -153,12 +175,16 @@ export const useStore = create<AppState>((set, get) => ({
         selectedTradingAccountId: null,
         trades: mockTrades,
         metrics: mockMetrics,
+        equityCurve: mockEquityCurve,
+        dailyPnl: demoDailyPnl,
+        calendarDays: mockCalendar,
         propChallenge: mockPropChallenge,
         notebook: mockNotebook,
         aiInsights: mockAIInsights,
         account: mockAccount,
         paperAccounts: [],
         paperModeActive: false,
+        botStatus: null,
       });
       return;
     }
@@ -175,8 +201,7 @@ export const useStore = create<AppState>((set, get) => ({
       const { trades } = await fetchTrades({ accountId: firstId, limit: 500 });
       set({ trades });
 
-      const metrics = await fetchMetrics(firstId);
-      set({ metrics });
+      await get().refreshAnalyticsFromApi();
 
       const notebook = await fetchNotebook();
       set({ notebook });
@@ -189,6 +214,7 @@ export const useStore = create<AppState>((set, get) => ({
       const insights = await fetchAiInsights(firstId);
       set({ aiInsights: insights });
       await get().refreshPaperAccountsFromApi();
+      await get().refreshBotStatusFromApi();
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Failed to load live data';
       set({
@@ -234,12 +260,46 @@ export const useStore = create<AppState>((set, get) => ({
     set({ trades });
   },
 
-  refreshMetricsFromApi: async () => {
+  refreshAnalyticsFromApi: async () => {
     const token = getToken();
     if (!token) return;
     const aid = get().selectedTradingAccountId;
-    const metrics = await fetchMetrics(aid);
-    set({ metrics });
+    const range = get().selectedDateRange;
+    const bundle = await fetchAnalyticsBundle(range, aid);
+    const days = range === '7d' ? 7 : range === '30d' ? 30 : 90;
+    const calendar = await fetchCalendar(days, aid, range);
+    set({
+      metrics: bundle.metrics,
+      equityCurve: bundle.equityCurve.length ? bundle.equityCurve : mockEquityCurve,
+      dailyPnl: bundle.dailyPnl.length ? bundle.dailyPnl : demoDailyPnl,
+      calendarDays: calendar.length ? calendar : mockCalendar,
+    });
+  },
+
+  refreshMetricsFromApi: async () => {
+    await get().refreshAnalyticsFromApi();
+  },
+
+  refreshBotStatusFromApi: async () => {
+    const token = getToken();
+    if (!token) return;
+    try {
+      set({ botStatus: await fetchBotStatus() });
+    } catch {
+      set({ botStatus: null });
+    }
+  },
+
+  triggerKillSwitch: async () => {
+    const token = getToken();
+    if (!token) return;
+    set({ botStatus: await activateKillSwitch() });
+  },
+
+  resumePaperTrading: async () => {
+    const token = getToken();
+    if (!token) return;
+    set({ botStatus: await resumePaperOnly() });
   },
 
   refreshNotebookFromApi: async () => {
@@ -307,7 +367,7 @@ export const useStore = create<AppState>((set, get) => ({
         return { ok: false, detail };
       }
       await get().refreshTradesFromApi();
-      await get().refreshMetricsFromApi();
+      await get().refreshAnalyticsFromApi();
       return {
         ok: true,
         message: typeof data.message === 'string' ? data.message : undefined,
@@ -330,7 +390,7 @@ export const useStore = create<AppState>((set, get) => ({
     if (getToken() && get().dataMode === 'live') {
       await deleteTradeApi(id);
       await get().refreshTradesFromApi();
-      await get().refreshMetricsFromApi();
+      await get().refreshAnalyticsFromApi();
       return;
     }
     set((state) => ({ trades: state.trades.filter((t) => t.id !== id) }));

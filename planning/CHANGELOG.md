@@ -34,14 +34,14 @@
 
 ## Log (newest first)
 
-## 2026-06-04 — cursor/implement-audit-phase-a-c-b0b9 — feat: audit Phase A labels + Phase C paper order/fill engine
+## 2026-06-04 — cursor/audit-phase-b-d-parallel-b0b9 — feat: Phase B live charts + Phase D risk engine
 - Commit: (see git log)
-- Files touched: `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md` (reference), `backend/app/models/paper_{order,position,fill}.py`, `backend/app/services/{fill_simulator,paper_execution}.py`, `backend/app/api/v1/paper_execution.py`, `backend/app/models/paper_account.py`, `frontend/src/components/{status,common}/*`, `frontend/src/pages/{PaperTrading,Dashboard}.tsx`, `frontend/src/lib/api/paper.ts`, `planning/{ACTIVE,CHANGELOG}.md`
-- Tests added / changed: 3 (`backend/tests/test_paper_execution.py`)
-- Build: pass (`python3 -m compileall app`, `npm run lint`, `npm run build`)
+- Files touched: `frontend/src/lib/{mapAnalytics,api/analytics}.ts`, `frontend/src/store/useStore.ts`, chart components, `backend/app/services/{risk_engine,analytics}.py`, `backend/app/models/{risk_profile,audit_log,bot_control}.py`, `backend/app/api/v1/{risk,bot}.py`, `RiskStatusCard`, Header kill switch
+- Tests added / changed: 5 (`backend/tests/test_*.py`)
+- Build: pass (`pytest tests/`, `npm run lint`, `npm run build`)
 - Status: done
-- Next up: **6.2** — Dashboard/Reports live analytics wiring (Phase B in audit doc)
-- Notes: Paper market orders require stop loss; fill simulator applies spread/slippage/commission; closing a position creates `Trade` with `source=paper`. `ModeBadge` replaces ad-hoc Live/Demo chips in header.
+- Next up: Backtesting MVP (Phase E) per `TRADEX_AGENT_IMPLEMENTATION_AUDIT.md`
+- Notes: Charts use API series when `dataMode=live`; date range re-fetches analytics. Kill switch blocks paper via `risk_engine` + audit log.
 
 ## 2026-05-16 — main — merge: open PR stack (#18–#22) into main
 - Commit: (see git log)

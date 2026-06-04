@@ -1,10 +1,12 @@
 import { parseISO, format } from 'date-fns';
 import { clsx } from 'clsx';
+import { useStore } from '../../store/useStore';
 import { mockCalendar } from '../../data/mockData';
 
-/** GitHub-style week dots — last 7 calendar days from mock data */
 export function WeeklyPerformanceStrip() {
-  const week = mockCalendar.slice(-7);
+  const { dataMode, calendarDays } = useStore();
+  const source = dataMode === 'live' && calendarDays.length > 0 ? calendarDays : mockCalendar;
+  const week = source.slice(-7);
 
   return (
     <div>
@@ -23,8 +25,8 @@ export function WeeklyPerformanceStrip() {
                 className={clsx(
                   'w-full max-w-[44px] mx-auto aspect-square rounded-lg border transition-colors',
                   tone === 'muted' && 'bg-bg-input/90 border-[rgba(126,146,185,0.18)]',
-                  tone === 'profit' && 'bg-success/25 border-success/40 shadow-[0_0_0_1px_rgba(45,212,163,0.28)]',
-                  tone === 'loss' && 'bg-danger/20 border-danger/40 shadow-[0_0_0_1px_rgba(239,95,95,0.32)]'
+                  tone === 'profit' && 'bg-success/25 border-success/40',
+                  tone === 'loss' && 'bg-danger/20 border-danger/40'
                 )}
                 title={
                   d.isTrading

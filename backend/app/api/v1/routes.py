@@ -42,6 +42,7 @@ from ...services.trade_codec import (
 from ...services.paper_service import place_paper_trade
 from ...tasks.notifications import merge_notification_prefs, run_daily_report_cycle
 from ...services.manual_tasks_seed import ensure_default_manual_tasks
+from ...services.risk_engine import ensure_default_risk_profile, get_or_create_bot_control
 
 router = APIRouter(prefix="/api/v1")
 
@@ -366,6 +367,9 @@ def register(body: UserRegister, db: Session = Depends(get_db)):
     db.refresh(user)
 
     ensure_default_manual_tasks(db, uid)
+    ensure_default_risk_profile(db, uid)
+    get_or_create_bot_control(db, uid)
+    db.commit()
 
     acc = TradingAccount(
         id=str(uuid.uuid4()),
@@ -1156,3 +1160,11 @@ router.include_router(paper_accounts_router, prefix="/paper-accounts", tags=["pa
 from .paper_execution import router as paper_execution_router
 
 router.include_router(paper_execution_router)
+
+from .risk import router as risk_router
+
+router.include_router(risk_router)
+
+from .bot import router as bot_router
+
+router.include_router(bot_router)

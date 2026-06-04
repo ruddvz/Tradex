@@ -1,4 +1,4 @@
-import { Bell, Plus, RefreshCw, ChevronDown } from 'lucide-react';
+import { Bell, Plus, RefreshCw, ChevronDown, Octagon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
@@ -38,6 +38,9 @@ export function Header({
     aiInsights,
     dataMode,
     paperModeActive,
+    botStatus,
+    triggerKillSwitch,
+    resumePaperTrading,
   } = useStore();
 
   return (
@@ -80,6 +83,20 @@ export function Header({
             </button>
           ))}
         </div>
+      )}
+
+      {dataMode === 'live' && (
+        <button
+          type="button"
+          onClick={() => void (botStatus?.kill_switch_active ? resumePaperTrading() : triggerKillSwitch())}
+          className={clsx(
+            'header-icon-button',
+            botStatus?.kill_switch_active && 'text-loss border-loss/40'
+          )}
+          title={botStatus?.kill_switch_active ? 'Resume paper trading' : 'Kill switch — stop new paper orders'}
+        >
+          <Octagon className="w-[21px] h-[21px]" />
+        </button>
       )}
 
       {/* Sync button */}

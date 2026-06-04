@@ -40,7 +40,13 @@ def compute_metrics(trades: List[Dict[str, Any]]) -> Dict[str, Any]:
         dd = (peak - equity) / peak * 100
         if dd > max_dd:
             max_dd = dd
-        equity_curve.append({"equity": round(equity, 2), "pnl": t.get("pnl", 0)})
+        day = (t.get("entry_time") or "")[:10]
+        equity_curve.append({
+            "date": day,
+            "equity": round(equity, 2),
+            "balance": round(equity, 2),
+            "pnl": t.get("pnl", 0),
+        })
 
     # Streaks
     max_win_streak, max_loss_streak = 0, 0
