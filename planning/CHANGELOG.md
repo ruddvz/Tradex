@@ -8,6 +8,15 @@
 
 ---
 
+## 2026-06-04 — cursor/audit-pwa-trades-routes-b0b9 — Phase 5 + 8.0 + journal API
+- Commit: (pending)
+- Files touched: frontend PWA (index.html, vite, Layout, MobileNav, IosInstallBanner, useIsStandalone, index.css, icons), `frontend/src/lib/api/trades.ts`, `useStore.ts`, `Journal.tsx`, `backend/app/api/v1/api_common.py`, `trades_api.py`, `analytics_api.py`, `routes.py`, `backend/alembic/*`
+- Tests added / changed: 0 (compileall + frontend build)
+- Build: pass
+- Status: done
+- Next up: **8.1** — first Alembic revision from SQLAlchemy models
+- Notes: iPhone-focused PWA (safe-area, 180px apple-touch-icon, install banner). Trades/analytics extracted from monolithic routes.py. Journal drawer saves notes/session/emotion via PATCH in live mode.
+
 ## Entry Format (copy / paste this block)
 
 ```
