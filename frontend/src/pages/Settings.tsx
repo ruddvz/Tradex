@@ -13,6 +13,12 @@ import {
   updateRiskProfile,
   type RiskProfileRow,
 } from '../lib/api/risk';
+import {
+  fetchMt5Settings,
+  fetchNotificationSettings,
+  updateMt5Settings,
+  updateNotificationSettings,
+} from '../lib/api/settings';
 
 const brokers = [
   { name: 'Exness', logo: 'EX', connected: true },
@@ -44,19 +50,12 @@ export function Settings() {
       }
       setMt5Loading(true);
       try {
-        const res = await fetch('/api/v1/settings/mt5', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = (await res.json()) as {
-          server?: string | null;
-          login?: string | null;
-          has_password?: boolean;
-        };
-        if (res.ok) {
-          setMt5Server(data.server ?? '');
-          setMt5Login(data.login ?? '');
-          setMt5HasPassword(Boolean(data.has_password));
-        }
+        const data = await fetchMt5Settings();
+        setMt5Server(data.server ?? '');
+        setMt5Login(data.login ?? '');
+        setMt5HasPassword(Boolean(data.has_password));
+      } catch {
+        /* demo / offline */
       } finally {
         setMt5Loading(false);
       }
@@ -74,20 +73,13 @@ export function Settings() {
       login: mt5Login.trim(),
     };
     if (mt5Password.trim()) body.password = mt5Password.trim();
-    const res = await fetch('/api/v1/settings/mt5', {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-    const data = (await res.json()) as { has_password?: boolean };
-    if (!res.ok) {
-      showToast('Could not save MT5 settings');
+    try {
+      const data = await updateMt5Settings(body);
+      setMt5HasPassword(Boolean(data.has_password));
+    } catch {
+      showToast('Could not save MT5 settings', 'warning');
       return;
     }
-    setMt5HasPassword(Boolean(data.has_password));
     setMt5Password('');
     showToast('MT5 settings saved');
   };
@@ -95,16 +87,10 @@ export function Settings() {
   const disconnectMt5 = async () => {
     const token = getToken();
     if (!token) return;
-    const res = await fetch('/api/v1/settings/mt5', {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ server: '', login: '', password: '' }),
-    });
-    if (!res.ok) {
-      showToast('Could not clear MT5 credentials');
+    try {
+      await updateMt5Settings({ server: '', login: '', password: '' });
+    } catch {
+      showToast('Could not clear MT5 credentials', 'warning');
       return;
     }
     setMt5Server('');
@@ -131,12 +117,8 @@ export function Settings() {
   useEffect(() => {
     const token = getToken();
     if (!token) return;
-    void fetch('/api/v1/settings/notifications', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(r => (r.ok ? r.json() : null))
+    void fetchNotificationSettings()
       .then(data => {
-        if (!data || typeof data !== 'object') return;
         setNotifications({
           email: Boolean(data.email),
           push: Boolean(data.push),
@@ -150,16 +132,12 @@ export function Settings() {
   const persistNotifications = async (next: typeof notifications) => {
     const token = getToken();
     if (!token) return;
-    const res = await fetch('/api/v1/settings/notifications', {
-      method: 'PUT',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(next),
-    });
-    if (res.ok) showToast('Notifications saved');
-    else showToast('Could not save notifications');
+    try {
+      await updateNotificationSettings(next);
+      showToast('Notifications saved');
+    } catch {
+      showToast('Could not save notifications', 'warning');
+    }
   };
 
   const toggleBroker = (name: string) => {

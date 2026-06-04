@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns';
 import { clsx } from 'clsx';
 import type { Trade } from '../../types';
 import { DirectionBadge, GradeBadge, PnlBadge } from '../ui/Badge';
+import { TradeSourceBadge } from '../status/TradeSourceBadge';
 
 const emotionEmojis: Record<string, string> = {
   Confident: '💪',
@@ -45,6 +46,7 @@ export function JournalTradeCard({ trade, expanded, onToggle, onOpenDrawer }: Jo
           <div className="mt-2 flex flex-wrap items-center gap-3">
             <PnlBadge value={trade.pnl} />
             <GradeBadge grade={trade.grade} />
+            <TradeSourceBadge source={trade.source} />
           </div>
         </div>
         <ChevronDown

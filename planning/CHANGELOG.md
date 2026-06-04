@@ -8,6 +8,15 @@
 
 ---
 
+## 2026-06-04 — cursor/audit-complete-plan-parallel-b0b9 — Phase 6 + 7 completion (parallel)
+- Commit: (pending)
+- Files touched: `frontend/src/lib/api/{client,settings,sync,paperAccounts,trades,accounts}.ts`, `useStore.ts`, `Header.tsx`, `AccountSelector.tsx`, `TradeSourceBadge.tsx`, `Journal.tsx`, `PaperTrading.tsx`, `Settings.tsx`, `Dashboard.tsx`, `Playbooks.tsx`, `Layout.tsx`, `planning/{ACTIVE,EXECUTION-PLAN}.md`
+- Tests added / changed: 0 (frontend build)
+- Build: pass
+- Status: done
+- Next up: merge audit PR stack; optional Plan0 QA
+- Notes: EXECUTION-PLAN Phases 6.1–6.5 and 7.1–7.3 marked complete. Live mode no longer falls back to mock chart data when API returns empty series.
+
 ## 2026-06-04 — cursor/audit-phase-8-2-parallel-b0b9 — Phase 8.2: Docker migrations + API validation UX
 - Commit: c875ef1 (feat: Phase 8.2 Alembic-only init_db and Docker migrate entrypoint)
 - Files touched: `backend/app/{database,migrations}.py`, `backend/docker-entrypoint.sh`, `backend/Dockerfile`, `docker-compose.yml`, `backend/MIGRATIONS.md`, `backend/tests/test_migrations_bootstrap.py`, `frontend/src/lib/api/client.ts`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`
