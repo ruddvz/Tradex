@@ -17,8 +17,17 @@
 - Next up: Plan0 manual device QA (human)
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
+## 2026-06-05 — cursor/audit-plan-complete-32fb — P2: security headers, rate limits, upload validation
+- Commit: d92dbda (feat: P2 security — rate limits, security headers, upload magic-byte check)
+- Files touched: `middleware/security.py`, `middleware/rate_limit.py`, `core/upload_validation.py`, `trades_api.py`, `main.py`, `planning/ACTIVE.md`
+- Tests added / changed: 3 (`test_upload_validation.py`)
+- Build: pass (48 pytest)
+- Status: done
+- Next up: httpOnly auth refactor OR Docker manual verify (human)
+- Notes: Auth login/register limited to 20 req/min/IP in-memory.
+
 ## 2026-06-05 — cursor/audit-plan-complete-32fb — P1: import batches, CSV candles, strategy versions, OOS
-- Commit: (pending)
+- Commit: 1fc8b5a (feat: P1 backlog — import batches, CSV candles, strategy versions, OOS warnings)
 - Files touched: `import_batch`, `strategy_version`, `candle_dataset` models, migration `b2c3d4e5f6a7`, `imports_api`, `csv_provider`, `sync_api` batch wiring, `backtests.py` CSV upload + OOS, `strategy_runner` versions, Settings Import History, Backtests CSV/OOS UI
 - Tests added / changed: 4 (`test_csv_provider`, `test_strategy_versions`, migration head update)
 - Build: pass (`./scripts/verify.sh` — 45 pytest, lint, build, e2e x3)
