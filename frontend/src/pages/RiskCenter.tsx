@@ -1,13 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  Shield,
-  ShieldAlert,
-  ShieldCheck,
-  AlertTriangle,
-  Octagon,
-  Settings,
-} from 'lucide-react';
+import { Shield, ShieldAlert, ShieldCheck, AlertTriangle, Octagon, Settings } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { DataModeBadge, RealExecutionDisabledNotice } from '../components/ui/DataModeBadge';
 import { resolveDataViewMode } from '../lib/resolveDataViewMode';
@@ -96,7 +89,11 @@ export function RiskCenter() {
 
   return (
     <div className="min-h-screen">
-      <Header title="Risk Center" subtitle="Profiles, limits, violations, and kill switch" showDateRange={false} />
+      <Header
+        title="Risk Center"
+        subtitle="Profiles, limits, violations, and kill switch"
+        showDateRange={false}
+      />
 
       <div className="page-shell p-6 space-y-6 pb-28 md:pb-6">
         <div className="flex flex-wrap items-start gap-3 justify-between">
@@ -146,7 +143,10 @@ export function RiskCenter() {
                 </div>
                 <button
                   type="button"
-                  className={clsx('btn-secondary text-sm gap-2', killed && 'border-loss/40 text-loss')}
+                  className={clsx(
+                    'btn-secondary text-sm gap-2',
+                    killed && 'border-loss/40 text-loss'
+                  )}
                   onClick={() => void (killed ? resumePaperTrading() : triggerKillSwitch())}
                 >
                   <Octagon className="w-4 h-4" />
@@ -161,7 +161,10 @@ export function RiskCenter() {
                 <div className="flex items-center gap-2">
                   <Shield className="w-5 h-5 text-analytics" />
                   <h2 className="text-base font-semibold text-text-primary">{profile.name}</h2>
-                  <Link to="/settings" className="ml-auto text-xs text-analytics hover:underline flex items-center gap-1">
+                  <Link
+                    to="/settings"
+                    className="ml-auto text-xs text-analytics hover:underline flex items-center gap-1"
+                  >
                     <Settings className="w-3.5 h-3.5" />
                     Full settings
                   </Link>
@@ -194,7 +197,10 @@ export function RiskCenter() {
                       bool: true,
                     },
                   ].map((item) => (
-                    <div key={item.label} className="rounded-xl border border-surface-border bg-surface/30 p-3">
+                    <div
+                      key={item.label}
+                      className="rounded-xl border border-surface-border bg-surface/30 p-3"
+                    >
                       <p className="text-xs text-text-muted mb-1">{item.label}</p>
                       {item.bool ? (
                         <button
@@ -238,7 +244,9 @@ export function RiskCenter() {
             <section className="card p-5">
               <div className="flex items-center gap-2 mb-4">
                 <AlertTriangle className="w-5 h-5 text-warn" />
-                <h2 className="text-base font-semibold text-text-primary">Recent paper violations</h2>
+                <h2 className="text-base font-semibold text-text-primary">
+                  Recent paper violations
+                </h2>
               </div>
               {violations === null ? (
                 <LoadingState label="Loading violations…" />
@@ -258,7 +266,9 @@ export function RiskCenter() {
                     <li key={v.id} className="py-3 flex gap-3 items-start">
                       <SeverityDot severity={v.severity} />
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-text-primary">{v.violation_type.replace(/_/g, ' ')}</p>
+                        <p className="text-sm font-medium text-text-primary">
+                          {v.violation_type.replace(/_/g, ' ')}
+                        </p>
                         <p className="text-xs text-text-muted mt-0.5">{v.reason}</p>
                         {v.created_at && (
                           <p className="text-[10px] text-text-muted mt-1">
@@ -274,7 +284,9 @@ export function RiskCenter() {
 
             {/* Audit events */}
             <section className="card p-5">
-              <h2 className="text-base font-semibold text-text-primary mb-4">Manual override log</h2>
+              <h2 className="text-base font-semibold text-text-primary mb-4">
+                Manual override log
+              </h2>
               {events === null ? (
                 <LoadingState label="Loading events…" />
               ) : events.length === 0 ? (

@@ -45,8 +45,12 @@ def list_manual_tasks(
         description="Comma-separated categories (e.g. initial_setup,risk)",
     ),
 ):
-    stmt = select(ManualTask).where(ManualTask.user_id == user.id).order_by(
-        ManualTask.created_at.asc(),
+    stmt = (
+        select(ManualTask)
+        .where(ManualTask.user_id == user.id)
+        .order_by(
+            ManualTask.created_at.asc(),
+        )
     )
     if category:
         stmt = stmt.where(ManualTask.category == category)
@@ -77,7 +81,9 @@ def list_manual_tasks(
 
 
 @router.post("/generate-defaults")
-def generate_default_manual_tasks(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def generate_default_manual_tasks(
+    user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
     return ensure_default_manual_tasks(db, user.id)
 
 

@@ -6,7 +6,8 @@ import uuid
 from datetime import date, datetime
 from typing import Optional, Tuple
 
-from sqlalchemy import func as sql_func, select
+from sqlalchemy import func as sql_func
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..models.paper_account import PaperAccount
@@ -18,13 +19,13 @@ from ..models.paper_order import (
     PaperOrderType,
 )
 from ..models.paper_position import PaperPosition, PaperPositionStatus
-from ..models.trade import Trade, TradeDirection, TradeStatus
+from ..models.trade import Trade, TradeDirection
 from .fill_assumptions import assumptions_from_account
 from .fill_simulator import simulate_market_fill
-from .trade_codec import compute_grade_and_rr, status_from_str, grade_from_str
 from .paper_equity import refresh_paper_account_equity, unrealized_pnl_for_position
 from .risk_engine import evaluate_paper_order as evaluate_risk_engine
 from .risk_engine import log_paper_violation
+from .trade_codec import compute_grade_and_rr, grade_from_str, status_from_str
 
 # Coarse $ / (price point × lot) — matches paper_service MVP scaling
 _PNL_UNIT = 100.0
@@ -277,7 +278,9 @@ def close_paper_position(
         slippage_factor=fill_cfg.slippage_factor,
         commission_per_lot=fill_cfg.commission_per_lot,
     )
-    gross = _pnl_for_close(position.side, position.avg_entry_price, quote.fill_price, position.lot_size)
+    gross = _pnl_for_close(
+        position.side, position.avg_entry_price, quote.fill_price, position.lot_size
+    )
     net = round(gross - quote.commission, 2)
 
     now = datetime.utcnow()
@@ -298,7 +301,9 @@ def close_paper_position(
         user_id=user_id,
         account_id=None,
         symbol=position.symbol,
-        direction=TradeDirection.BUY if position.side == PaperOrderSide.BUY else TradeDirection.SELL,
+        direction=(
+            TradeDirection.BUY if position.side == PaperOrderSide.BUY else TradeDirection.SELL
+        ),
         entry_price=position.avg_entry_price,
         exit_price=quote.fill_price,
         lot_size=position.lot_size,

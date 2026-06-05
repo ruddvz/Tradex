@@ -27,6 +27,7 @@ import {
 } from 'recharts';
 import { clsx } from 'clsx';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
+import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
 
 const CustomTooltip = ({
   active,
@@ -65,8 +66,9 @@ const TAB_ITEMS = [
 ];
 
 export function Reports() {
-  const { trades, selectedDateRange, setDateRange, dataMode, metrics, refreshAnalyticsFromApi } = useStore();
-  
+  const { trades, selectedDateRange, setDateRange, dataMode, metrics, refreshAnalyticsFromApi } =
+    useStore();
+
   useEffect(() => {
     if (dataMode === 'live') void refreshAnalyticsFromApi();
   }, [dataMode, selectedDateRange, refreshAnalyticsFromApi]);
@@ -75,10 +77,9 @@ export function Reports() {
 
   const tradesInRange = useMemo(() => {
     if (selectedDateRange === 'all') return trades;
-    const days =
-      selectedDateRange === '7d' ? 7 : selectedDateRange === '30d' ? 30 : 90;
+    const days = selectedDateRange === '7d' ? 7 : selectedDateRange === '30d' ? 30 : 90;
     const cutoff = subDays(new Date(), days);
-    return trades.filter(t => parseISO(t.entryTime) >= cutoff);
+    return trades.filter((t) => parseISO(t.entryTime) >= cutoff);
   }, [trades, selectedDateRange]);
 
   const m = useMemo(() => {
@@ -88,7 +89,7 @@ export function Reports() {
 
   const strategyData = useMemo(() => {
     const map = new Map<string, { wins: number; losses: number; pnl: number }>();
-    tradesInRange.forEach(t => {
+    tradesInRange.forEach((t) => {
       if (!map.has(t.strategy)) map.set(t.strategy, { wins: 0, losses: 0, pnl: 0 });
       const d = map.get(t.strategy)!;
       d.pnl += t.pnl;
@@ -107,7 +108,7 @@ export function Reports() {
 
   const emotionData = useMemo(() => {
     const map = new Map<string, { wins: number; total: number; pnl: number }>();
-    tradesInRange.forEach(t => {
+    tradesInRange.forEach((t) => {
       if (!map.has(t.emotion)) map.set(t.emotion, { wins: 0, total: 0, pnl: 0 });
       const d = map.get(t.emotion)!;
       d.total++;
@@ -136,19 +137,31 @@ export function Reports() {
   const kpiRow = (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 motion-tab">
       {[
-        { label: 'Total P&L', value: `$${m.totalPnl.toLocaleString()}`, up: m.totalPnl > 0, icon: TrendingUp },
+        {
+          label: 'Total P&L',
+          value: `$${m.totalPnl.toLocaleString()}`,
+          up: m.totalPnl > 0,
+          icon: TrendingUp,
+        },
         { label: 'Win Rate', value: `${m.winRate}%`, up: m.winRate >= 55, icon: Target },
-        { label: 'Profit Factor', value: `${m.profitFactor}x`, up: m.profitFactor >= 1.5, icon: BarChart3 },
+        {
+          label: 'Profit Factor',
+          value: `${m.profitFactor}x`,
+          up: m.profitFactor >= 1.5,
+          icon: BarChart3,
+        },
         { label: 'Avg R:R', value: `1:${m.avgRR}`, up: m.avgRR >= 1.5, icon: Zap },
         { label: 'Max DD', value: `${m.maxDrawdown}%`, up: m.maxDrawdown < 10, icon: TrendingDown },
         { label: 'Expectancy', value: `$${m.expectancy}`, up: m.expectancy > 0, icon: Clock },
-      ].map(row => (
+      ].map((row) => (
         <div key={row.label} className="card p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-slate-500">{row.label}</span>
             <row.icon className="w-3.5 h-3.5 text-slate-600" />
           </div>
-          <div className={clsx('text-xl font-bold', row.up ? 'text-brand-400' : 'text-red-400')}>{row.value}</div>
+          <div className={clsx('text-xl font-bold', row.up ? 'text-brand-400' : 'text-red-400')}>
+            {row.value}
+          </div>
         </div>
       ))}
     </div>
@@ -158,7 +171,9 @@ export function Reports() {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div className="card p-5 lg:col-span-2 min-h-[280px]">
         <h3 className="section-title text-base mb-1">Equity curve</h3>
-        <p className="section-subtitle mb-4">Selected range — live equity from API when signed in</p>
+        <p className="section-subtitle mb-4">
+          Selected range — live equity from API when signed in
+        </p>
         <EquityCurve height={220} />
       </div>
       <div className="card p-5">
@@ -178,10 +193,24 @@ export function Reports() {
         </div>
       </div>
       <ResponsiveContainer width="100%" height={200}>
-        <BarChart data={strategyData} margin={{ top: 5, right: 5, left: 0, bottom: 0 }} barSize={20}>
+        <BarChart
+          data={strategyData}
+          margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
+          barSize={20}
+        >
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(42,53,80,0.6)" vertical={false} />
-          <XAxis dataKey="name" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} />
-          <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
+          <XAxis
+            dataKey="name"
+            tick={{ fill: '#64748b', fontSize: 11 }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <YAxis
+            tick={{ fill: '#64748b', fontSize: 11 }}
+            axisLine={false}
+            tickLine={false}
+            tickFormatter={(v) => `$${v}`}
+          />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
           <Bar dataKey="pnl" radius={[4, 4, 0, 0]}>
             {strategyData.map((d, i) => (
@@ -191,10 +220,12 @@ export function Reports() {
         </BarChart>
       </ResponsiveContainer>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-        {strategyData.slice(0, 4).map(s => (
+        {strategyData.slice(0, 4).map((s) => (
           <div key={s.name} className="bg-dark-300 rounded-lg p-3">
             <div className="text-xs text-slate-500 mb-1">{s.name}</div>
-            <div className={clsx('text-sm font-bold', s.pnl >= 0 ? 'text-brand-400' : 'text-red-400')}>
+            <div
+              className={clsx('text-sm font-bold', s.pnl >= 0 ? 'text-brand-400' : 'text-red-400')}
+            >
               {s.pnl >= 0 ? '+' : ''}${s.pnl.toLocaleString()}
             </div>
             <div className="flex items-center justify-between mt-1">
@@ -215,10 +246,29 @@ export function Reports() {
         <h3 className="section-title text-base mb-1">Psychology analysis</h3>
         <p className="section-subtitle mb-4">Win rate by emotion</p>
         <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={emotionData} margin={{ top: 5, right: 5, left: 0, bottom: 0 }} barSize={14} layout="vertical">
+          <BarChart
+            data={emotionData}
+            margin={{ top: 5, right: 5, left: 0, bottom: 0 }}
+            barSize={14}
+            layout="vertical"
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(42,53,80,0.6)" horizontal={false} />
-            <XAxis type="number" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `${v}%`} domain={[0, 100]} />
-            <YAxis type="category" dataKey="emotion" tick={{ fill: '#94a3b8', fontSize: 10 }} axisLine={false} tickLine={false} width={60} />
+            <XAxis
+              type="number"
+              tick={{ fill: '#64748b', fontSize: 10 }}
+              axisLine={false}
+              tickLine={false}
+              tickFormatter={(v) => `${v}%`}
+              domain={[0, 100]}
+            />
+            <YAxis
+              type="category"
+              dataKey="emotion"
+              tick={{ fill: '#94a3b8', fontSize: 10 }}
+              axisLine={false}
+              tickLine={false}
+              width={60}
+            />
             <Tooltip
               content={({ active, payload, label }) =>
                 active && payload?.length ? (
@@ -232,7 +282,11 @@ export function Reports() {
             />
             <Bar dataKey="winRate" radius={[0, 3, 3, 0]}>
               {emotionData.map((d, i) => (
-                <Cell key={i} fill={d.winRate >= 65 ? '#10b981' : d.winRate >= 50 ? '#3b82f6' : '#ef4444'} opacity={0.85} />
+                <Cell
+                  key={i}
+                  fill={d.winRate >= 65 ? '#10b981' : d.winRate >= 50 ? '#3b82f6' : '#ef4444'}
+                  opacity={0.85}
+                />
               ))}
             </Bar>
           </BarChart>
@@ -288,7 +342,7 @@ export function Reports() {
           { label: 'Sharpe Ratio', value: m.sharpeRatio },
           { label: 'Trading Days', value: m.tradingDays },
           { label: 'Avg Daily P&L', value: `$${m.avgDailyPnl.toFixed(0)}` },
-        ].map(s => (
+        ].map((s) => (
           <div key={s.label} className="bg-dark-300 rounded-lg p-3">
             <div className="text-xs text-slate-500 mb-1">{s.label}</div>
             <div className="text-sm font-semibold text-white">{s.value}</div>
@@ -306,20 +360,31 @@ export function Reports() {
         title="Reports"
         subtitle="Performance analytics for the selected range"
         action={
-          <button type="button" className="no-print btn-secondary text-sm" onClick={() => window.print()}>
+          <button
+            type="button"
+            className="no-print btn-secondary text-sm"
+            onClick={() => window.print()}
+          >
             <Download className="w-4 h-4" /> Export PDF
           </button>
         }
       />
 
+      <PageDataTrustBar />
+
       <div className="page-shell px-6 pt-4 pb-8 space-y-5">
         <div className="flex flex-wrap items-center gap-2">
           <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
-          <Link to="/reports/compare" className="text-xs font-semibold text-analytics hover:underline min-h-[44px] inline-flex items-center">
+          <Link
+            to="/reports/compare"
+            className="text-xs font-semibold text-analytics hover:underline min-h-[44px] inline-flex items-center"
+          >
             Compare backtest / paper / journal →
           </Link>
           {dataMode === 'live' && (
-            <span className="text-xs text-slate-500">KPIs from API metrics; charts use live series when available.</span>
+            <span className="text-xs text-slate-500">
+              KPIs from API metrics; charts use live series when available.
+            </span>
           )}
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">

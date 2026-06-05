@@ -1,31 +1,40 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **Maintenance — optional Plan0 device QA**
+## 👉 NEXT UP: **P2 — Production security hardening**
 
-Status: [ ] optional (human)
+Status: [ ] pending
 
-Phases **0–15** from `planning/EXECUTION-PLAN.md` are complete on branch `cursor/phases-11-15-a3a6`.
+P0 audit and P1 backlog are complete on branch `cursor/audit-plan-complete-32fb`.
 
-See `planning/Plan0-AUDIT.md` for manual iPhone/Lighthouse checks.
+**Canonical state:** `planning/CURRENT-STATE-AND-NEXT-WORK.md`
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **Complete (Q2 2026 roadmap)**  
-**Branch:** `cursor/phases-11-15-a3a6`
+**Phase:** Post-audit P2 (production readiness)  
+**Branch:** `cursor/audit-plan-complete-32fb`
 
-### Recently Done (Phases 11–15)
-- [x] **11** — Paper order lifecycle, per-account fill assumptions, paper cockpit UI
-- [x] **12** — Backtest assumptions panel, `/reports/compare`, export trust copy
-- [x] **13** — Dashboard status strip, PWA-safe inputs, empty states
-- [x] **14** — AI trust metadata + prediction language scrub
-- [x] **15** — `scripts/verify.sh`, Playwright e2e, expanded pytest
+### Recently Done (P1 — 2026-06-05)
+- [x] Import batches model + API + MT5 sync audit trail + Settings Import History
+- [x] CSV candle upload + honest backtest `data_label=csv_upload`
+- [x] Strategy versioning (immutable snapshots for backtest + paper runs)
+- [x] Walk-forward OOS warnings on backtest results
+- [x] 45 pytest + verify.sh green
+
+### Recently Done (P2 partial — 2026-06-05)
+- [x] Security headers + request ID middleware
+- [x] Auth rate limiting (login/register)
+- [x] Screenshot upload magic-byte validation + randomized filenames
+
+### Next P2 slices
+- [ ] httpOnly cookie auth + refresh rotation
+- [ ] Docker full-stack verification (human/local)
+- [ ] Metrics parity fixtures (Reports ↔ backend)
 
 ---
 
 ## Notes
 
-- Verification: `./scripts/verify.sh` (pytest + lint + build + SW + e2e)
+- Verification: `./scripts/verify.sh` (45 pytest, lint, build, SW, e2e x3)
 - Product identity: **trading performance lab** — no live execution
-- E2E lives in `e2e/` (Playwright, production preview + `/Tradex/` base)

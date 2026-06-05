@@ -20,10 +20,12 @@ test -f dist/sw.js || test -f dist/sw.js.map || { ls dist/; exit 1; }
 grep -q "workbox" dist/sw.js || grep -q "precache" dist/sw.js
 echo "SW present: dist/sw.js"
 
+cd "$ROOT"
 if [ -d e2e ] && [ -f e2e/package.json ]; then
   echo "== E2E (Playwright) =="
   cd "$ROOT/e2e"
   npm ci --silent 2>/dev/null || npm install --silent
+  npx playwright install chromium --with-deps 2>/dev/null || npx playwright install chromium
   npx playwright test --reporter=line
 fi
 

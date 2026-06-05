@@ -1,9 +1,9 @@
 """
 Analytics service: computes all performance metrics from a list of trades.
 """
-from typing import List, Dict, Any
-from datetime import datetime, timedelta
+
 import statistics
+from typing import Any, Dict, List
 
 
 def compute_metrics(trades: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -41,12 +41,14 @@ def compute_metrics(trades: List[Dict[str, Any]]) -> Dict[str, Any]:
         if dd > max_dd:
             max_dd = dd
         day = (t.get("entry_time") or "")[:10]
-        equity_curve.append({
-            "date": day,
-            "equity": round(equity, 2),
-            "balance": round(equity, 2),
-            "pnl": t.get("pnl", 0),
-        })
+        equity_curve.append(
+            {
+                "date": day,
+                "equity": round(equity, 2),
+                "balance": round(equity, 2),
+                "pnl": t.get("pnl", 0),
+            }
+        )
 
     # Streaks
     max_win_streak, max_loss_streak = 0, 0
@@ -72,13 +74,14 @@ def compute_metrics(trades: List[Dict[str, Any]]) -> Dict[str, Any]:
 
     # Expectancy
     expectancy = (
-        (len(wins) / len(trades) * avg_win) +
-        (len(losses) / len(trades) * avg_loss)
-    ) if trades else 0
+        ((len(wins) / len(trades) * avg_win) + (len(losses) / len(trades) * avg_loss))
+        if trades
+        else 0
+    )
 
     pnl_values = [t.get("pnl", 0) for t in trades]
     std_dev = statistics.stdev(pnl_values) if len(pnl_values) > 1 else 0
-    sharpe = (avg_daily_pnl / std_dev * (252 ** 0.5)) if std_dev > 0 else 0
+    sharpe = (avg_daily_pnl / std_dev * (252**0.5)) if std_dev > 0 else 0
 
     durations = [t.get("duration", 0) for t in trades if t.get("duration")]
     avg_hold = sum(durations) / len(durations) if durations else 0
@@ -113,13 +116,30 @@ def compute_metrics(trades: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 def _empty_metrics() -> Dict[str, Any]:
     return {
-        "total_pnl": 0, "win_rate": 0, "profit_factor": 0,
-        "avg_win": 0, "avg_loss": 0, "avg_rr": 0, "max_drawdown": 0,
-        "total_trades": 0, "win_trades": 0, "loss_trades": 0,
-        "breakeven_trades": 0, "best_trade": 0, "worst_trade": 0,
-        "avg_hold_time": 0, "max_consecutive_wins": 0, "max_consecutive_losses": 0,
-        "sharpe_ratio": 0, "expectancy": 0, "avg_daily_pnl": 0, "trading_days": 0,
-        "gross_profit": 0, "gross_loss": 0, "equity_curve": [], "daily_pnl": [],
+        "total_pnl": 0,
+        "win_rate": 0,
+        "profit_factor": 0,
+        "avg_win": 0,
+        "avg_loss": 0,
+        "avg_rr": 0,
+        "max_drawdown": 0,
+        "total_trades": 0,
+        "win_trades": 0,
+        "loss_trades": 0,
+        "breakeven_trades": 0,
+        "best_trade": 0,
+        "worst_trade": 0,
+        "avg_hold_time": 0,
+        "max_consecutive_wins": 0,
+        "max_consecutive_losses": 0,
+        "sharpe_ratio": 0,
+        "expectancy": 0,
+        "avg_daily_pnl": 0,
+        "trading_days": 0,
+        "gross_profit": 0,
+        "gross_loss": 0,
+        "equity_curve": [],
+        "daily_pnl": [],
     }
 
 
@@ -136,13 +156,17 @@ def compute_symbol_stats(trades: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     for sym, sym_trades in symbols.items():
         wins = [t for t in sym_trades if t.get("status") == "WIN"]
         pnl = sum(t.get("pnl", 0) for t in sym_trades)
-        result.append({
-            "symbol": sym,
-            "trades": len(sym_trades),
-            "win_rate": round(len(wins) / len(sym_trades) * 100, 1),
-            "pnl": round(pnl, 2),
-            "avg_rr": round(sum(t.get("r_multiple", 0) for t in sym_trades) / len(sym_trades), 2),
-        })
+        result.append(
+            {
+                "symbol": sym,
+                "trades": len(sym_trades),
+                "win_rate": round(len(wins) / len(sym_trades) * 100, 1),
+                "pnl": round(pnl, 2),
+                "avg_rr": round(
+                    sum(t.get("r_multiple", 0) for t in sym_trades) / len(sym_trades), 2
+                ),
+            }
+        )
 
     return sorted(result, key=lambda x: x["pnl"], reverse=True)
 
@@ -185,12 +209,16 @@ def compute_psychology_stats(trades: List[Dict[str, Any]]) -> List[Dict[str, Any
         if t.get("status") == "WIN":
             e["wins"] += 1
 
-    return sorted([
-        {
-            "emotion": emotion,
-            "win_rate": round(data["wins"] / data["total"] * 100, 1),
-            "trades": data["total"],
-            "pnl": round(data["pnl"], 2),
-        }
-        for emotion, data in emotions.items()
-    ], key=lambda x: x["win_rate"], reverse=True)
+    return sorted(
+        [
+            {
+                "emotion": emotion,
+                "win_rate": round(data["wins"] / data["total"] * 100, 1),
+                "trades": data["total"],
+                "pnl": round(data["pnl"], 2),
+            }
+            for emotion, data in emotions.items()
+        ],
+        key=lambda x: x["win_rate"],
+        reverse=True,
+    )

@@ -24,7 +24,7 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
 
   const addTag = () => {
     if (tagInput.trim()) {
-      setTags(prev => [...prev, tagInput.trim().toLowerCase()]);
+      setTags((prev) => [...prev, tagInput.trim().toLowerCase()]);
       setTagInput('');
     }
   };
@@ -59,7 +59,7 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
     <div className="modal-backdrop z-[60]" onClick={onClose} role="presentation">
       <div
         className="bg-surface border border-surface-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[92vh] overflow-y-auto shadow-card-hover animate-slide-up"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
@@ -67,7 +67,11 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
           <h2 className="font-bold text-white text-lg">
             {mode === 'create' ? 'New Entry' : 'Edit Entry'}
           </h2>
-          <button type="button" onClick={onClose} className="p-2 rounded-lg hover:bg-surface-light text-slate-400">
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-surface-light text-slate-400"
+          >
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -75,12 +79,21 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
         <div className="p-5 space-y-4">
           <div>
             <label className="label">Title</label>
-            <input className="input" value={title} onChange={e => setTitle(e.target.value)} placeholder="Title" />
+            <input
+              className="input"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title"
+            />
           </div>
           <div>
             <label className="label">Type</label>
-            <select className="select" value={type} onChange={e => setType(e.target.value as NotebookEntry['type'])}>
-              {types.map(t => (
+            <select
+              className="select"
+              value={type}
+              onChange={(e) => setType(e.target.value as NotebookEntry['type'])}
+            >
+              {types.map((t) => (
                 <option key={t} value={t}>
                   {t}
                 </option>
@@ -89,11 +102,13 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
           </div>
           <div>
             <label className="label">Content</label>
-            <p className="text-[10px] text-slate-600 mb-1">Supports lines starting with #, ##, - for lists</p>
+            <p className="text-[10px] text-slate-600 mb-1">
+              Supports lines starting with #, ##, - for lists
+            </p>
             <textarea
               className="input min-h-[120px] resize-y font-mono text-sm"
               value={content}
-              onChange={e => setContent(e.target.value)}
+              onChange={(e) => setContent(e.target.value)}
               placeholder="Write your note..."
             />
           </div>
@@ -103,8 +118,8 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
               <input
                 className="input flex-1"
                 value={tagInput}
-                onChange={e => setTagInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
                 placeholder="tag + Enter"
               />
               <button type="button" className="btn-secondary px-3" onClick={addTag}>
@@ -112,13 +127,17 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
               </button>
             </div>
             <div className="flex flex-wrap gap-1.5 mt-2">
-              {tags.map(tag => (
+              {tags.map((tag) => (
                 <span
                   key={tag}
                   className="chip text-slate-400 border border-surface-border px-2 py-1 rounded-lg text-xs flex items-center gap-1"
                 >
                   #{tag}
-                  <button type="button" onClick={() => setTags(tags.filter(t => t !== tag))} className="hover:text-red-400">
+                  <button
+                    type="button"
+                    onClick={() => setTags(tags.filter((t) => t !== tag))}
+                    className="hover:text-red-400"
+                  >
                     ×
                   </button>
                 </span>
@@ -130,7 +149,9 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
             onClick={() => setPinned(!pinned)}
             className={clsx(
               'flex items-center gap-2 w-full py-2 px-3 rounded-lg border text-sm transition-colors',
-              pinned ? 'border-brand-500/40 bg-brand-500/10 text-brand-400' : 'border-surface-border text-slate-400'
+              pinned
+                ? 'border-brand-500/40 bg-brand-500/10 text-brand-400'
+                : 'border-surface-border text-slate-400'
             )}
           >
             <Pin className="w-4 h-4" />

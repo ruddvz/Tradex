@@ -65,10 +65,9 @@ export function PaperAccountStats({
         ))}
       </div>
       <div className="rounded-lg border border-surface-border bg-surface/20 px-3 py-2 text-[11px] text-text-muted">
-        Fill assumptions: spread ×{account.fillSpreadMultiplier ?? 1},
-        slippage factor {account.fillSlippageFactor ?? 0.5},
-        commission ${account.fillCommissionPerLot ?? 3.5}/lot
-        — simulated, not broker quotes.
+        Fill assumptions: spread ×{account.fillSpreadMultiplier ?? 1}, slippage factor{' '}
+        {account.fillSlippageFactor ?? 0.5}, commission ${account.fillCommissionPerLot ?? 3.5}/lot —
+        simulated, not broker quotes.
       </div>
       {violations.length > 0 && (
         <div className="rounded-lg border border-warn/30 bg-warn/5 px-3 py-2 text-xs">

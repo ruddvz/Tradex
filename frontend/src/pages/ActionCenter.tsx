@@ -3,6 +3,7 @@ import { subDays, parseISO, isAfter } from 'date-fns';
 import { ClipboardList, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
+import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { TaskCard } from '../components/tasks/TaskCard';
 import { TaskDrawer } from '../components/tasks/TaskDrawer';
@@ -122,13 +123,9 @@ export function ActionCenter() {
   const setupProgress =
     tasks.length === 0
       ? 0
-      : Math.round(
-          (tasks.filter((t) => terminal(t.status)).length / tasks.length) * 100
-        );
+      : Math.round((tasks.filter((t) => terminal(t.status)).length / tasks.length) * 100);
 
-  const criticalOpen = tasks.filter(
-    (t) => t.priority === 'critical' && !terminal(t.status)
-  ).length;
+  const criticalOpen = tasks.filter((t) => t.priority === 'critical' && !terminal(t.status)).length;
   const blockedOpen = tasks.filter((t) => t.status === 'blocked').length;
 
   const openDrawer = (t: ManualTask) => {
@@ -167,10 +164,13 @@ export function ActionCenter() {
         showDateRange={false}
       />
 
+      <PageDataTrustBar />
+
       <div className="p-4 md:p-6 lg:p-8 max-w-6xl mx-auto space-y-6 pb-28 md:pb-8">
         {!token && (
           <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 p-4 text-sm text-amber-100">
-            Sign in to load your saved checklist. Demo browsing still works, but tasks stay on the server per account.
+            Sign in to load your saved checklist. Demo browsing still works, but tasks stay on the
+            server per account.
           </div>
         )}
 
@@ -251,15 +251,23 @@ export function ActionCenter() {
         </div>
 
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 mb-2">Filter</p>
-          <SegmentedControl items={FILTER_ITEMS} value={chip} onChange={setChip} className="max-w-full" />
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-slate-600 mb-2">
+            Filter
+          </p>
+          <SegmentedControl
+            items={FILTER_ITEMS}
+            value={chip}
+            onChange={setChip}
+            className="max-w-full"
+          />
         </div>
 
         {loading ? (
           <div className="text-sm text-slate-500 py-12 text-center">Loading tasks…</div>
         ) : visible.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-surface-border p-10 text-center text-slate-500 text-sm">
-            No tasks in this view. Try another tab, clear filters, or sync defaults if you just signed up.
+            No tasks in this view. Try another tab, clear filters, or sync defaults if you just
+            signed up.
           </div>
         ) : (
           <div className="grid gap-3 md:grid-cols-2">

@@ -23,12 +23,16 @@ def unrealized_pnl_for_position(position: PaperPosition, mark_price: float | Non
 
 def refresh_open_position_marks(db: Session, paper_account_id: str) -> None:
     """Refresh unrealized PnL on open positions (mark = last current_price)."""
-    rows = db.execute(
-        select(PaperPosition).where(
-            PaperPosition.paper_account_id == paper_account_id,
-            PaperPosition.status == PaperPositionStatus.OPEN,
+    rows = (
+        db.execute(
+            select(PaperPosition).where(
+                PaperPosition.paper_account_id == paper_account_id,
+                PaperPosition.status == PaperPositionStatus.OPEN,
+            )
         )
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     for pos in rows:
         pos.unrealized_pnl = unrealized_pnl_for_position(pos)
 
@@ -42,6 +46,8 @@ def refresh_paper_account_equity(db: Session, account: PaperAccount) -> None:
                 PaperPosition.paper_account_id == account.id,
                 PaperPosition.status == PaperPositionStatus.OPEN,
             )
-        ).scalars().all()
+        )
+        .scalars()
+        .all()
     )
     account.equity = round(account.balance + unrealized, 2)

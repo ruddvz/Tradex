@@ -5,10 +5,11 @@ from __future__ import annotations
 from datetime import date, datetime
 from typing import Optional, Tuple
 
-from sqlalchemy import select, func as sql_func
+from sqlalchemy import func as sql_func
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ..models.paper import PaperTrade, PaperOrderDirection
+from ..models.paper import PaperOrderDirection, PaperTrade
 from ..models.paper_account import PaperAccount
 
 
@@ -38,7 +39,6 @@ def _today_pnl(db: Session, paper_account_id: str) -> float:
         PaperTrade.exit_time <= end,
     )
     return float(db.execute(q).scalar() or 0.0)
-
 
 
 def place_paper_trade(

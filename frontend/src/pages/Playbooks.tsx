@@ -9,6 +9,7 @@ import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
 import { clsx } from 'clsx';
 import type { Playbook } from '../types';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
+import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
 
 function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
   return (
@@ -20,7 +21,9 @@ function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
           </div>
           <div>
             <h3 className="font-semibold text-white">{pb.name}</h3>
-            <Badge variant="neutral" size="xs">{pb.type}</Badge>
+            <Badge variant="neutral" size="xs">
+              {pb.type}
+            </Badge>
           </div>
         </div>
         <Badge variant={pb.winRate >= 65 ? 'profit' : pb.winRate >= 55 ? 'info' : 'warn'}>
@@ -34,7 +37,13 @@ function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
       <div className="h-12 mb-3">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={pb.performance.slice(-10)}>
-            <Line type="monotone" dataKey="pnl" stroke={pb.profit >= 0 ? '#10b981' : '#ef4444'} strokeWidth={1.5} dot={false} />
+            <Line
+              type="monotone"
+              dataKey="pnl"
+              stroke={pb.profit >= 0 ? '#10b981' : '#ef4444'}
+              strokeWidth={1.5}
+              dot={false}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -59,10 +68,13 @@ function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
 
 function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+      onClick={onClose}
+    >
       <div
         className="bg-surface border border-surface-border rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-card-hover animate-fade-in"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-5 border-b border-surface-border">
           <div className="flex items-center gap-3">
@@ -72,12 +84,21 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
             <div>
               <h2 className="font-bold text-white text-lg">{pb.name}</h2>
               <div className="flex items-center gap-2 mt-0.5">
-                <Badge variant="neutral" size="xs">{pb.type}</Badge>
-                <Badge variant={pb.winRate >= 65 ? 'profit' : 'info'} size="xs">{pb.winRate}% Win Rate</Badge>
+                <Badge variant="neutral" size="xs">
+                  {pb.type}
+                </Badge>
+                <Badge variant={pb.winRate >= 65 ? 'profit' : 'info'} size="xs">
+                  {pb.winRate}% Win Rate
+                </Badge>
               </div>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white">✕</button>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white"
+          >
+            ✕
+          </button>
         </div>
 
         <div className="p-5 space-y-5">
@@ -88,7 +109,7 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
               { label: 'Trades', value: pb.trades, color: 'text-white' },
               { label: 'Profit Factor', value: `${pb.profitFactor}x`, color: 'text-blue-400' },
               { label: 'Avg R:R', value: `1:${pb.avgRR}`, color: 'text-amber-400' },
-            ].map(m => (
+            ].map((m) => (
               <div key={m.label} className="bg-dark-300 rounded-lg p-3 text-center">
                 <div className={clsx('text-xl font-bold', m.color)}>{m.value}</div>
                 <div className="text-xs text-slate-500 mt-0.5">{m.label}</div>
@@ -102,15 +123,28 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
             <div className="h-40 bg-dark-300 rounded-xl p-3">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={pb.performance}>
-                  <Line type="monotone" dataKey="pnl" stroke="#10b981" strokeWidth={2} dot={false} />
+                  <Line
+                    type="monotone"
+                    dataKey="pnl"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    dot={false}
+                  />
                   <Tooltip
-                    content={({ active, payload }) => active && payload?.length ? (
-                      <div className="bg-surface border border-surface-border rounded-lg p-2 text-xs">
-                        <span className={payload[0].value as number >= 0 ? 'text-brand-400' : 'text-red-400'}>
-                          {(payload[0].value as number) >= 0 ? '+' : ''}${(payload[0].value as number)?.toFixed(0)}
-                        </span>
-                      </div>
-                    ) : null}
+                    content={({ active, payload }) =>
+                      active && payload?.length ? (
+                        <div className="bg-surface border border-surface-border rounded-lg p-2 text-xs">
+                          <span
+                            className={
+                              (payload[0].value as number) >= 0 ? 'text-brand-400' : 'text-red-400'
+                            }
+                          >
+                            {(payload[0].value as number) >= 0 ? '+' : ''}$
+                            {(payload[0].value as number)?.toFixed(0)}
+                          </span>
+                        </div>
+                      ) : null
+                    }
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -141,8 +175,11 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
 
           {/* Tags */}
           <div className="flex flex-wrap gap-1.5">
-            {pb.tags.map(tag => (
-              <span key={tag} className="px-2.5 py-1 bg-surface-light rounded-lg text-xs text-slate-400 border border-surface-border">
+            {pb.tags.map((tag) => (
+              <span
+                key={tag}
+                className="px-2.5 py-1 bg-surface-light rounded-lg text-xs text-slate-400 border border-surface-border"
+              >
                 #{tag}
               </span>
             ))}
@@ -159,7 +196,7 @@ export function Playbooks() {
   const [selected, setSelected] = useState<Playbook | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const psychInsights = aiInsights.filter(i => i.type === 'psychology' || i.type === 'pattern');
+  const psychInsights = aiInsights.filter((i) => i.type === 'psychology' || i.type === 'pattern');
 
   const handleAIGenerate = async () => {
     if (dataMode !== 'live') {
@@ -181,26 +218,31 @@ export function Playbooks() {
     }
   };
 
-  const symbolStats = Array.from(new Set(trades.map(t => t.symbol))).map(sym => {
-    const symTrades = trades.filter(t => t.symbol === sym);
-    const wins = symTrades.filter(t => t.status === 'WIN');
-    return {
-      symbol: sym,
-      trades: symTrades.length,
-      winRate: Math.round(wins.length / symTrades.length * 100),
-      pnl: symTrades.reduce((s, t) => s + t.pnl, 0),
-    };
-  }).sort((a, b) => b.pnl - a.pnl);
+  const symbolStats = Array.from(new Set(trades.map((t) => t.symbol)))
+    .map((sym) => {
+      const symTrades = trades.filter((t) => t.symbol === sym);
+      const wins = symTrades.filter((t) => t.status === 'WIN');
+      return {
+        symbol: sym,
+        trades: symTrades.length,
+        winRate: Math.round((wins.length / symTrades.length) * 100),
+        pnl: symTrades.reduce((s, t) => s + t.pnl, 0),
+      };
+    })
+    .sort((a, b) => b.pnl - a.pnl);
 
   return (
     <div className="min-h-screen">
       <Header title="AI Playbooks" subtitle="Pattern detection & performance intelligence" />
 
+      <PageDataTrustBar />
+
       <div className="page-shell p-6 space-y-6">
         {dataMode === 'live' ? (
           <p className="rounded-lg border border-brand-500/25 bg-brand-500/5 px-3 py-2 text-xs text-slate-300 flex flex-wrap items-center gap-2">
             <DataSourceBadge source="live" />
-            Saved playbooks sync to your account; journal strategy groups fill in automatically ({playbooks.length} cards).
+            Saved playbooks sync to your account; journal strategy groups fill in automatically (
+            {playbooks.length} cards).
           </p>
         ) : (
           <p className="rounded-lg border border-amber-500/25 bg-amber-500/5 px-3 py-2 text-xs text-slate-300 flex flex-wrap items-center gap-2">
@@ -237,7 +279,8 @@ export function Playbooks() {
             </button>
           </div>
           <p className="text-sm text-slate-400">
-            Analyzed {trades.length} trades to surface your most profitable patterns. Updated continuously as you trade.
+            Analyzed {trades.length} trades to surface your most profitable patterns. Updated
+            continuously as you trade.
           </p>
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div className="text-center">
@@ -259,37 +302,62 @@ export function Playbooks() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="section-title text-base">AI Insights</h2>
-            <Badge variant="info" size="xs">{aiInsights.length} active</Badge>
+            <Badge variant="info" size="xs">
+              {aiInsights.length} active
+            </Badge>
           </div>
           <div className="space-y-3">
-            {aiInsights.map(insight => (
-              <div key={insight.id} className={clsx(
-                'p-4 rounded-xl border',
-                insight.type === 'warning' ? 'bg-red-500/5 border-red-500/20' :
-                insight.type === 'achievement' ? 'bg-amber-500/5 border-amber-500/20' :
-                insight.type === 'psychology' ? 'bg-purple-500/5 border-purple-500/20' :
-                'bg-brand-500/5 border-brand-500/20'
-              )}>
+            {aiInsights.map((insight) => (
+              <div
+                key={insight.id}
+                className={clsx(
+                  'p-4 rounded-xl border',
+                  insight.type === 'warning'
+                    ? 'bg-red-500/5 border-red-500/20'
+                    : insight.type === 'achievement'
+                      ? 'bg-amber-500/5 border-amber-500/20'
+                      : insight.type === 'psychology'
+                        ? 'bg-purple-500/5 border-purple-500/20'
+                        : 'bg-brand-500/5 border-brand-500/20'
+                )}
+              >
                 <div className="flex items-start gap-3">
-                  <div className={clsx(
-                    'p-2 rounded-lg flex-shrink-0',
-                    insight.type === 'warning' ? 'bg-red-500/15' :
-                    insight.type === 'achievement' ? 'bg-amber-500/15' :
-                    insight.type === 'psychology' ? 'bg-purple-500/15' :
-                    'bg-brand-500/15'
-                  )}>
-                    <Brain className={clsx('w-4 h-4',
-                      insight.type === 'warning' ? 'text-red-400' :
-                      insight.type === 'achievement' ? 'text-amber-400' :
-                      insight.type === 'psychology' ? 'text-purple-400' :
-                      'text-brand-400'
-                    )} />
+                  <div
+                    className={clsx(
+                      'p-2 rounded-lg flex-shrink-0',
+                      insight.type === 'warning'
+                        ? 'bg-red-500/15'
+                        : insight.type === 'achievement'
+                          ? 'bg-amber-500/15'
+                          : insight.type === 'psychology'
+                            ? 'bg-purple-500/15'
+                            : 'bg-brand-500/15'
+                    )}
+                  >
+                    <Brain
+                      className={clsx(
+                        'w-4 h-4',
+                        insight.type === 'warning'
+                          ? 'text-red-400'
+                          : insight.type === 'achievement'
+                            ? 'text-amber-400'
+                            : insight.type === 'psychology'
+                              ? 'text-purple-400'
+                              : 'text-brand-400'
+                      )}
+                    />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-sm font-semibold text-white">{insight.title}</span>
                       <Badge
-                        variant={insight.impact === 'high' ? 'loss' : insight.impact === 'medium' ? 'warn' : 'neutral'}
+                        variant={
+                          insight.impact === 'high'
+                            ? 'loss'
+                            : insight.impact === 'medium'
+                              ? 'warn'
+                              : 'neutral'
+                        }
                         size="xs"
                       >
                         {insight.impact}
@@ -310,12 +378,16 @@ export function Playbooks() {
         <div>
           <div className="flex items-center justify-between mb-3">
             <h2 className="section-title text-base">My Playbooks</h2>
-            <button type="button" className="btn-primary text-sm" onClick={() => setCreateOpen(true)}>
+            <button
+              type="button"
+              className="btn-primary text-sm"
+              onClick={() => setCreateOpen(true)}
+            >
               <Plus className="w-4 h-4" /> New Playbook
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {playbooks.map(pb => (
+            {playbooks.map((pb) => (
               <PlaybookCard key={pb.id} pb={pb} onClick={() => setSelected(pb)} />
             ))}
           </div>
@@ -337,7 +409,7 @@ export function Playbooks() {
                   </tr>
                 </thead>
                 <tbody>
-                  {symbolStats.map(s => (
+                  {symbolStats.map((s) => (
                     <tr key={s.symbol} className="table-row">
                       <td className="table-cell">
                         <div className="flex items-center gap-2">
@@ -349,7 +421,10 @@ export function Playbooks() {
                       </td>
                       <td className="table-cell text-center text-slate-400">{s.trades}</td>
                       <td className="table-cell text-center">
-                        <Badge variant={s.winRate >= 65 ? 'profit' : s.winRate >= 50 ? 'info' : 'loss'} size="xs">
+                        <Badge
+                          variant={s.winRate >= 65 ? 'profit' : s.winRate >= 50 ? 'info' : 'loss'}
+                          size="xs"
+                        >
                           {s.winRate}%
                         </Badge>
                       </td>

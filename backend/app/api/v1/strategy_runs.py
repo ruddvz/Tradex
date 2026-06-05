@@ -78,9 +78,15 @@ def _run_out(r: StrategyRun) -> StrategyRunOut:
 
 @router.get("", response_model=list[StrategyRunOut])
 def list_strategy_runs(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    rows = db.execute(
-        select(StrategyRun).where(StrategyRun.user_id == user.id).order_by(StrategyRun.started_at.desc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(StrategyRun)
+            .where(StrategyRun.user_id == user.id)
+            .order_by(StrategyRun.started_at.desc())
+        )
+        .scalars()
+        .all()
+    )
     return [_run_out(r) for r in rows]
 
 
@@ -167,16 +173,20 @@ def strategy_run_events(
     row = db.get(StrategyRun, run_id)
     if not row or row.user_id != user.id:
         raise HTTPException(status_code=404, detail="Strategy run not found")
-    logs = db.execute(
-        select(AuditLog)
-        .where(
-            AuditLog.user_id == user.id,
-            AuditLog.entity_type == "strategy_run",
-            AuditLog.entity_id == run_id,
+    logs = (
+        db.execute(
+            select(AuditLog)
+            .where(
+                AuditLog.user_id == user.id,
+                AuditLog.entity_type == "strategy_run",
+                AuditLog.entity_id == run_id,
+            )
+            .order_by(AuditLog.created_at.desc())
+            .limit(100)
         )
-        .order_by(AuditLog.created_at.desc())
-        .limit(100)
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     return [
         StrategyEventOut(
             id=r.id,

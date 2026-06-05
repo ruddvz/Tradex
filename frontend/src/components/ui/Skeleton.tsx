@@ -1,14 +1,7 @@
 import { clsx } from 'clsx';
 
 export function Skeleton({ className }: { className?: string }) {
-  return (
-    <div
-      className={clsx(
-        'bg-surface-border rounded-lg animate-pulse',
-        className
-      )}
-    />
-  );
+  return <div className={clsx('bg-surface-border rounded-lg animate-pulse', className)} />;
 }
 
 export function StatCardSkeleton() {

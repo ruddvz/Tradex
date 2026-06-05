@@ -2,9 +2,10 @@
 MT5 Sync Service: Connects to MetaTrader 5 and imports trade history.
 Requires MetaTrader5 Python package and a running MT5 terminal.
 """
-from typing import List, Dict, Any, Optional
-from datetime import datetime, timedelta
+
 import logging
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -22,6 +23,7 @@ class MT5SyncService:
         """Initialize MT5 connection."""
         try:
             import MetaTrader5 as mt5
+
             if not mt5.initialize():
                 logger.error("MT5 initialize() failed")
                 return False
@@ -43,6 +45,7 @@ class MT5SyncService:
         """Get account balance and equity."""
         try:
             import MetaTrader5 as mt5
+
             info = mt5.account_info()
             if info is None:
                 return None
@@ -71,6 +74,7 @@ class MT5SyncService:
 
         try:
             import MetaTrader5 as mt5
+
             from_dt = from_date or (datetime.now() - timedelta(days=90))
             to_dt = to_date or datetime.now()
 
@@ -101,17 +105,19 @@ class MT5SyncService:
                         entry_time = datetime.fromisoformat(trade["entry_time"])
                         duration = int((exit_time - entry_time).total_seconds() / 60)
 
-                        trades.append({
-                            **trade,
-                            "exit_price": deal.price,
-                            "exit_time": exit_time.isoformat(),
-                            "pnl": pnl + deal.commission + deal.swap,
-                            "commission": trade["commission"] + deal.commission,
-                            "swap": deal.swap,
-                            "status": "WIN" if pnl > 0 else "LOSS" if pnl < 0 else "BREAKEVEN",
-                            "duration": duration,
-                            "mt5_ticket": str(ticket),
-                        })
+                        trades.append(
+                            {
+                                **trade,
+                                "exit_price": deal.price,
+                                "exit_time": exit_time.isoformat(),
+                                "pnl": pnl + deal.commission + deal.swap,
+                                "commission": trade["commission"] + deal.commission,
+                                "swap": deal.swap,
+                                "status": "WIN" if pnl > 0 else "LOSS" if pnl < 0 else "BREAKEVEN",
+                                "duration": duration,
+                                "mt5_ticket": str(ticket),
+                            }
+                        )
 
             return trades
 
@@ -123,6 +129,7 @@ class MT5SyncService:
         """Shutdown MT5 connection."""
         try:
             import MetaTrader5 as mt5
+
             mt5.shutdown()
             self._connected = False
         except Exception:
@@ -133,11 +140,19 @@ class MT5SyncService:
         """Explicit demo payload — only used when sync route allows demo fallback."""
         return [
             {
-                "ticket": "demo-001", "symbol": "XAUUSD", "direction": "BUY",
-                "entry_price": 2350.50, "exit_price": 2362.30, "lot_size": 0.5,
+                "ticket": "demo-001",
+                "symbol": "XAUUSD",
+                "direction": "BUY",
+                "entry_price": 2350.50,
+                "exit_price": 2362.30,
+                "lot_size": 0.5,
                 "entry_time": (datetime.now() - timedelta(hours=3)).isoformat(),
                 "exit_time": datetime.now().isoformat(),
-                "pnl": 590.0, "commission": -3.5, "swap": 0.0,
-                "status": "WIN", "duration": 180, "mt5_ticket": "demo-001",
+                "pnl": 590.0,
+                "commission": -3.5,
+                "swap": 0.0,
+                "status": "WIN",
+                "duration": 180,
+                "mt5_ticket": "demo-001",
             },
         ]

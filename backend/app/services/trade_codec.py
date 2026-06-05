@@ -59,6 +59,7 @@ def trade_to_api_dict(t: Trade) -> Dict[str, Any]:
         "screenshot_after_url": t.screenshot_after_url,
         "mt5_ticket": t.mt5_ticket,
         "source": getattr(t, "source", None) or "manual",
+        "import_batch_id": getattr(t, "import_batch_id", None),
         "created_at": t.created_at.isoformat() if t.created_at else None,
         "updated_at": t.updated_at.isoformat() if t.updated_at else None,
     }
@@ -87,22 +88,22 @@ def grade_from_str(raw: str) -> TradeGrade:
 
 def compute_grade_and_rr(pnl: float, status_str: str) -> tuple[str, float]:
     grade = (
-        "A"
-        if pnl > 300
-        else "B"
-        if pnl > 100
-        else "C"
-        if pnl > 0
-        else "D"
-        if pnl > -100
-        else "F"
+        "A" if pnl > 300 else "B" if pnl > 100 else "C" if pnl > 0 else "D" if pnl > -100 else "F"
     )
     rr = abs(pnl) / max(abs(pnl * 0.4), 1)
     r_multiple = round(rr, 2) if status_str == "WIN" else -round(rr * 0.5, 2)
     return grade, r_multiple
 
 
-def trade_from_mt5_dict(user_id: str, trade_id: str, d: Dict[str, Any]) -> Trade:
+def trade_from_mt5_dict(
+    user_id: str,
+    trade_id: str,
+    d: Dict[str, Any],
+    *,
+    source: str = "mt5",
+    account_id: Optional[str] = None,
+    import_batch_id: Optional[str] = None,
+) -> Trade:
     """Map MT5 sync service dict + demo payloads into a Trade row."""
     pnl = float(d.get("pnl") or 0)
     status_str = d.get("status") or ("WIN" if pnl > 0 else "LOSS" if pnl < 0 else "BREAKEVEN")
@@ -140,5 +141,7 @@ def trade_from_mt5_dict(user_id: str, trade_id: str, d: Dict[str, Any]) -> Trade
         grade=grade_from_str(grade_s),
         r_multiple=r_mult,
         mt5_ticket=mt5_ticket,
+        source=source,
+        account_id=account_id,
+        import_batch_id=import_batch_id,
     )
-

@@ -8,8 +8,8 @@ from pathlib import Path
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 
-from app.models.base import Base
 from app.models import user  # noqa: F401
+from app.models.base import Base
 
 
 def test_auto_stamp_legacy_database(monkeypatch):
@@ -35,4 +35,4 @@ def test_auto_stamp_legacy_database(monkeypatch):
         assert inspect(engine).has_table("alembic_version")
         with engine.connect() as conn:
             version = conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
-        assert version == "a1b2c3d4e5f6"
+        assert version == "b2c3d4e5f6a7"

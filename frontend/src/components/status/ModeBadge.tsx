@@ -1,11 +1,14 @@
 import { clsx } from 'clsx';
 
-export type AppMode = 'demo' | 'live_journal' | 'paper' | 'backtest' | 'live_disabled' | 'live_enabled';
+export type AppMode =
+  | 'demo'
+  | 'live_journal'
+  | 'paper'
+  | 'backtest'
+  | 'live_disabled'
+  | 'live_enabled';
 
-const MODE_CONFIG: Record<
-  AppMode,
-  { label: string; className: string; title: string }
-> = {
+const MODE_CONFIG: Record<AppMode, { label: string; className: string; title: string }> = {
   demo: {
     label: 'Demo data',
     className: 'border-amber-500/35 bg-amber-500/10 text-amber-200',
@@ -58,4 +61,3 @@ export function ModeBadge({ mode, className }: ModeBadgeProps) {
     </span>
   );
 }
-

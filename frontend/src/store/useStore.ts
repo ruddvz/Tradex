@@ -23,9 +23,19 @@ import {
   mockDailyStats,
 } from '../data/mockData';
 import { getToken } from '../lib/auth';
-import { fetchTrades, deleteTradeApi, updateTradeApi, type UpdateTradePayload } from '../lib/api/trades';
+import {
+  fetchTrades,
+  deleteTradeApi,
+  updateTradeApi,
+  type UpdateTradePayload,
+} from '../lib/api/trades';
 import { fetchAnalyticsBundle, fetchCalendar } from '../lib/api/analytics';
-import { fetchBotStatus, activateKillSwitch, resumePaperOnly, type BotStatus } from '../lib/api/bot';
+import {
+  fetchBotStatus,
+  activateKillSwitch,
+  resumePaperOnly,
+  type BotStatus,
+} from '../lib/api/bot';
 import type { EquityPoint, DailyPnlPoint } from '../lib/mapAnalytics';
 import {
   createTradingAccount as createTradingAccountApi,
@@ -151,7 +161,8 @@ function mapShellAccount(primary: TradingAccountRow | undefined): Account {
     balance: primary.current_balance,
     equity: primary.current_equity,
     currency: primary.base_currency,
-    type: primary.account_type === 'live' ? 'live' : primary.account_type === 'prop' ? 'prop' : 'demo',
+    type:
+      primary.account_type === 'live' ? 'live' : primary.account_type === 'prop' ? 'prop' : 'demo',
     connected: true,
     lastSync: undefined,
   };
@@ -477,8 +488,7 @@ export const useStore = create<AppState>((set, get) => ({
     set((state) => ({ trades: state.trades.filter((t) => t.id !== id) }));
   },
 
-  addNotebookEntry: (entry) =>
-    set((state) => ({ notebook: [entry, ...state.notebook] })),
+  addNotebookEntry: (entry) => set((state) => ({ notebook: [entry, ...state.notebook] })),
   updateNotebookEntry: (id, updates) =>
     set((state) => ({
       notebook: state.notebook.map((n) => (n.id === id ? { ...n, ...updates } : n)),

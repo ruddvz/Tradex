@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import math
 import random
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
@@ -58,9 +57,17 @@ def generate_demo_candles(
         o = price
         c = max(step, o + drift)
         h = max(o, c) + abs(rng.uniform(0, step * 0.6))
-        l = min(o, c) - abs(rng.uniform(0, step * 0.6))
+        candle_low = min(o, c) - abs(rng.uniform(0, step * 0.6))
         ts = (t0 + timedelta(hours=i)).isoformat()
-        out.append(Candle(ts=ts, open=round(o, 5), high=round(h, 5), low=round(l, 5), close=round(c, 5)))
+        out.append(
+            Candle(
+                ts=ts,
+                open=round(o, 5),
+                high=round(h, 5),
+                low=round(candle_low, 5),
+                close=round(c, 5),
+            )
+        )
         price = c
     return out
 
@@ -231,25 +238,94 @@ def _compute_metrics(
     }
 
 
+def compute_oos_warnings(
+    in_sample: dict[str, Any],
+    out_of_sample: dict[str, Any],
+    trades: list[SimTrade],
+) -> list[str]:
+    """Walk-forward / overfit warnings for backtest results."""
+    warnings: list[str] = []
+    total_trades = in_sample.get("trade_count", 0) + out_of_sample.get("trade_count", 0)
+    if total_trades < 30:
+        warnings.append("Too small sample — fewer than 30 trades across in/out samples.")
+
+    if trades:
+        pnls = [t.pnl for t in trades if t.pnl > 0]
+        total_profit = sum(pnls)
+        if total_profit > 0:
+            max_trade = max(pnls)
+            if max_trade / total_profit > 0.25:
+                warnings.append(
+                    "Profit concentration — one trade contributes more than 25% of gross profit."
+                )
+
+    is_pf = float(in_sample.get("profit_factor") or 0)
+    oos_pf = float(out_of_sample.get("profit_factor") or 0)
+    is_exp = float(in_sample.get("expectancy") or 0)
+    oos_exp = float(out_of_sample.get("expectancy") or 0)
+
+    if is_exp > 0 and oos_exp <= 0:
+        warnings.append(
+            "Out-of-sample expectancy collapsed — strategy may be overfit to in-sample data."
+        )
+    if is_pf > 1.2 and oos_pf < 1.0:
+        warnings.append(
+            "Out-of-sample profit factor below 1.0 while in-sample looked strong — degradation risk."
+        )
+    if is_pf > 0 and oos_pf > 0 and oos_pf < is_pf * 0.5:
+        warnings.append("Out-of-sample profit factor degraded more than 50% vs in-sample.")
+
+    return warnings
+
+
 def run_backtest(
     *,
     symbol: str,
     rules: dict[str, Any],
     assumptions: Optional[BacktestAssumptions] = None,
     candles: Optional[list[Candle]] = None,
+    walk_forward: bool = True,
+    data_label: Optional[str] = None,
 ) -> dict[str, Any]:
     assumptions = assumptions or BacktestAssumptions()
-    candle_list = candles or generate_demo_candles(symbol)
-    trades, curve, metrics = run_simple_breakout_backtest(
-        candle_list, symbol, rules, assumptions
-    )
+    candle_list = candles if candles is not None else generate_demo_candles(symbol)
+    resolved_label = data_label or ("csv_upload" if candles is not None else "synthetic_demo")
+
+    trades, curve, metrics = run_simple_breakout_backtest(candle_list, symbol, rules, assumptions)
+
+    in_sample_metrics: dict[str, Any] | None = None
+    out_of_sample_metrics: dict[str, Any] | None = None
+    oos_warnings: list[str] = []
+
+    if walk_forward and len(candle_list) >= 60:
+        split = max(30, int(len(candle_list) * 0.7))
+        train = candle_list[:split]
+        test = candle_list[split:]
+        if len(test) >= 10:
+            _, _, in_sample_metrics = run_simple_breakout_backtest(
+                train, symbol, rules, assumptions
+            )
+            _, _, out_of_sample_metrics = run_simple_breakout_backtest(
+                test, symbol, rules, assumptions
+            )
+            oos_warnings = compute_oos_warnings(in_sample_metrics, out_of_sample_metrics, trades)
+
+    if resolved_label == "synthetic_demo":
+        oos_warnings = [
+            "Synthetic demo candles — not historical broker data.",
+            *oos_warnings,
+        ]
+
     return {
         "trades": [asdict(t) for t in trades],
         "equity_curve": curve,
         "metrics": metrics,
         "assumptions": asdict(assumptions),
         "candle_count": len(candle_list),
-        "data_label": "synthetic_demo",
+        "data_label": resolved_label,
+        "in_sample_metrics": in_sample_metrics,
+        "out_of_sample_metrics": out_of_sample_metrics,
+        "oos_warnings": oos_warnings,
     }
 
 

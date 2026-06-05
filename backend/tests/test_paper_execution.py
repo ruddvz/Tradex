@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
 
 import pytest
 from sqlalchemy import create_engine
@@ -11,8 +10,8 @@ from sqlalchemy.orm import sessionmaker
 
 from app.models.base import Base
 from app.models.paper_account import PaperAccount
-from app.models.user import User  # noqa: F401
 from app.models.paper_order import PaperOrderSide
+from app.models.user import User  # noqa: F401
 from app.services.fill_simulator import simulate_market_fill
 from app.services.paper_execution import evaluate_paper_order_risk, submit_paper_market_order
 

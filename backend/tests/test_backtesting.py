@@ -12,6 +12,7 @@ def test_run_backtest_produces_trades_and_metrics():
         rules={"lookback": 8, "rr_target": 2.0, "stop_pips": 12},
         assumptions=BacktestAssumptions(starting_balance=10_000),
         candles=candles,
+        data_label="synthetic_demo",
     )
     assert result["metrics"]["trade_count"] >= 0
     assert len(result["equity_curve"]) >= 1
@@ -25,6 +26,7 @@ def test_backtest_has_trades_on_breakout_data():
         symbol="EURUSD",
         rules={"lookback": 10, "rr_target": 1.5, "stop_pips": 10},
         candles=candles,
+        data_label="synthetic_demo",
     )
     assert result["metrics"]["trade_count"] > 0
     assert len(result["trades"]) == result["metrics"]["trade_count"]

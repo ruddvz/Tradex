@@ -41,7 +41,9 @@ export function HeroMetricCard({
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">{label}</p>
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-text-muted">
+            {label}
+          </p>
           <p
             className={clsx(
               'text-4xl sm:text-5xl font-extrabold tracking-tight mt-1 tabular-nums',
@@ -58,11 +60,14 @@ export function HeroMetricCard({
                   isPositiveTrend ? 'text-success' : 'text-danger'
                 )}
               >
-                {isPositiveTrend ? <TrendingUp className="w-4 h-4 shrink-0" /> : <TrendingDown className="w-4 h-4 shrink-0" />}
+                {isPositiveTrend ? (
+                  <TrendingUp className="w-4 h-4 shrink-0" />
+                ) : (
+                  <TrendingDown className="w-4 h-4 shrink-0" />
+                )}
                 <span>
                   {isPositiveTrend ? '+' : ''}
-                  {trend}%{' '}
-                  <span className="text-text-muted font-normal">{trendLabel}</span>
+                  {trend}% <span className="text-text-muted font-normal">{trendLabel}</span>
                 </span>
               </span>
             </div>

@@ -26,7 +26,16 @@ const defaultTrade: Partial<Trade> = {
 };
 
 const symbols = ['XAUUSD', 'EURUSD', 'GBPUSD', 'USDJPY', 'US30', 'NAS100', 'GBPJPY', 'AUDUSD'];
-const strategies = ['Breakout', 'Mean Reversion', 'Trend Follow', 'Supply/Demand', 'ICT', 'SMC', 'Scalp', 'Swing'];
+const strategies = [
+  'Breakout',
+  'Mean Reversion',
+  'Trend Follow',
+  'Supply/Demand',
+  'ICT',
+  'SMC',
+  'Scalp',
+  'Swing',
+];
 const sessions: Trade['session'][] = ['London', 'New York', 'Tokyo', 'Sydney', 'Overlap'];
 const emotions: Trade['emotion'][] = [
   'Confident',
@@ -47,14 +56,19 @@ interface Props {
 }
 
 export function AddTradeModal({ onClose }: Props) {
-  const { addTrade, refreshTradesFromApi, refreshMetricsFromApi, selectedTradingAccountId, dataMode } =
-    useStore();
+  const {
+    addTrade,
+    refreshTradesFromApi,
+    refreshMetricsFromApi,
+    selectedTradingAccountId,
+    dataMode,
+  } = useStore();
   const [form, setForm] = useState(defaultTrade);
   const [tagInput, setTagInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
-  const set = (key: keyof Trade, value: unknown) => setForm(prev => ({ ...prev, [key]: value }));
+  const set = (key: keyof Trade, value: unknown) => setForm((prev) => ({ ...prev, [key]: value }));
 
   const handleSubmit = async () => {
     setError(null);
@@ -179,7 +193,7 @@ export function AddTradeModal({ onClose }: Props) {
     >
       <div
         className="bg-surface border border-surface-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto shadow-card-hover animate-slide-up"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
@@ -214,9 +228,9 @@ export function AddTradeModal({ onClose }: Props) {
               <select
                 className="select"
                 value={form.symbol}
-                onChange={e => set('symbol', e.target.value)}
+                onChange={(e) => set('symbol', e.target.value)}
               >
-                {symbols.map(s => (
+                {symbols.map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>
@@ -226,7 +240,7 @@ export function AddTradeModal({ onClose }: Props) {
             <div>
               <label className="label">Direction</label>
               <div className="flex gap-2">
-                {(['BUY', 'SELL'] as const).map(d => (
+                {(['BUY', 'SELL'] as const).map((d) => (
                   <button
                     key={d}
                     type="button"
@@ -263,7 +277,7 @@ export function AddTradeModal({ onClose }: Props) {
                   className="input"
                   step="0.00001"
                   value={(form[key] as number) ?? ''}
-                  onChange={e => set(key, parseFloat(e.target.value) || 0)}
+                  onChange={(e) => set(key, parseFloat(e.target.value) || 0)}
                 />
               </div>
             ))}
@@ -277,7 +291,7 @@ export function AddTradeModal({ onClose }: Props) {
                 className="input"
                 step="0.01"
                 value={form.lotSize ?? ''}
-                onChange={e => set('lotSize', parseFloat(e.target.value))}
+                onChange={(e) => set('lotSize', parseFloat(e.target.value))}
               />
             </div>
             <div>
@@ -285,9 +299,9 @@ export function AddTradeModal({ onClose }: Props) {
               <select
                 className="select"
                 value={form.strategy}
-                onChange={e => set('strategy', e.target.value)}
+                onChange={(e) => set('strategy', e.target.value)}
               >
-                {strategies.map(s => (
+                {strategies.map((s) => (
                   <option key={s}>{s}</option>
                 ))}
               </select>
@@ -297,9 +311,9 @@ export function AddTradeModal({ onClose }: Props) {
               <select
                 className="select"
                 value={form.session}
-                onChange={e => set('session', e.target.value as Trade['session'])}
+                onChange={(e) => set('session', e.target.value as Trade['session'])}
               >
-                {sessions.map(s => (
+                {sessions.map((s) => (
                   <option key={s} value={s}>
                     {s}
                   </option>
@@ -314,9 +328,9 @@ export function AddTradeModal({ onClose }: Props) {
               <select
                 className="select"
                 value={form.emotion}
-                onChange={e => set('emotion', e.target.value as Trade['emotion'])}
+                onChange={(e) => set('emotion', e.target.value as Trade['emotion'])}
               >
-                {emotions.map(e => (
+                {emotions.map((e) => (
                   <option key={e} value={e}>
                     {e}
                   </option>
@@ -326,7 +340,7 @@ export function AddTradeModal({ onClose }: Props) {
             <div>
               <label className="label">Grade</label>
               <div className="flex gap-1.5">
-                {(['A', 'B', 'C', 'D', 'F'] as const).map(g => (
+                {(['A', 'B', 'C', 'D', 'F'] as const).map((g) => (
                   <button
                     key={g}
                     type="button"
@@ -351,7 +365,7 @@ export function AddTradeModal({ onClose }: Props) {
               className="input min-h-[80px] resize-y"
               placeholder="Trade rationale, observations..."
               value={form.notes}
-              onChange={e => set('notes', e.target.value)}
+              onChange={(e) => set('notes', e.target.value)}
             />
           </div>
 
@@ -362,15 +376,15 @@ export function AddTradeModal({ onClose }: Props) {
                 className="input flex-1"
                 placeholder="Add tag and press Enter"
                 value={tagInput}
-                onChange={e => setTagInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && addTag()}
+                onChange={(e) => setTagInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && addTag()}
               />
               <button type="button" onClick={addTag} className="btn-secondary px-3">
                 Add
               </button>
             </div>
             <div className="flex flex-wrap gap-1.5 mt-2">
-              {(form.tags || []).map(tag => (
+              {(form.tags || []).map((tag) => (
                 <span
                   key={tag}
                   className="px-2 py-1 bg-surface-light rounded-lg text-xs text-slate-400 border border-surface-border flex items-center gap-1"
@@ -378,7 +392,12 @@ export function AddTradeModal({ onClose }: Props) {
                   #{tag}
                   <button
                     type="button"
-                    onClick={() => set('tags', form.tags!.filter(t => t !== tag))}
+                    onClick={() =>
+                      set(
+                        'tags',
+                        form.tags!.filter((t) => t !== tag)
+                      )
+                    }
                     className="text-slate-600 hover:text-red-400 ml-1"
                   >
                     ×

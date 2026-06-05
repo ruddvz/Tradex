@@ -1,6 +1,8 @@
-from sqlalchemy import Column, String, Float, Integer, DateTime, Text, JSON, Enum as SAEnum
-from sqlalchemy.sql import func
 import enum
+
+from sqlalchemy import JSON, Column, DateTime, Float, Integer, String, Text
+from sqlalchemy import Enum as SAEnum
+from sqlalchemy.sql import func
 
 from .base import Base
 
@@ -74,9 +76,12 @@ class Trade(Base):
     # Meta
     duration = Column(Integer, default=0)  # minutes
     broker = Column(String(100))
-    mt5_ticket = Column(String, index=True)  # scoped per user in app logic; no global unique (multi-tenant)
+    mt5_ticket = Column(
+        String, index=True
+    )  # scoped per user in app logic; no global unique (multi-tenant)
 
     source = Column(String(32), nullable=False, default="manual", index=True)
+    import_batch_id = Column(String, index=True)
 
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

@@ -46,8 +46,8 @@ export function IosInstallBanner() {
             <p className="text-sm font-semibold text-white">Install on iPhone</p>
             <p className="text-xs text-slate-400 mt-1 leading-relaxed">
               Tap <span className="text-white font-medium">Share</span> in Safari, then{' '}
-              <span className="text-white font-medium">Add to Home Screen</span> for full-screen Tradex
-              with safe-area layout.
+              <span className="text-white font-medium">Add to Home Screen</span> for full-screen
+              Tradex with safe-area layout.
             </p>
           </div>
           <button

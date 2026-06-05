@@ -41,7 +41,9 @@ export function SegmentedControl({
             onClick={() => onChange(item.id)}
             className={clsx(
               'px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-base min-h-[40px] sm:min-h-[44px]',
-              active && variant === 'default' && 'bg-brand-500/20 text-brand-400 border border-brand-500/35 shadow-glow-sm',
+              active &&
+                variant === 'default' &&
+                'bg-brand-500/20 text-brand-400 border border-brand-500/35 shadow-glow-sm',
               active && variant === 'ai' && 'bg-ai/20 text-ai border border-ai/35',
               !active && 'text-slate-500 hover:text-slate-200 border border-transparent'
             )}

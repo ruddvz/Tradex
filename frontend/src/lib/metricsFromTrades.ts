@@ -40,7 +40,7 @@ export function computeMetrics(trades: Trade[]): PerformanceMetrics {
   for (const t of [...trades].reverse()) {
     equity += t.pnl;
     if (equity > peak) peak = equity;
-    const dd = (peak - equity) / peak * 100;
+    const dd = ((peak - equity) / peak) * 100;
     if (dd > maxDD) maxDD = dd;
   }
 
@@ -77,7 +77,9 @@ export function computeMetrics(trades: Trade[]): PerformanceMetrics {
     breakevenTrades: trades.filter((t) => t.status === 'BREAKEVEN').length,
     bestTrade: Math.max(...trades.map((t) => t.pnl)),
     worstTrade: Math.min(...trades.map((t) => t.pnl)),
-    avgHoldTime: parseFloat((trades.reduce((s, t) => s + t.duration, 0) / trades.length).toFixed(0)),
+    avgHoldTime: parseFloat(
+      (trades.reduce((s, t) => s + t.duration, 0) / trades.length).toFixed(0)
+    ),
     maxConsecutiveWins: maxWinStreak,
     maxConsecutiveLosses: maxLossStreak,
     sharpeRatio: parseFloat((totalPnl / (maxDD * 100 || 1)).toFixed(2)),

@@ -22,9 +22,27 @@ import { clsx } from 'clsx';
 import type { NotebookEntry } from '../types';
 
 const typeConfig = {
-  note: { label: 'Note', icon: BookOpen, color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/20' },
-  rule: { label: 'Rule', icon: Target, color: 'text-brand-400', bg: 'bg-brand-500/10', border: 'border-brand-500/20' },
-  setup: { label: 'Setup', icon: Star, color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/20' },
+  note: {
+    label: 'Note',
+    icon: BookOpen,
+    color: 'text-blue-400',
+    bg: 'bg-blue-500/10',
+    border: 'border-blue-500/20',
+  },
+  rule: {
+    label: 'Rule',
+    icon: Target,
+    color: 'text-brand-400',
+    bg: 'bg-brand-500/10',
+    border: 'border-brand-500/20',
+  },
+  setup: {
+    label: 'Setup',
+    icon: Star,
+    color: 'text-amber-400',
+    bg: 'bg-amber-500/10',
+    border: 'border-amber-500/20',
+  },
   lesson: {
     label: 'Lesson',
     icon: GraduationCap,
@@ -87,7 +105,7 @@ function NoteCard({
 
       <div className="flex items-start justify-between gap-2">
         <h3 className="font-semibold text-white text-sm mb-2 line-clamp-1 flex-1">{note.title}</h3>
-        <div className="flex items-center gap-1 shrink-0" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
           <button
             type="button"
             onClick={onTogglePin}
@@ -143,7 +161,7 @@ function NoteCard({
 
       {note.tags.length > 0 && (
         <div className="flex flex-wrap gap-1 mt-3">
-          {note.tags.slice(0, 3).map(tag => (
+          {note.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
               className="px-1.5 py-0.5 bg-surface-light rounded text-[10px] text-slate-500 border border-surface-border"
@@ -166,9 +184,24 @@ function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => voi
 
   const renderContent = (content: string) => {
     return content.split('\n').map((line, i) => {
-      if (line.startsWith('# ')) return <h1 key={i} className="text-xl font-bold text-white mt-4 mb-2">{line.slice(2)}</h1>;
-      if (line.startsWith('## ')) return <h2 key={i} className="text-lg font-semibold text-white mt-3 mb-1.5">{line.slice(3)}</h2>;
-      if (line.startsWith('### ')) return <h3 key={i} className="text-base font-semibold text-slate-200 mt-2 mb-1">{line.slice(4)}</h3>;
+      if (line.startsWith('# '))
+        return (
+          <h1 key={i} className="text-xl font-bold text-white mt-4 mb-2">
+            {line.slice(2)}
+          </h1>
+        );
+      if (line.startsWith('## '))
+        return (
+          <h2 key={i} className="text-lg font-semibold text-white mt-3 mb-1.5">
+            {line.slice(3)}
+          </h2>
+        );
+      if (line.startsWith('### '))
+        return (
+          <h3 key={i} className="text-base font-semibold text-slate-200 mt-2 mb-1">
+            {line.slice(4)}
+          </h3>
+        );
       if (line.startsWith('- ') || line.startsWith('* '))
         return (
           <li key={i} className="flex items-start gap-2 ml-2 mb-1">
@@ -179,7 +212,9 @@ function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => voi
       if (/^\d+\./.test(line))
         return (
           <div key={i} className="flex items-start gap-2 ml-2 mb-1">
-            <span className="text-brand-400 text-sm font-semibold flex-shrink-0">{line.match(/^\d+/)![0]}.</span>
+            <span className="text-brand-400 text-sm font-semibold flex-shrink-0">
+              {line.match(/^\d+/)![0]}.
+            </span>
             <span className="text-sm text-slate-300">{line.replace(/^\d+\.\s*/, '')}</span>
           </div>
         );
@@ -206,11 +241,16 @@ function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => voi
     >
       <div
         className="bg-surface border border-surface-border rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-card-hover animate-slide-up"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
-        <div className={clsx('flex items-center justify-between p-5 border-b border-surface-border', cfg.border)}>
+        <div
+          className={clsx(
+            'flex items-center justify-between p-5 border-b border-surface-border',
+            cfg.border
+          )}
+        >
           <div className="flex items-center gap-3">
             <div className={clsx('p-2 rounded-xl', cfg.bg)}>
               <Icon className={clsx('w-5 h-5', cfg.color)} />
@@ -221,13 +261,19 @@ function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => voi
                 <Badge variant="neutral" size="xs">
                   {cfg.label}
                 </Badge>
-                <span className="text-xs text-slate-500">{format(new Date(note.updatedAt), 'MMM d, yyyy')}</span>
+                <span className="text-xs text-slate-500">
+                  {format(new Date(note.updatedAt), 'MMM d, yyyy')}
+                </span>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-2">
             {note.pinned && <Pin className="w-4 h-4 text-brand-400" />}
-            <button type="button" onClick={onClose} className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white">
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white"
+            >
               ✕
             </button>
           </div>
@@ -237,7 +283,7 @@ function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => voi
           {note.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-5 pt-4 border-t border-surface-border">
               <Tag className="w-3.5 h-3.5 text-slate-500" />
-              {note.tags.map(tag => (
+              {note.tags.map((tag) => (
                 <span
                   key={tag}
                   className="px-2 py-0.5 bg-surface-light rounded-lg text-xs text-slate-400 border border-surface-border"
@@ -262,13 +308,17 @@ export function Notebook() {
   const [editingEntry, setEditingEntry] = useState<NotebookEntry | null>(null);
 
   const filteredSorted = useMemo(() => {
-    const filtered = notebook.filter(n => {
-      if (search && !n.title.toLowerCase().includes(search.toLowerCase()) && !n.content.toLowerCase().includes(search.toLowerCase()))
+    const filtered = notebook.filter((n) => {
+      if (
+        search &&
+        !n.title.toLowerCase().includes(search.toLowerCase()) &&
+        !n.content.toLowerCase().includes(search.toLowerCase())
+      )
         return false;
       if (typeFilter !== 'all' && n.type !== typeFilter) return false;
       return true;
     });
-    return [...filtered.filter(n => n.pinned), ...filtered.filter(n => !n.pinned)];
+    return [...filtered.filter((n) => n.pinned), ...filtered.filter((n) => !n.pinned)];
   }, [notebook, search, typeFilter]);
 
   const togglePin = (entry: NotebookEntry) => {
@@ -300,11 +350,11 @@ export function Notebook() {
               className="input pl-10"
               placeholder="Search notes, rules, setups..."
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <div className="flex gap-2 flex-wrap">
-            {['all', 'note', 'rule', 'setup', 'lesson', 'checklist'].map(type => (
+            {['all', 'note', 'rule', 'setup', 'lesson', 'checklist'].map((type) => (
               <button
                 key={type}
                 type="button"
@@ -335,10 +385,10 @@ export function Notebook() {
         <div className="flex items-center gap-4 px-4 py-3 bg-surface rounded-xl border border-surface-border text-sm">
           <span className="text-slate-400">{notebook.length} notes</span>
           <span className="text-slate-600">·</span>
-          <span className="text-slate-400">{notebook.filter(n => n.pinned).length} pinned</span>
+          <span className="text-slate-400">{notebook.filter((n) => n.pinned).length} pinned</span>
           <span className="text-slate-600">·</span>
           {Object.entries(typeConfig).map(([type, cfg]) => {
-            const count = notebook.filter(n => n.type === type).length;
+            const count = notebook.filter((n) => n.type === type).length;
             const Icon = cfg.icon;
             return count > 0 ? (
               <div key={type} className="flex items-center gap-1.5">
@@ -355,7 +405,9 @@ export function Notebook() {
           <div className="py-20 text-center">
             <NotebookPen className="w-12 h-12 text-slate-600 mx-auto mb-3" />
             <p className="text-slate-400 font-medium">No notes found</p>
-            <p className="text-slate-600 text-sm mt-1">Create your first note to build your knowledge base</p>
+            <p className="text-slate-600 text-sm mt-1">
+              Create your first note to build your knowledge base
+            </p>
             <button
               type="button"
               className="btn-primary mt-4 mx-auto"
@@ -369,7 +421,7 @@ export function Notebook() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {filteredSorted.map(note => (
+            {filteredSorted.map((note) => (
               <NoteCard
                 key={note.id}
                 note={note}

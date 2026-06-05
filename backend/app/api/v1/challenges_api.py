@@ -32,11 +32,15 @@ class PropChallengeIn(BaseModel):
 
 @router.get("/challenges")
 async def get_challenges(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    rows = db.execute(
-        select(PropChallenge)
-        .where(PropChallenge.user_id == user.id)
-        .order_by(PropChallenge.created_at.desc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(PropChallenge)
+            .where(PropChallenge.user_id == user.id)
+            .order_by(PropChallenge.created_at.desc())
+        )
+        .scalars()
+        .all()
+    )
     return {"challenges": [challenge_to_dict(c) for c in rows]}
 
 

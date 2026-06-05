@@ -1,5 +1,13 @@
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ReferenceLine
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+  ReferenceLine,
 } from 'recharts';
 import { format, parseISO } from 'date-fns';
 import { useStore } from '../../store/useStore';
@@ -43,14 +51,25 @@ export function PnLBarChart({ height = 180 }: { height?: number }) {
       ? dailyPnl
       : mockDailyStats.slice(-21).map((d) => ({ date: d.date, pnl: d.pnl, trades: d.trades }));
 
-  const data = raw.slice(-21).map(d => ({ ...d, date: formatBarDate(d.date) }));
+  const data = raw.slice(-21).map((d) => ({ ...d, date: formatBarDate(d.date) }));
 
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }} barSize={10}>
         <CartesianGrid strokeDasharray="3 3" stroke="rgba(42,53,80,0.6)" vertical={false} />
-        <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} interval={3} />
-        <YAxis tick={{ fill: '#64748b', fontSize: 10 }} axisLine={false} tickLine={false} tickFormatter={v => `$${v}`} />
+        <XAxis
+          dataKey="date"
+          tick={{ fill: '#64748b', fontSize: 10 }}
+          axisLine={false}
+          tickLine={false}
+          interval={3}
+        />
+        <YAxis
+          tick={{ fill: '#64748b', fontSize: 10 }}
+          axisLine={false}
+          tickLine={false}
+          tickFormatter={(v) => `$${v}`}
+        />
         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
         <ReferenceLine y={0} stroke="#2a3550" strokeWidth={1} />
         <Bar dataKey="pnl" radius={[3, 3, 0, 0]}>

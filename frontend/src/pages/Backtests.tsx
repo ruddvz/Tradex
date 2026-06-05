@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import {
   AlertTriangle,
   FlaskConical,
@@ -6,6 +6,7 @@ import {
   Loader2,
   Play,
   Trash2,
+  Upload,
 } from 'lucide-react';
 import {
   Line,
@@ -27,8 +28,11 @@ import {
   fetchBacktestDetail,
   fetchBacktestEquity,
   fetchBacktests,
+  fetchCandleDatasets,
+  uploadCandleCsv,
   type BacktestDetail,
   type BacktestSummary,
+  type CandleDataset,
 } from '../lib/api/backtests';
 import { clsx } from 'clsx';
 
@@ -49,6 +53,19 @@ export function Backtests() {
   const [running, setRunning] = useState(false);
   const [name, setName] = useState('Breakout MVP');
   const [symbol, setSymbol] = useState('EURUSD');
+  const [datasets, setDatasets] = useState<CandleDataset[]>([]);
+  const [candleDatasetId, setCandleDatasetId] = useState<string>('');
+  const [uploadingCsv, setUploadingCsv] = useState(false);
+  const csvInputRef = useRef<HTMLInputElement>(null);
+
+  const loadDatasets = useCallback(async () => {
+    if (!signedIn) return;
+    try {
+      setDatasets(await fetchCandleDatasets());
+    } catch {
+      /* optional */
+    }
+  }, [signedIn]);
 
   const loadList = useCallback(async () => {
     if (!signedIn) return;
@@ -80,7 +97,11 @@ export function Backtests() {
     }
     setRunning(true);
     try {
-      const detail = await createBacktest({ name: name.trim() || 'Backtest', symbol });
+      const detail = await createBacktest({
+        name: name.trim() || 'Backtest',
+        symbol,
+        candle_dataset_id: candleDatasetId || undefined,
+      });
       showToast(`Backtest complete — ${detail.metrics?.trade_count ?? 0} trades`);
       setSelected(detail);
       const curve = await fetchBacktestEquity(detail.id);
@@ -90,6 +111,23 @@ export function Backtests() {
       showToast(e instanceof Error ? e.message : 'Backtest failed');
     } finally {
       setRunning(false);
+    }
+  };
+
+  const onCsvPick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingCsv(true);
+    try {
+      const ds = await uploadCandleCsv(file, symbol);
+      setCandleDatasetId(ds.id);
+      await loadDatasets();
+      showToast(`Uploaded ${ds.candle_count} candles (${ds.date_start} → ${ds.date_end})`);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : 'CSV upload failed', 'warning');
+    } finally {
+      setUploadingCsv(false);
+      e.target.value = '';
     }
   };
 
@@ -108,7 +146,7 @@ export function Backtests() {
     <div className="min-h-screen">
       <Header
         title="Backtests"
-        subtitle="Test strategies on synthetic OHLC data before paper trading"
+        subtitle="Test strategies on historical or synthetic OHLC before paper trading"
         showDateRange={false}
       />
 
@@ -117,9 +155,29 @@ export function Backtests() {
           <DataModeBadge mode="backtest" showDescription />
           <DataSourceBadge source="backtest" />
           <Badge variant="warn" size="xs">
-            Synthetic candles — not live market data
+            {candleDatasetId
+              ? 'CSV historical candles'
+              : 'Synthetic candles — not live market data'}
           </Badge>
         </div>
+
+        {(selected?.oos_warnings?.length ?? 0) > 0 && (
+          <div className="rounded-xl border border-purple-500/30 bg-purple-500/8 p-4">
+            <div className="flex items-start gap-2">
+              <AlertTriangle className="w-4 h-4 text-purple-300 mt-0.5 shrink-0" />
+              <div>
+                <p className="text-xs font-semibold text-purple-200 mb-1">
+                  Walk-forward / overfit warnings
+                </p>
+                <ul className="text-xs text-purple-100/90 space-y-1 list-disc list-inside">
+                  {selected!.oos_warnings!.map((w) => (
+                    <li key={w}>{w}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 p-4">
           <div className="flex items-start gap-2">
@@ -166,8 +224,50 @@ export function Backtests() {
                 <option value="US30">US30</option>
               </select>
             </div>
+            <div>
+              <label className="label">Historical candles (CSV)</label>
+              <input
+                ref={csvInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                className="hidden"
+                onChange={(e) => void onCsvPick(e)}
+              />
+              <button
+                type="button"
+                className="btn-secondary w-full justify-center text-sm min-h-[44px]"
+                disabled={!signedIn || uploadingCsv}
+                onClick={() => csvInputRef.current?.click()}
+              >
+                {uploadingCsv ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Uploading…
+                  </>
+                ) : (
+                  <>
+                    <Upload className="w-4 h-4" /> Upload CSV (timestamp, OHLC)
+                  </>
+                )}
+              </button>
+              {datasets.length > 0 && (
+                <select
+                  className="input w-full mt-2"
+                  value={candleDatasetId}
+                  onChange={(e) => setCandleDatasetId(e.target.value)}
+                  disabled={!signedIn}
+                >
+                  <option value="">Synthetic demo candles</option>
+                  {datasets.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.symbol} · {d.candle_count} bars ({d.date_start} → {d.date_end})
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
             <p className="text-xs text-slate-500">
-              Long breakout on prior 12-bar high, 2R target, 15 pip stop. Spread 1.2 / slip 0.5 pips.
+              Long breakout on prior 12-bar high, 2R target, 15 pip stop. Spread 1.2 / slip 0.5
+              pips.
             </p>
             <button
               type="button"
@@ -186,7 +286,14 @@ export function Backtests() {
               )}
             </button>
             {signedIn && (
-              <button type="button" className="btn-secondary w-full text-sm" onClick={() => void loadList()}>
+              <button
+                type="button"
+                className="btn-secondary w-full text-sm"
+                onClick={() => {
+                  void loadList();
+                  void loadDatasets();
+                }}
+              >
                 Refresh list
               </button>
             )}
@@ -200,12 +307,16 @@ export function Backtests() {
                   <dl className="grid grid-cols-2 gap-2 text-xs">
                     {[
                       ['Data source', selected.data_label ?? 'Synthetic OHLC'],
+                      ['Candles', String(selected.candle_count ?? '—')],
                       ['Symbol', selected.symbol],
                       ['Spread', '1.2 pips (default)'],
                       ['Slippage', '0.5 pips (default)'],
                       ['Commission', '$3.50/lot (default)'],
                       ['Fill model', 'Next-bar breakout'],
-                      ['Trades', String(selected.trade_count ?? selected.metrics?.trade_count ?? 0)],
+                      [
+                        'Trades',
+                        String(selected.trade_count ?? selected.metrics?.trade_count ?? 0),
+                      ],
                       [
                         'Max drawdown',
                         selected.metrics?.max_drawdown_percent != null
@@ -220,8 +331,8 @@ export function Backtests() {
                     ))}
                   </dl>
                   <p className="text-[10px] text-amber-200/80 mt-3">
-                    Backtest exports do not enter your live journal unless you explicitly close a paper
-                    position or add a manual trade.
+                    Backtest exports do not enter your live journal unless you explicitly close a
+                    paper position or add a manual trade.
                   </p>
                 </div>
                 <div className="card p-5">
@@ -229,8 +340,8 @@ export function Backtests() {
                     <div>
                       <h2 className="text-lg font-bold text-white">{selected.name}</h2>
                       <p className="text-xs text-slate-500 mt-1">
-                        {selected.symbol} · {selected.data_label} · {selected.trade_count ?? selected.metrics?.trade_count ?? 0}{' '}
-                        trades
+                        {selected.symbol} · {selected.data_label} ·{' '}
+                        {selected.trade_count ?? selected.metrics?.trade_count ?? 0} trades
                       </p>
                     </div>
                     <button
@@ -243,14 +354,20 @@ export function Backtests() {
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {[
-                      { label: 'Net P&L', value: `$${(selected.metrics?.net_pnl ?? 0).toLocaleString()}` },
+                      {
+                        label: 'Net P&L',
+                        value: `$${(selected.metrics?.net_pnl ?? 0).toLocaleString()}`,
+                      },
                       { label: 'Return', value: `${selected.metrics?.return_pct ?? 0}%` },
                       { label: 'Max DD', value: `${selected.metrics?.max_drawdown_pct ?? 0}%` },
                       { label: 'Win rate', value: `${selected.metrics?.win_rate ?? 0}%` },
                       { label: 'Profit factor', value: `${selected.metrics?.profit_factor ?? 0}` },
                       { label: 'Expectancy', value: `$${selected.metrics?.expectancy ?? 0}` },
                       { label: 'Avg win', value: `$${selected.metrics?.avg_win ?? 0}` },
-                      { label: 'Losing streak', value: `${selected.metrics?.longest_losing_streak ?? 0}` },
+                      {
+                        label: 'Losing streak',
+                        value: `${selected.metrics?.longest_losing_streak ?? 0}`,
+                      },
                     ].map((m) => (
                       <div key={m.label} className="bg-dark-300 rounded-lg p-3 text-center">
                         <div className="text-sm font-bold text-white">{m.value}</div>
@@ -276,7 +393,13 @@ export function Backtests() {
                             borderRadius: 8,
                           }}
                         />
-                        <Line type="monotone" dataKey="equity" stroke="#10b981" strokeWidth={2} dot={false} />
+                        <Line
+                          type="monotone"
+                          dataKey="equity"
+                          stroke="#10b981"
+                          strokeWidth={2}
+                          dot={false}
+                        />
                       </ReLineChart>
                     </ResponsiveContainer>
                   </div>
@@ -322,7 +445,9 @@ export function Backtests() {
                           >
                             ${(b.net_pnl ?? 0).toLocaleString()}
                           </div>
-                          <div className="text-[10px] text-slate-500">{b.trade_count ?? 0} trades</div>
+                          <div className="text-[10px] text-slate-500">
+                            {b.trade_count ?? 0} trades
+                          </div>
                         </div>
                       </button>
                     ))}

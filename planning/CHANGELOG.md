@@ -17,6 +17,33 @@
 - Next up: Plan0 manual device QA (human)
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
+## 2026-06-05 — cursor/audit-plan-complete-32fb — P2: security headers, rate limits, upload validation
+- Commit: d92dbda (feat: P2 security — rate limits, security headers, upload magic-byte check)
+- Files touched: `middleware/security.py`, `middleware/rate_limit.py`, `core/upload_validation.py`, `trades_api.py`, `main.py`, `planning/ACTIVE.md`
+- Tests added / changed: 3 (`test_upload_validation.py`)
+- Build: pass (48 pytest)
+- Status: done
+- Next up: httpOnly auth refactor OR Docker manual verify (human)
+- Notes: Auth login/register limited to 20 req/min/IP in-memory.
+
+## 2026-06-05 — cursor/audit-plan-complete-32fb — P1: import batches, CSV candles, strategy versions, OOS
+- Commit: 1fc8b5a (feat: P1 backlog — import batches, CSV candles, strategy versions, OOS warnings)
+- Files touched: `import_batch`, `strategy_version`, `candle_dataset` models, migration `b2c3d4e5f6a7`, `imports_api`, `csv_provider`, `sync_api` batch wiring, `backtests.py` CSV upload + OOS, `strategy_runner` versions, Settings Import History, Backtests CSV/OOS UI
+- Tests added / changed: 4 (`test_csv_provider`, `test_strategy_versions`, migration head update)
+- Build: pass (`./scripts/verify.sh` — 45 pytest, lint, build, e2e x3)
+- Status: done
+- Next up: **P2** — production security hardening (`planning/ACTIVE.md`)
+- Notes: Alembic uses batch_alter_table for SQLite FK columns. Backtests accept CSV with columns timestamp,open,high,low,close.
+
+## 2026-06-05 — cursor/audit-plan-complete-32fb — Audit P0: verify, docs, CI, safety
+- Commit: 404ee6b (feat: complete audit P0 — verify, harden safety, reconcile docs, add CI)
+- Files touched: `backend/tests/{test_live_disabled,test_mt5_fallback,test_config_production}.py`, `backend/app/services/ai_trust.py`, `backend/app/core/config.py`, `backend/app/main.py`, `backend/requirements-ci.txt`, `backend/pyproject.toml`, `.github/workflows/{frontend-ci,backend-ci,security}.yml`, `scripts/verify.sh`, `frontend/.prettierrc`, `planning/{CURRENT-STATE-AND-NEXT-WORK,DEVICE-QA,ACTIVE,NEXT_STEPS,ROADMAP-2026-Q2}.md`, formatting across frontend/backend
+- Tests added / changed: 25+ (live disabled, MT5 fallback x3, config production x3, AI trust parametrized)
+- Build: pass (`./scripts/verify.sh` — 41 pytest, lint, build, SW, e2e x3)
+- Status: done
+- Next up: **P1.2** — Import batches (`planning/CURRENT-STATE-AND-NEXT-WORK.md`)
+- Notes: Fixed verify.sh e2e path (cd to ROOT). Prettier + black + ruff CI. PageDataTrustBar on Journal/Reports/Calculator/Playbooks/PropFirm/Settings/ActionCenter.
+
 ## 2026-06-05 — cursor/phases-11-15-a3a6 — Phases 11–15: roadmap complete
 - Commit: ccf4900 (feat: complete Phases 11–15 — paper realism, trust layers, e2e QA)
 - Files touched: paper lifecycle/fill config, PaperTrading cockpit, PerformanceCompare, DashboardStatusStrip, AI trust, Backtests assumptions, e2e/, scripts/verify.sh, planning

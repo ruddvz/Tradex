@@ -140,7 +140,8 @@ export function StrategyRunsPanel({ paperAccountId }: Props) {
     }
   };
 
-  const activeRun = runs.find((r) => r.id === activeRunId) ?? runs.find((r) => r.status === 'running');
+  const activeRun =
+    runs.find((r) => r.id === activeRunId) ?? runs.find((r) => r.status === 'running');
 
   if (!token) {
     return (
@@ -159,7 +160,8 @@ export function StrategyRunsPanel({ paperAccountId }: Props) {
         <div>
           <h2 className="text-lg font-semibold text-text-primary">Strategy runner</h2>
           <p className="text-xs text-text-muted mt-0.5">
-            Paper mode only — manual tick places market orders through risk checks. Live execution remains disabled.
+            Paper mode only — manual tick places market orders through risk checks. Live execution
+            remains disabled.
           </p>
         </div>
       </div>
@@ -183,7 +185,12 @@ export function StrategyRunsPanel({ paperAccountId }: Props) {
       )}
 
       <div className="flex flex-wrap gap-2">
-        <button type="button" className="btn-primary text-sm" disabled={busy || !paperAccountId} onClick={() => void onStart()}>
+        <button
+          type="button"
+          className="btn-primary text-sm"
+          disabled={busy || !paperAccountId}
+          onClick={() => void onStart()}
+        >
           <Play className="w-4 h-4" /> Start
         </button>
         <button
@@ -216,23 +223,35 @@ export function StrategyRunsPanel({ paperAccountId }: Props) {
       {activeRun && (
         <div className="rounded-lg border border-surface-border bg-dark-300/50 px-3 py-2 text-xs text-slate-400">
           Status:{' '}
-          <span className={clsx('font-semibold', activeRun.status === 'running' ? 'text-emerald-400' : 'text-amber-400')}>
+          <span
+            className={clsx(
+              'font-semibold',
+              activeRun.status === 'running' ? 'text-emerald-400' : 'text-amber-400'
+            )}
+          >
             {activeRun.status}
           </span>
           {' · '}
-          Ticks: {activeRun.summary?.ticks ?? 0} · Filled: {activeRun.summary?.orders_filled ?? 0} · Rejected:{' '}
-          {activeRun.summary?.orders_rejected ?? 0}
+          Ticks: {activeRun.summary?.ticks ?? 0} · Filled: {activeRun.summary?.orders_filled ?? 0} ·
+          Rejected: {activeRun.summary?.orders_rejected ?? 0}
         </div>
       )}
 
       <div>
-        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Run events</h3>
+        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">
+          Run events
+        </h3>
         {events.length === 0 ? (
-          <p className="text-xs text-slate-500">No events yet — start a run and tick to generate audit log entries.</p>
+          <p className="text-xs text-slate-500">
+            No events yet — start a run and tick to generate audit log entries.
+          </p>
         ) : (
           <ul className="space-y-1.5 max-h-40 overflow-y-auto">
             {events.map((ev) => (
-              <li key={ev.id} className="text-xs text-slate-400 border-l-2 border-surface-border pl-2">
+              <li
+                key={ev.id}
+                className="text-xs text-slate-400 border-l-2 border-surface-border pl-2"
+              >
                 <span className="text-slate-500">{ev.event_type}</span> — {ev.message}
               </li>
             ))}

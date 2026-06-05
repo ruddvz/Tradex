@@ -26,7 +26,12 @@ export function PerformanceCompare() {
   const paperMetrics = useMemo(() => computeMetrics(paperTrades), [paperTrades]);
 
   const rows = [
-    { label: 'Win rate', journal: fmtPct(journalMetrics.winRate), paper: fmtPct(paperMetrics.winRate), backtest: '—' },
+    {
+      label: 'Win rate',
+      journal: fmtPct(journalMetrics.winRate),
+      paper: fmtPct(paperMetrics.winRate),
+      backtest: '—',
+    },
     {
       label: 'Profit factor',
       journal: journalMetrics.profitFactor.toFixed(2),
@@ -39,9 +44,24 @@ export function PerformanceCompare() {
       paper: fmtPct(paperMetrics.maxDrawdownPercent),
       backtest: 'Run backtest',
     },
-    { label: 'Avg R', journal: journalMetrics.avgRR.toFixed(2), paper: paperMetrics.avgRR.toFixed(2), backtest: '—' },
-    { label: 'Trades', journal: String(journalMetrics.totalTrades), paper: String(paperMetrics.totalTrades), backtest: '—' },
-    { label: 'Net P&L', journal: fmtMoney(journalMetrics.totalPnl), paper: fmtMoney(paperMetrics.totalPnl), backtest: '—' },
+    {
+      label: 'Avg R',
+      journal: journalMetrics.avgRR.toFixed(2),
+      paper: paperMetrics.avgRR.toFixed(2),
+      backtest: '—',
+    },
+    {
+      label: 'Trades',
+      journal: String(journalMetrics.totalTrades),
+      paper: String(paperMetrics.totalTrades),
+      backtest: '—',
+    },
+    {
+      label: 'Net P&L',
+      journal: fmtMoney(journalMetrics.totalPnl),
+      paper: fmtMoney(paperMetrics.totalPnl),
+      backtest: '—',
+    },
   ];
 
   const hasAny = journalTrades.length > 0 || paperTrades.length > 0 || paperAccounts.length > 0;
@@ -56,8 +76,8 @@ export function PerformanceCompare() {
       <div className="page-shell p-6 space-y-6 pb-28 md:pb-6">
         <DataModeBadge mode={dataMode === 'demo' ? 'demo' : 'live_journal'} showDescription />
         <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 px-4 py-3 text-xs text-amber-100/90">
-          Backtest column shows placeholders until you select a run on the Backtests page. Paper and journal metrics
-          are computed from your trade history — not live broker data.
+          Backtest column shows placeholders until you select a run on the Backtests page. Paper and
+          journal metrics are computed from your trade history — not live broker data.
         </div>
 
         {!hasAny && dataMode === 'demo' && (

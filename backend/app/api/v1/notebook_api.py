@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List
 import uuid
+from typing import Any, Dict, List
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import BaseModel
@@ -29,16 +29,22 @@ class NotebookEntryIn(BaseModel):
 
 @router.get("/notebook")
 async def get_notebook(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    rows = db.execute(
-        select(NotebookEntry)
-        .where(NotebookEntry.user_id == user.id)
-        .order_by(NotebookEntry.pinned.desc(), NotebookEntry.updated_at.desc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(NotebookEntry)
+            .where(NotebookEntry.user_id == user.id)
+            .order_by(NotebookEntry.pinned.desc(), NotebookEntry.updated_at.desc())
+        )
+        .scalars()
+        .all()
+    )
     return {"entries": [notebook_to_dict(n) for n in rows]}
 
 
 @router.post("/notebook", status_code=201)
-async def create_note(entry: NotebookEntryIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def create_note(
+    entry: NotebookEntryIn, user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
     payload = entry.model_dump()
     row = NotebookEntry(
         id=str(uuid.uuid4()),
@@ -87,7 +93,9 @@ async def update_note(
 
 
 @router.delete("/notebook/{entry_id}", status_code=204)
-async def delete_note(entry_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+async def delete_note(
+    entry_id: str, user: User = Depends(get_current_user), db: Session = Depends(get_db)
+):
     row = db.execute(
         select(NotebookEntry).where(NotebookEntry.id == entry_id, NotebookEntry.user_id == user.id)
     ).scalar_one_or_none()

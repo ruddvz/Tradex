@@ -35,7 +35,9 @@ async def get_metrics(
         _ = resolve_owned_account_id(db, user, aid)
     trades = user_trade_dicts(db, user.id, aid)
     if from_date:
-        trades = [t for t in trades if t.get("entry_time", "") >= norm_day_start(from_date).isoformat()]
+        trades = [
+            t for t in trades if t.get("entry_time", "") >= norm_day_start(from_date).isoformat()
+        ]
     if to_date:
         trades = [t for t in trades if t.get("entry_time", "") <= norm_day_end(to_date).isoformat()]
     return compute_metrics(trades)

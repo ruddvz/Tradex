@@ -62,7 +62,10 @@ export function derivePlaybooksFromTrades(trades: Trade[]): Playbook[] {
         `Net P&L: $${profit.toFixed(2)}`,
         `Wins / losses: ${wins.length} / ${losses.length}`,
       ],
-      tags: ['journal-derived', name === 'Unlabeled' ? 'unlabeled' : name.toLowerCase().slice(0, 24)],
+      tags: [
+        'journal-derived',
+        name === 'Unlabeled' ? 'unlabeled' : name.toLowerCase().slice(0, 24),
+      ],
       performance: performance.length > 0 ? performance : [{ date: today, pnl: 0 }],
       createdAt: today,
       updatedAt: today,

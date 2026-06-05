@@ -4,7 +4,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from sqlalchemy import func as sql_func, select
+from sqlalchemy import func as sql_func
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..models.audit_log import AuditLog
@@ -19,26 +20,38 @@ def compute_live_readiness(db: Session, user_id: str) -> dict[str, Any]:
     control = get_or_create_bot_control(db, user_id)
 
     risk_count = int(
-        db.execute(select(sql_func.count()).select_from(RiskProfile).where(RiskProfile.user_id == user_id)).scalar()
+        db.execute(
+            select(sql_func.count()).select_from(RiskProfile).where(RiskProfile.user_id == user_id)
+        ).scalar()
         or 0
     )
     paper_accounts = int(
         db.execute(
-            select(sql_func.count()).select_from(PaperAccount).where(PaperAccount.user_id == user_id)
+            select(sql_func.count())
+            .select_from(PaperAccount)
+            .where(PaperAccount.user_id == user_id)
         ).scalar()
         or 0
     )
     paper_trades = int(
         db.execute(
-            select(sql_func.count()).select_from(Trade).where(Trade.user_id == user_id, Trade.source == "paper")
+            select(sql_func.count())
+            .select_from(Trade)
+            .where(Trade.user_id == user_id, Trade.source == "paper")
         ).scalar()
         or 0
     )
     backtest_count = int(
-        db.execute(select(sql_func.count()).select_from(Backtest).where(Backtest.user_id == user_id)).scalar() or 0
+        db.execute(
+            select(sql_func.count()).select_from(Backtest).where(Backtest.user_id == user_id)
+        ).scalar()
+        or 0
     )
     audit_count = int(
-        db.execute(select(sql_func.count()).select_from(AuditLog).where(AuditLog.user_id == user_id)).scalar() or 0
+        db.execute(
+            select(sql_func.count()).select_from(AuditLog).where(AuditLog.user_id == user_id)
+        ).scalar()
+        or 0
     )
 
     min_paper_trades = 10

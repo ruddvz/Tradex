@@ -64,10 +64,13 @@ export type UpdateTradePayload = {
 };
 
 export async function updateTradeApi(id: string, patch: UpdateTradePayload): Promise<Trade> {
-  const { ok, data } = await apiFetch<Record<string, unknown>>(`/trades/${encodeURIComponent(id)}`, {
-    method: 'PATCH',
-    body: JSON.stringify(patch),
-  });
+  const { ok, data } = await apiFetch<Record<string, unknown>>(
+    `/trades/${encodeURIComponent(id)}`,
+    {
+      method: 'PATCH',
+      body: JSON.stringify(patch),
+    }
+  );
   if (!ok) throw new Error(detailMessage(data));
   return mapApiTradeRow(data);
 }

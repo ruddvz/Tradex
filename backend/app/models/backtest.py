@@ -10,7 +10,9 @@ class Backtest(Base):
 
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    strategy_id = Column(String, ForeignKey("strategies.id", ondelete="SET NULL"), nullable=True, index=True)
+    strategy_id = Column(
+        String, ForeignKey("strategies.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     name = Column(String(160), nullable=False)
     symbol = Column(String(32), nullable=False, default="EURUSD")
     status = Column(String(32), nullable=False, default="completed")
@@ -19,5 +21,8 @@ class Backtest(Base):
     metrics_json = Column(Text, nullable=True)
     trades_json = Column(Text, nullable=True)
     equity_curve_json = Column(Text, nullable=True)
+    strategy_version_id = Column(String, nullable=True, index=True)
+    candle_dataset_id = Column(String, nullable=True, index=True)
+    data_label = Column(String(32), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     completed_at = Column(DateTime(timezone=True), nullable=True)

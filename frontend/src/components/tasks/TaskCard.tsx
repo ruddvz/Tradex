@@ -69,9 +69,7 @@ export function TaskCard({ task, onOpen, onContinue }: TaskCardProps) {
       {task.description && (
         <p className="text-xs text-slate-500 line-clamp-2 mb-3">{task.description}</p>
       )}
-      {totalSteps > 0 && (
-        <TaskProgress completed={doneSteps} total={totalSteps} className="mb-3" />
-      )}
+      {totalSteps > 0 && <TaskProgress completed={doneSteps} total={totalSteps} className="mb-3" />}
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] text-slate-600 capitalize">
           {String(task.status).replace(/_/g, ' ')}

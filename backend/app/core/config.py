@@ -1,5 +1,6 @@
-from pydantic_settings import BaseSettings
 from typing import Optional
+
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -49,6 +50,20 @@ class Settings(BaseSettings):
     class Config:
         env_file = ".env"
         case_sensitive = True
+
+    def validate_production(self) -> None:
+        """Reject unsafe defaults when DEBUG is off."""
+        if self.DEBUG:
+            return
+        insecure_keys = {
+            "your-secret-key-change-in-production",
+            "changeme",
+            "secret",
+        }
+        if self.SECRET_KEY.strip().lower() in insecure_keys or len(self.SECRET_KEY) < 32:
+            raise RuntimeError(
+                "SECRET_KEY must be set to a strong random value (32+ chars) when DEBUG=false."
+            )
 
 
 settings = Settings()

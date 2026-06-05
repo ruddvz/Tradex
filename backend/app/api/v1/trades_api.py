@@ -2,17 +2,19 @@
 
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 from typing import List, Literal, Optional
-import uuid
 
 import aiofiles
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile
 from pydantic import BaseModel
-from sqlalchemy import and_, func as sql_func, select
+from sqlalchemy import and_, select
+from sqlalchemy import func as sql_func
 from sqlalchemy.orm import Session
 
 from ...core.config import settings
+from ...core.upload_validation import validate_image_upload
 from ...database import get_db
 from ...models.trade import Trade, TradeStatus
 from ...models.user import User
@@ -248,10 +250,15 @@ async def upload_trade_screenshot(
     if len(raw) > _MAX_SCREENSHOT_BYTES:
         raise HTTPException(status_code=400, detail="Image too large (max 5 MB)")
 
+    try:
+        validate_image_upload(raw, ct)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     base_dir = Path(settings.UPLOAD_ROOT) / "screenshots" / user.id
     base_dir.mkdir(parents=True, exist_ok=True)
     ext = _ALLOWED_IMAGE_TYPES[ct]
-    fname = f"{trade_id}_{slot}{ext}"
+    fname = f"{uuid.uuid4().hex}_{slot}{ext}"
     dest = base_dir / fname
 
     async with aiofiles.open(dest, "wb") as out:

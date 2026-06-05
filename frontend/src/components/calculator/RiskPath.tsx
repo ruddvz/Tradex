@@ -35,7 +35,10 @@ export function RiskPath({ entry, stopLoss, takeProfit, isLong, className }: Ris
         <span className="normal-case font-medium text-slate-600">{isLong ? 'Long' : 'Short'}</span>
       </div>
       <div className="relative h-14 rounded-2xl bg-dark-300/90 border border-surface-border overflow-hidden">
-        <div className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-slate-600/50" aria-hidden />
+        <div
+          className="absolute top-1/2 left-0 right-0 h-0.5 -translate-y-1/2 bg-slate-600/50"
+          aria-hidden
+        />
         {[pSL, pE, pTP].map((p, i) => (
           <div
             key={['sl', 'en', 'tp'][i]}

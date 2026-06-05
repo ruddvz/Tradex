@@ -58,20 +58,24 @@ export function LiveReadiness() {
             <div>
               <h2 className="font-semibold text-white">Live execution disabled</h2>
               <p className="text-sm text-slate-400 mt-1">
-                Tradex routes automated orders to the paper simulator only. The broker adapter raises an error if live
-                placement is attempted. Use this checklist to see what you should complete before live trading is even
-                discussed.
+                Tradex routes automated orders to the paper simulator only. The broker adapter
+                raises an error if live placement is attempted. Use this checklist to see what you
+                should complete before live trading is even discussed.
               </p>
             </div>
           </div>
         </div>
 
         {!signedIn && (
-          <p className="text-sm text-slate-500">Sign in to load your personalized readiness checklist.</p>
+          <p className="text-sm text-slate-500">
+            Sign in to load your personalized readiness checklist.
+          </p>
         )}
 
         {error && (
-          <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">{error}</div>
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+            {error}
+          </div>
         )}
 
         {report && (
@@ -79,7 +83,9 @@ export function LiveReadiness() {
             <div
               className={clsx(
                 'card p-5 border',
-                report.ready_for_review ? 'border-brand-500/30 bg-brand-500/5' : 'border-amber-500/30 bg-amber-500/5'
+                report.ready_for_review
+                  ? 'border-brand-500/30 bg-brand-500/5'
+                  : 'border-amber-500/30 bg-amber-500/5'
               )}
             >
               <div className="flex items-center gap-3">
@@ -95,8 +101,8 @@ export function LiveReadiness() {
                       : 'Not ready for live review'}
                   </p>
                   <p className="text-xs text-slate-500 mt-1">
-                    {report.passed_required} / {report.total_required} required items · live_execution_enabled:{' '}
-                    {String(report.live_execution_enabled)}
+                    {report.passed_required} / {report.total_required} required items ·
+                    live_execution_enabled: {String(report.live_execution_enabled)}
                   </p>
                 </div>
               </div>
@@ -120,7 +126,9 @@ export function LiveReadiness() {
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-white text-sm">{item.label}</span>
                       {item.required && (
-                        <span className="text-[9px] uppercase tracking-wide text-amber-400 font-bold">Required</span>
+                        <span className="text-[9px] uppercase tracking-wide text-amber-400 font-bold">
+                          Required
+                        </span>
                       )}
                     </div>
                     <p className="text-xs text-slate-500 mt-1">{item.detail}</p>
@@ -130,7 +138,9 @@ export function LiveReadiness() {
             </ul>
 
             <p className="text-xs text-slate-500 leading-relaxed">{report.disclaimer}</p>
-            <p className="text-xs text-slate-500 leading-relaxed">{report.paper_vs_backtest_hint}</p>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              {report.paper_vs_backtest_hint}
+            </p>
           </>
         )}
       </div>

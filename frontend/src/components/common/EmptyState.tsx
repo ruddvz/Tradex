@@ -20,7 +20,9 @@ export function EmptyState({ title, body, icon, actions, className }: EmptyState
       {icon && <div className="flex justify-center mb-3 text-text-muted">{icon}</div>}
       <p className="text-sm font-semibold text-text-primary">{title}</p>
       {body && <p className="text-sm text-text-muted mt-2 max-w-md mx-auto">{body}</p>}
-      {actions && <div className="mt-4 flex flex-wrap items-center justify-center gap-2">{actions}</div>}
+      {actions && (
+        <div className="mt-4 flex flex-wrap items-center justify-center gap-2">{actions}</div>
+      )}
     </div>
   );
 }

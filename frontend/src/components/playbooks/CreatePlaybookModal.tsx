@@ -17,19 +17,19 @@ export function CreatePlaybookModal({ onClose }: Props) {
   const [description, setDescription] = useState('');
   const [rules, setRules] = useState<string[]>(['']);
 
-  const addRuleLine = () => setRules(prev => [...prev, '']);
+  const addRuleLine = () => setRules((prev) => [...prev, '']);
 
   const setRuleAt = (index: number, value: string) => {
-    setRules(prev => prev.map((r, i) => (i === index ? value : r)));
+    setRules((prev) => prev.map((r, i) => (i === index ? value : r)));
   };
 
   const removeRuleAt = (index: number) => {
-    setRules(prev => (prev.length <= 1 ? [''] : prev.filter((_, i) => i !== index)));
+    setRules((prev) => (prev.length <= 1 ? [''] : prev.filter((_, i) => i !== index)));
   };
 
   const handleSave = () => {
     const today = format(new Date(), 'yyyy-MM-dd');
-    const filteredRules = rules.map(r => r.trim()).filter(Boolean);
+    const filteredRules = rules.map((r) => r.trim()).filter(Boolean);
     const pb: Playbook = {
       id: `pb-${Date.now()}`,
       name: name.trim() || 'Untitled Playbook',
@@ -54,7 +54,7 @@ export function CreatePlaybookModal({ onClose }: Props) {
     <div className="modal-backdrop z-[60]" onClick={onClose} role="presentation">
       <div
         className="bg-surface border border-surface-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto shadow-card-hover animate-slide-up"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
@@ -75,12 +75,21 @@ export function CreatePlaybookModal({ onClose }: Props) {
         <div className="p-5 space-y-4">
           <div>
             <label className="label">Name</label>
-            <input className="input" value={name} onChange={e => setName(e.target.value)} placeholder="My playbook" />
+            <input
+              className="input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="My playbook"
+            />
           </div>
           <div>
             <label className="label">Type</label>
-            <select className="select" value={type} onChange={e => setType(e.target.value as Playbook['type'])}>
-              {types.map(t => (
+            <select
+              className="select"
+              value={type}
+              onChange={(e) => setType(e.target.value as Playbook['type'])}
+            >
+              {types.map((t) => (
                 <option key={t} value={t}>
                   {t}
                 </option>
@@ -92,7 +101,7 @@ export function CreatePlaybookModal({ onClose }: Props) {
             <textarea
               className="input min-h-[72px] resize-y"
               value={description}
-              onChange={e => setDescription(e.target.value)}
+              onChange={(e) => setDescription(e.target.value)}
               placeholder="When and why to use this playbook..."
             />
           </div>
@@ -104,16 +113,24 @@ export function CreatePlaybookModal({ onClose }: Props) {
                   <input
                     className="input flex-1"
                     value={rule}
-                    onChange={e => setRuleAt(i, e.target.value)}
+                    onChange={(e) => setRuleAt(i, e.target.value)}
                     placeholder={`Rule ${i + 1}`}
                   />
-                  <button type="button" className="btn-secondary px-3 shrink-0" onClick={() => removeRuleAt(i)}>
+                  <button
+                    type="button"
+                    className="btn-secondary px-3 shrink-0"
+                    onClick={() => removeRuleAt(i)}
+                  >
                     ×
                   </button>
                 </div>
               ))}
             </div>
-            <button type="button" className="btn-secondary text-xs mt-2 w-full justify-center" onClick={addRuleLine}>
+            <button
+              type="button"
+              className="btn-secondary text-xs mt-2 w-full justify-center"
+              onClick={addRuleLine}
+            >
               + Add rule line
             </button>
           </div>

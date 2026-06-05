@@ -6,17 +6,17 @@ from fastapi import APIRouter
 
 router = APIRouter(prefix="/api/v1")
 
-from .auth_api import router as auth_router
 from .accounts_api import router as accounts_router
-from .paper_legacy_api import router as paper_legacy_router
 from .ai_api import router as ai_router
-from .playbooks_api import router as playbooks_router
-from .notebook_api import router as notebook_router
+from .analytics_api import router as analytics_router
+from .auth_api import router as auth_router
 from .challenges_api import router as challenges_router
+from .notebook_api import router as notebook_router
+from .paper_legacy_api import router as paper_legacy_router
+from .playbooks_api import router as playbooks_router
 from .settings_api import router as settings_router
 from .sync_api import router as sync_router
 from .trades_api import router as trades_router
-from .analytics_api import router as analytics_router
 
 router.include_router(auth_router)
 router.include_router(accounts_router)
@@ -57,6 +57,10 @@ router.include_router(bot_router)
 from .backtests import router as backtests_router
 
 router.include_router(backtests_router)
+
+from .imports_api import router as imports_router
+
+router.include_router(imports_router)
 
 from .strategy_runs import router as strategy_runs_router
 

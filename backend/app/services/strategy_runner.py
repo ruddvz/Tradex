@@ -7,7 +7,8 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Optional
 
-from sqlalchemy import func as sql_func, select
+from sqlalchemy import func as sql_func
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..models.paper_account import PaperAccount
@@ -18,6 +19,7 @@ from ..models.strategy_run import StrategyRun
 from .backtesting import generate_demo_candles
 from .paper_execution import submit_paper_market_order
 from .risk_engine import log_audit_event
+from .strategy_versions import create_strategy_version
 
 
 def _parse_json(raw: Optional[str], default: Any) -> Any:
@@ -71,10 +73,14 @@ def start_strategy_run(
         raise ValueError("A strategy is already running on this paper account.")
 
     rules = _parse_json(strat.rules_json, {})
+    ver = create_strategy_version(
+        db, strategy=strat, change_note="Paper run snapshot", status="paper_running"
+    )
     run = StrategyRun(
         id=str(uuid.uuid4()),
         user_id=user_id,
         strategy_id=strategy_id,
+        strategy_version_id=ver.id,
         paper_account_id=paper_account_id,
         mode="paper",
         status="running",
@@ -83,6 +89,8 @@ def start_strategy_run(
                 "strategy_name": strat.name,
                 "symbol": strat.symbol,
                 "rules": rules,
+                "strategy_version_id": ver.id,
+                "strategy_version_number": ver.version_number,
             }
         ),
         result_summary_json=json.dumps(

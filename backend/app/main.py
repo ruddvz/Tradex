@@ -2,6 +2,7 @@
 Tradex Backend API
 AI-Powered Trading Journal Platform
 """
+
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -10,13 +11,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from .api.v1.routes import router
 from .core.config import settings
 from .database import init_db
-from .api.v1.routes import router
+from .middleware.rate_limit import RateLimitMiddleware
+from .middleware.security import RequestIdMiddleware, SecurityHeadersMiddleware
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    settings.validate_production()
     init_db()
     yield
 
@@ -29,6 +33,10 @@ app = FastAPI(
     redoc_url="/redoc",
     lifespan=lifespan,
 )
+
+app.add_middleware(SecurityHeadersMiddleware)
+app.add_middleware(RequestIdMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 # CORS
 app.add_middleware(

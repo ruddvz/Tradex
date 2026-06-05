@@ -24,13 +24,7 @@ interface HeaderProps {
   onAddTrade?: () => void;
 }
 
-export function Header({
-  title,
-  subtitle,
-  showDateRange = true,
-  action,
-  onAddTrade,
-}: HeaderProps) {
+export function Header({ title, subtitle, showDateRange = true, action, onAddTrade }: HeaderProps) {
   const navigate = useNavigate();
   const {
     sidebarOpen,
@@ -66,7 +60,10 @@ export function Header({
           mode={resolveDataViewMode({ dataMode, paperModeActive })}
           className="mt-0.5 hidden sm:inline-flex"
         />
-        <ModeBadge mode={resolveAppMode({ dataMode, paperModeActive })} className="mt-0.5 sm:hidden" />
+        <ModeBadge
+          mode={resolveAppMode({ dataMode, paperModeActive })}
+          className="mt-0.5 sm:hidden"
+        />
         {dataMode === 'live' && <DataSourceBadge source="live" />}
         {lastMt5Sync?.demo_fallback_used && (
           <DataSourceBadge source="demo" className="!text-amber-200" />
@@ -77,7 +74,7 @@ export function Header({
 
       {showDateRange && (
         <div className="hidden sm:flex items-center gap-1 bg-surface/80 rounded-xl p-1 border border-[rgba(126,146,185,0.18)]">
-          {ranges.map(r => (
+          {ranges.map((r) => (
             <button
               key={r.key}
               type="button"
@@ -98,7 +95,9 @@ export function Header({
       {dataMode === 'live' && (
         <button
           type="button"
-          onClick={() => void (botStatus?.kill_switch_active ? resumePaperTrading() : triggerKillSwitch())}
+          onClick={() =>
+            void (botStatus?.kill_switch_active ? resumePaperTrading() : triggerKillSwitch())
+          }
           className={clsx(
             'header-icon-button',
             botStatus?.kill_switch_active && 'text-loss border-loss/40'
@@ -120,7 +119,9 @@ export function Header({
         className="header-icon-button disabled:opacity-50"
         title="Sync MT5"
       >
-        <RefreshCw className={clsx('w-[21px] h-[21px]', isSyncing && 'animate-spin text-success')} />
+        <RefreshCw
+          className={clsx('w-[21px] h-[21px]', isSyncing && 'animate-spin text-success')}
+        />
       </button>
 
       <button type="button" className="header-icon-button relative">
