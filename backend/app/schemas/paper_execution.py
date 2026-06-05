@@ -32,7 +32,9 @@ class PaperOrderOut(BaseModel):
     take_profit: Optional[float] = None
     rejection_reason: Optional[str] = None
     created_at: Optional[datetime] = None
+    submitted_at: Optional[datetime] = None
     filled_at: Optional[datetime] = None
+    cancelled_at: Optional[datetime] = None
 
 
 class PaperPositionOut(BaseModel):

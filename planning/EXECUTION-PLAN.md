@@ -137,41 +137,41 @@
 
 ## Phase 11 — Paper trading realism
 
-- [ ] **11.1** Complete paper order lifecycle states (draft → filled/rejected/expired)
-- [ ] **11.2** Spread/slippage/commission/fill assumptions in paper engine
-- [ ] **11.3** Paper dashboard redesign (balance, equity, orders, fills, violations)
+- [x] **11.1** Complete paper order lifecycle states (draft → filled/rejected/expired)
+- [x] **11.2** Spread/slippage/commission/fill assumptions in paper engine
+- [x] **11.3** Paper dashboard redesign (balance, equity, orders, fills, violations)
 
 ---
 
 ## Phase 12 — Backtesting trust layer
 
-- [ ] **12.1** Backtest assumptions panel on every result
-- [ ] **12.2** Backtest vs Paper vs Journal comparison page
-- [ ] **12.3** Prevent backtest exports polluting live journal without explicit source tagging
+- [x] **12.1** Backtest assumptions panel on every result
+- [x] **12.2** Backtest vs Paper vs Journal comparison page
+- [x] **12.3** Prevent backtest exports polluting live journal without explicit source tagging
 
 ---
 
 ## Phase 13 — Dashboard and mobile UX polish
 
-- [ ] **13.1** Dashboard hierarchy (status strip, performance, risk, learning, activity)
-- [ ] **13.2** Mobile PWA safe-area and card/table polish
-- [ ] **13.3** Empty states for every major page
+- [x] **13.1** Dashboard hierarchy (status strip, performance, risk, learning, activity)
+- [x] **13.2** Mobile PWA safe-area and card/table polish
+- [x] **13.3** Empty states for every major page
 
 ---
 
 ## Phase 14 — AI coach trust layer
 
-- [ ] **14.1** Separate AI review types (daily, weekly, strategy, psychology)
-- [ ] **14.2** Limitations/confidence/data-used on AI cards
-- [ ] **14.3** Block buy/sell prediction language from AI responses
+- [x] **14.1** Separate AI review types (daily, weekly, strategy, psychology)
+- [x] **14.2** Limitations/confidence/data-used on AI cards
+- [x] **14.3** Block buy/sell prediction language from AI responses
 
 ---
 
 ## Phase 15 — Test coverage and QA
 
-- [ ] **15.1** Backend tests for auth/trades/paper/risk/playbooks/backtests/migrations
-- [ ] **15.2** Frontend tests for modes/empty states/mobile nav/core pages
-- [ ] **15.3** Manual QA on iPhone widths, tablet, and desktop
+- [x] **15.1** Backend tests for auth/trades/paper/risk/playbooks/backtests/migrations
+- [x] **15.2** Frontend tests for modes/empty states/mobile nav/core pages
+- [x] **15.3** Manual QA on iPhone widths, tablet, and desktop
 
 ---
 

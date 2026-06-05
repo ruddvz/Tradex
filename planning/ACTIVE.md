@@ -1,34 +1,31 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **[11.1] — Paper order lifecycle states**
+## 👉 NEXT UP: **Maintenance — optional Plan0 device QA**
 
-Status: [ ] pending
+Status: [ ] optional (human)
 
-Goal: Complete paper order state machine (draft → submitted → accepted/rejected → filled/cancelled/expired).
+Phases **0–15** from `planning/EXECUTION-PLAN.md` are complete on branch `cursor/phases-11-15-a3a6`.
 
-After completion: move to **[11.2]** spread/slippage/commission assumptions.
-
-See `planning/ROADMAP-2026-Q2.md` and `planning/EXECUTION-PLAN.md` Phase 11.
+See `planning/Plan0-AUDIT.md` for manual iPhone/Lighthouse checks.
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **11 — Paper trading realism**  
-**Branch:** `cursor/phase-10-stabilization-a3a6`  
-**Base:** `main` + Phase 9–10 merged
+**Phase:** **Complete (Q2 2026 roadmap)**  
+**Branch:** `cursor/phases-11-15-a3a6`
 
-### Recently Done (Phase 10)
-- [x] **10.1** Phase 9 post-plan merged (violations, playbooks API, account UI, paper equity)
-- [x] **10.2** `ROADMAP-2026-Q2.md` + deduplicated `EXECUTION-PLAN.md`
-- [x] **10.3** `DataModeBadge` on header + backtests; demo/live/paper/backtest copy
-- [x] **10.4** `demo_mt5_sample` source + journal source filters
-- [x] **10.5** Risk Center (`/risk`) + `GET /risk/profile` + dashboard violation link
+### Recently Done (Phases 11–15)
+- [x] **11** — Paper order lifecycle, per-account fill assumptions, paper cockpit UI
+- [x] **12** — Backtest assumptions panel, `/reports/compare`, export trust copy
+- [x] **13** — Dashboard status strip, PWA-safe inputs, empty states
+- [x] **14** — AI trust metadata + prediction language scrub
+- [x] **15** — `scripts/verify.sh`, Playwright e2e, expanded pytest
 
 ---
 
 ## Notes
 
-- Product identity: **trading performance lab**, not a live money bot.
-- `DataModeBadge` lives in `frontend/src/components/ui/DataModeBadge.tsx`.
-- Risk APIs: `GET /api/v1/risk/profile`, `/risk/violations`, `/risk/events`.
+- Verification: `./scripts/verify.sh` (pytest + lint + build + SW + e2e)
+- Product identity: **trading performance lab** — no live execution
+- E2E lives in `e2e/` (Playwright, production preview + `/Tradex/` base)

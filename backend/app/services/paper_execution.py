@@ -19,6 +19,7 @@ from ..models.paper_order import (
 )
 from ..models.paper_position import PaperPosition, PaperPositionStatus
 from ..models.trade import Trade, TradeDirection, TradeStatus
+from .fill_assumptions import assumptions_from_account
 from .fill_simulator import simulate_market_fill
 from .trade_codec import compute_grade_and_rr, status_from_str, grade_from_str
 from .paper_equity import refresh_paper_account_equity, unrealized_pnl_for_position
@@ -159,23 +160,30 @@ def submit_paper_market_order(
         lot_size=lot_size,
         db=db,
     )
+    now = datetime.utcnow()
+    order_id = str(uuid.uuid4())
+    fill_cfg = assumptions_from_account(account)
+
+    order = PaperOrder(
+        id=order_id,
+        user_id=user_id,
+        paper_account_id=account.id,
+        symbol=symbol.upper(),
+        side=side,
+        order_type=PaperOrderType.MARKET,
+        status=PaperOrderStatus.SUBMITTED,
+        requested_price=reference_price,
+        lot_size=lot_size,
+        stop_loss=stop_loss,
+        take_profit=take_profit,
+        submitted_at=now,
+    )
+    db.add(order)
+    db.flush()
+
     if err:
-        order = PaperOrder(
-            id=str(uuid.uuid4()),
-            user_id=user_id,
-            paper_account_id=account.id,
-            symbol=symbol.upper(),
-            side=side,
-            order_type=PaperOrderType.MARKET,
-            status=PaperOrderStatus.REJECTED,
-            requested_price=reference_price,
-            lot_size=lot_size,
-            stop_loss=stop_loss,
-            take_profit=take_profit,
-            rejection_reason=err,
-            submitted_at=datetime.utcnow(),
-        )
-        db.add(order)
+        order.status = PaperOrderStatus.REJECTED
+        order.rejection_reason = err
         log_paper_violation(
             db,
             user_id=user_id,
@@ -189,33 +197,24 @@ def submit_paper_market_order(
         db.refresh(order)
         return order, None, err
 
+    order.status = PaperOrderStatus.ACCEPTED
+    db.flush()
+
     quote = simulate_market_fill(
         symbol=symbol,
         side=side.value,
         reference_price=reference_price,
         lot_size=lot_size,
+        spread_multiplier=fill_cfg.spread_multiplier,
+        slippage_factor=fill_cfg.slippage_factor,
+        commission_per_lot=fill_cfg.commission_per_lot,
     )
-    now = datetime.utcnow()
-    order_id = str(uuid.uuid4())
     position_id = str(uuid.uuid4())
     fill_id = str(uuid.uuid4())
 
-    order = PaperOrder(
-        id=order_id,
-        user_id=user_id,
-        paper_account_id=account.id,
-        symbol=symbol.upper(),
-        side=side,
-        order_type=PaperOrderType.MARKET,
-        status=PaperOrderStatus.FILLED,
-        requested_price=reference_price,
-        filled_avg_price=quote.fill_price,
-        lot_size=lot_size,
-        stop_loss=stop_loss,
-        take_profit=take_profit,
-        submitted_at=now,
-        filled_at=now,
-    )
+    order.status = PaperOrderStatus.FILLED
+    order.filled_avg_price = quote.fill_price
+    order.filled_at = now
     position = PaperPosition(
         id=position_id,
         user_id=user_id,
@@ -248,7 +247,6 @@ def submit_paper_market_order(
     )
 
     position.unrealized_pnl = unrealized_pnl_for_position(position)
-    db.add(order)
     db.add(position)
     db.add(fill)
     refresh_paper_account_equity(db, account)
@@ -269,11 +267,15 @@ def close_paper_position(
     if position.status != PaperPositionStatus.OPEN:
         return None, "Position is already closed."
 
+    fill_cfg = assumptions_from_account(account)
     quote = simulate_market_fill(
         symbol=position.symbol,
         side="sell" if position.side == PaperOrderSide.BUY else "buy",
         reference_price=exit_price,
         lot_size=position.lot_size,
+        spread_multiplier=fill_cfg.spread_multiplier,
+        slippage_factor=fill_cfg.slippage_factor,
+        commission_per_lot=fill_cfg.commission_per_lot,
     )
     gross = _pnl_for_close(position.side, position.avg_entry_price, quote.fill_price, position.lot_size)
     net = round(gross - quote.commission, 2)
@@ -317,3 +319,25 @@ def close_paper_position(
     db.commit()
     db.refresh(trade)
     return trade, None
+
+
+def cancel_paper_order(
+    db: Session,
+    *,
+    user_id: str,
+    order: PaperOrder,
+) -> Optional[str]:
+    """Cancel a non-terminal order. Returns error message or None on success."""
+    terminal = {
+        PaperOrderStatus.FILLED,
+        PaperOrderStatus.REJECTED,
+        PaperOrderStatus.CANCELLED,
+        PaperOrderStatus.EXPIRED,
+    }
+    if order.status in terminal:
+        return f"Cannot cancel order in status {order.status.value}."
+    order.status = PaperOrderStatus.CANCELLED
+    order.cancelled_at = datetime.utcnow()
+    db.commit()
+    db.refresh(order)
+    return None

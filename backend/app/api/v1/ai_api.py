@@ -10,6 +10,7 @@ from sqlalchemy.orm import Session
 from ...database import get_db
 from ...models.user import User
 from ...services.ai_service import generate_ai_insights
+from ...services.ai_trust import enrich_insights
 from ...services.analytics import (
     compute_metrics,
     compute_psychology_stats,
@@ -41,4 +42,10 @@ async def get_ai_insights(
         "psychology": compute_psychology_stats(ut),
     }
     insights = await generate_ai_insights(metrics, summary)
-    return {"insights": insights}
+    enriched = enrich_insights(
+        insights,
+        trade_count=int(metrics.get("total_trades", 0)),
+        date_range="account journal",
+        review_type="behavior_review",
+    )
+    return {"insights": enriched}

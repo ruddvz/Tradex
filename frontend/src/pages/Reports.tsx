@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { BarChart3, Download, TrendingUp, TrendingDown, Target, Zap, Clock } from 'lucide-react';
 import { subDays, parseISO } from 'date-fns';
 import { Header } from '../components/layout/Header';
@@ -314,6 +315,9 @@ export function Reports() {
       <div className="page-shell px-6 pt-4 pb-8 space-y-5">
         <div className="flex flex-wrap items-center gap-2">
           <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
+          <Link to="/reports/compare" className="text-xs font-semibold text-analytics hover:underline min-h-[44px] inline-flex items-center">
+            Compare backtest / paper / journal →
+          </Link>
           {dataMode === 'live' && (
             <span className="text-xs text-slate-500">KPIs from API metrics; charts use live series when available.</span>
           )}

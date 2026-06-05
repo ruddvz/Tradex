@@ -21,7 +21,7 @@ from ...schemas.paper_execution import (
     PaperPositionClose,
     PaperPositionOut,
 )
-from ...services.paper_execution import close_paper_position, submit_paper_market_order
+from ...services.paper_execution import cancel_paper_order, close_paper_position, submit_paper_market_order
 from ...services.trade_codec import trade_to_api_dict
 from ..deps import get_current_user
 
@@ -43,7 +43,9 @@ def _order_out(o: PaperOrder) -> PaperOrderOut:
         take_profit=o.take_profit,
         rejection_reason=o.rejection_reason,
         created_at=o.created_at,
+        submitted_at=o.submitted_at,
         filled_at=o.filled_at,
+        cancelled_at=o.cancelled_at,
     )
 
 
@@ -142,6 +144,23 @@ def create_paper_order(
         "position": _position_out(position) if position else None,
         "error": err,
     }
+
+
+@router.post("/orders/{order_id}/cancel", response_model=PaperOrderOut)
+def cancel_order(
+    order_id: str,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    order = db.execute(
+        select(PaperOrder).where(PaperOrder.id == order_id, PaperOrder.user_id == user.id)
+    ).scalar_one_or_none()
+    if order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+    err = cancel_paper_order(db, user_id=user.id, order=order)
+    if err:
+        raise HTTPException(status_code=400, detail=err)
+    return _order_out(order)
 
 
 @router.get("/positions", response_model=list[PaperPositionOut])

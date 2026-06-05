@@ -21,8 +21,19 @@ import {
 } from '../lib/api/paper';
 import { clsx } from 'clsx';
 import { StrategyRunsPanel } from '../components/paper/StrategyRunsPanel';
+import { PaperAccountStats } from '../components/paper/PaperAccountStats';
+import { DataModeBadge } from '../components/ui/DataModeBadge';
 
-type Tab = 'overview' | 'orders' | 'positions';
+type Tab = 'overview' | 'orders' | 'positions' | 'rejected';
+
+const ORDER_STATUS_CLASS: Record<string, string> = {
+  filled: 'text-success',
+  rejected: 'text-loss',
+  submitted: 'text-warn',
+  accepted: 'text-analytics',
+  cancelled: 'text-text-muted',
+  expired: 'text-text-muted',
+};
 
 const PAPER_WARNING =
   'Paper mode — orders are simulated. Real spreads, fills, slippage, liquidity, and broker rules can change outcomes.';
@@ -153,6 +164,10 @@ export function PaperTrading() {
       />
 
       <div className="page-shell px-5 py-6 space-y-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <DataModeBadge mode="paper" showDescription />
+        </div>
+
         <div className="rounded-xl border border-analytics/25 bg-analytics/5 px-4 py-3 text-xs text-text-secondary">
           {PAPER_WARNING}
         </div>
@@ -237,8 +252,8 @@ export function PaperTrading() {
                 ))}
               </div>
 
-              <div className="flex gap-1 border-b border-surface-border mb-4">
-                {(['overview', 'orders', 'positions'] as Tab[]).map((t) => (
+              <div className="flex gap-1 border-b border-surface-border mb-4 overflow-x-auto no-scrollbar">
+                {(['overview', 'orders', 'positions', 'rejected'] as Tab[]).map((t) => (
                   <button
                     key={t}
                     type="button"
@@ -266,7 +281,13 @@ export function PaperTrading() {
               {loadingBook && !loadError && <LoadingState label="Loading orders and positions…" />}
 
               {!loadingBook && tab === 'overview' && selected && (
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  <PaperAccountStats
+                    account={selected}
+                    openPositions={positions.length}
+                    recentFills={fills.length}
+                  />
+                  <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-3">
                     <h3 className="text-sm font-semibold text-text-primary">New market order</h3>
                     <div className="grid grid-cols-2 gap-2">
@@ -310,6 +331,34 @@ export function PaperTrading() {
                     </p>
                   </div>
                 </div>
+                </div>
+              )}
+
+              {!loadingBook && tab === 'rejected' && (
+                <ul className="space-y-2">
+                  {orders.filter((o) => o.status === 'rejected').length === 0 ? (
+                    <EmptyState
+                      title="No rejected orders"
+                      body="Risk violations and blocked orders appear here with the exact reason."
+                    />
+                  ) : (
+                    orders
+                      .filter((o) => o.status === 'rejected')
+                      .map((o) => (
+                        <li key={o.id} className="rounded-lg border border-loss/30 bg-loss/5 px-3 py-2 text-sm">
+                          <div className="flex justify-between gap-2">
+                            <span>
+                              {o.symbol} {o.side.toUpperCase()} · {o.lot_size} lot
+                            </span>
+                            <span className="text-xs font-semibold uppercase text-loss">rejected</span>
+                          </div>
+                          {o.rejection_reason && (
+                            <p className="text-xs text-loss mt-1 leading-relaxed">{o.rejection_reason}</p>
+                          )}
+                        </li>
+                      ))
+                  )}
+                </ul>
               )}
 
               {!loadingBook && tab === 'orders' && (
@@ -334,10 +383,10 @@ export function PaperTrading() {
                           <span
                             className={clsx(
                               'text-xs font-semibold uppercase shrink-0',
-                              o.status === 'rejected' ? 'text-loss' : 'text-analytics'
+                              ORDER_STATUS_CLASS[o.status] ?? 'text-text-muted'
                             )}
                           >
-                            {o.status}
+                            {o.status.replace(/_/g, ' ')}
                           </span>
                         </div>
                         {o.rejection_reason && (

@@ -42,20 +42,17 @@ export function RiskCenter() {
     useStore();
   const viewMode = resolveDataViewMode({ dataMode, paperModeActive });
 
+  const isLiveSession = dataMode === 'live' && Boolean(getToken());
   const [profile, setProfile] = useState<RiskProfileRow | null>(null);
   const [violations, setViolations] = useState<PaperViolationRow[] | null>(null);
   const [events, setEvents] = useState<AuditEventRow[] | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [fetchDone, setFetchDone] = useState(!isLiveSession);
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    if (dataMode !== 'live' || !getToken()) {
-      setLoading(false);
-      return;
-    }
+    if (!isLiveSession) return;
     let cancelled = false;
-    setLoading(true);
     void Promise.all([fetchRiskProfiles(), fetchPaperViolations(20), fetchRiskEvents(20)])
       .then(([profiles, vios, evts]) => {
         if (cancelled) return;
@@ -68,12 +65,14 @@ export function RiskCenter() {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load risk data');
       })
       .finally(() => {
-        if (!cancelled) setLoading(false);
+        if (!cancelled) setFetchDone(true);
       });
     return () => {
       cancelled = true;
     };
-  }, [dataMode, botStatus?.kill_switch_active]);
+  }, [isLiveSession, botStatus?.kill_switch_active]);
+
+  const loading = isLiveSession && !fetchDone;
 
   const killed = botStatus?.kill_switch_active;
 

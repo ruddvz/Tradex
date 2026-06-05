@@ -29,6 +29,9 @@ class PaperAccountOut(BaseModel):
     equity: float = 100_000.0
     max_daily_loss: float = 500.0
     max_risk_per_trade_percent: float = 1.0
+    fill_spread_multiplier: float = 1.0
+    fill_slippage_factor: float = 0.5
+    fill_commission_per_lot: float = 3.5
     is_active: bool
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

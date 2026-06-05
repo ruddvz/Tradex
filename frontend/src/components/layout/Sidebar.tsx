@@ -38,6 +38,7 @@ const navItems = [
   { path: '/propfirm', label: 'Prop Firm Mode', icon: Target },
   { path: '/notebook', label: 'Notebook', icon: NotebookPen },
   { path: '/reports', label: 'Reports', icon: BarChart3 },
+  { path: '/reports/compare', label: 'Compare', icon: TrendingUp },
   { path: '/calculator', label: 'Risk Calc', icon: Calculator },
 ];
 
