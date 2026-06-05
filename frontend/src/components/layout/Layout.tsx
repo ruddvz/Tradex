@@ -1,5 +1,5 @@
 import { useState, useEffect, Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { MobileNav } from './MobileNav';
 import { AppShellSkeleton } from './AppShellSkeleton';
@@ -10,6 +10,7 @@ import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
 export function Layout() {
+  const location = useLocation();
   const { sidebarOpen, mt5SyncModalOpen, hydrateLiveSession } = useStore();
   const [bootOverlay, setBootOverlay] = useState(true);
   const [online, setOnline] = useState(() =>
@@ -18,8 +19,7 @@ export function Layout() {
 
   useEffect(() => {
     void hydrateLiveSession();
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- boot once; online handler re-hydrates
-  }, []);
+  }, [hydrateLiveSession]);
 
   useEffect(() => {
     const onUp = () => {
@@ -54,16 +54,15 @@ export function Layout() {
   }, [hydrateLiveSession]);
 
   return (
-    <div className="min-h-screen flex app-bg">
+    <div className="tx-app-shell min-h-screen flex app-bg">
       <div className="hidden md:block">
         <Sidebar />
       </div>
 
-      <main
+      <div
         className={clsx(
-          'relative flex-1 min-h-screen transition-all duration-300 ease-in-out',
-          sidebarOpen ? 'md:ml-64' : 'md:ml-16',
-          'pb-[calc(6.75rem+env(safe-area-inset-bottom))] md:pb-0'
+          'tx-main-shell relative flex-1 min-h-screen transition-all duration-300',
+          sidebarOpen ? 'md:ml-64' : 'md:ml-16'
         )}
       >
         {!online && (
@@ -80,22 +79,22 @@ export function Layout() {
             <AppShellSkeleton />
           </div>
         )}
-        <div
+        <main
           key={location.pathname}
           className={clsx(
-            'animate-fade-in min-h-screen transition-opacity duration-300',
+            'tx-page-host animate-fade-in transition-opacity duration-300',
             bootOverlay && 'opacity-0 pointer-events-none select-none'
           )}
         >
           <Suspense fallback={<RouteFallback />}>
             <Outlet />
           </Suspense>
-        </div>
-      </main>
+        </main>
 
-      <div className="block md:hidden">
-        <IosInstallBanner />
-        <MobileNav />
+        <div className="block md:hidden">
+          <IosInstallBanner />
+          <MobileNav />
+        </div>
       </div>
 
       <Mt5SyncModal open={mt5SyncModalOpen} />

@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 import { AlertTriangle, CheckCircle2, Shield, XCircle } from 'lucide-react';
 import { Header } from '../components/layout/Header';
-import { ModeBadge } from '../components/status/ModeBadge';
-import { resolveAppMode } from '../lib/resolveAppMode';
-import { useStore } from '../store/useStore';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
+import { TxModePill } from '../components/status/TxModePill';
+import { TxButton } from '../components/ui/TxButton';
 import { getToken } from '../lib/auth';
 import { fetchLiveReadiness, type LiveReadinessReport } from '../lib/api/liveReadiness';
 import { clsx } from 'clsx';
 
 export function LiveReadiness() {
-  const { dataMode, paperModeActive } = useStore();
   const [report, setReport] = useState<LiveReadinessReport | null>(null);
   const [error, setError] = useState<string | null>(null);
   const signedIn = Boolean(getToken());
@@ -39,16 +38,18 @@ export function LiveReadiness() {
   return (
     <div className="min-h-screen">
       <Header
-        title="Live readiness"
-        subtitle="Checklist only — real-money execution is not enabled"
+        title="Live Readiness"
+        subtitle="Gate before any live enablement"
         showDateRange={false}
+        compact
       />
+      <ModeHeaderStrip />
 
       <div className="page-shell p-6 space-y-6 max-w-3xl">
         <div className="flex flex-wrap items-center gap-2">
-          <ModeBadge mode={resolveAppMode({ dataMode, paperModeActive })} />
-          <span className="text-xs text-red-400 font-semibold uppercase tracking-wide">
-            Live orders blocked
+          <TxModePill mode="liveLocked" />
+          <span className="text-xs text-[var(--tx-loss)] font-semibold uppercase tracking-wide">
+            Live locked
           </span>
         </div>
 
@@ -141,6 +142,9 @@ export function LiveReadiness() {
             <p className="text-xs text-slate-500 leading-relaxed">
               {report.paper_vs_backtest_hint}
             </p>
+            <TxButton variant="disabledLive" fullWidth disabled>
+              Complete checklist first — live enablement locked
+            </TxButton>
           </>
         )}
       </div>

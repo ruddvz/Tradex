@@ -2,6 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Landmark, Plus, RefreshCw } from 'lucide-react';
 import { Header } from '../components/layout/Header';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
+import { BotStatusCard } from '../components/bot/BotStatusCard';
+import { BotSafetyCard } from '../components/bot/BotSafetyCard';
+import { PaperAssumptionsCard, ExecutionLogCard } from '../components/bot/ExecutionLogCard';
+import { TxPage } from '../components/ui/TxPage';
 import { EmptyState } from '../components/common/EmptyState';
 import { LoadingState } from '../components/common/LoadingState';
 import { ErrorState } from '../components/common/ErrorState';
@@ -160,12 +165,16 @@ export function PaperTrading() {
   return (
     <div className="min-h-screen">
       <Header
-        title="Paper trading"
-        subtitle="Simulated orders and fills — no live execution"
+        title="Paper Bot"
+        subtitle="Simulated orders — no live execution"
         showDateRange={false}
+        compact
       />
+      <ModeHeaderStrip />
 
-      <div className="page-shell px-5 py-6 space-y-6">
+      <TxPage className="page-shell !px-0 space-y-6">
+        <BotStatusCard />
+        <BotSafetyCard />
         <div className="flex flex-wrap items-center gap-2">
           <DataModeBadge mode="paper" showDescription />
         </div>
@@ -490,8 +499,19 @@ export function PaperTrading() {
             </>
           )}
         </div>
+        <ExecutionLogCard
+          rows={orders.slice(0, 12).map((o) => ({
+            time: o.created_at ? new Date(o.created_at).toLocaleString() : '—',
+            message:
+              o.status === 'rejected'
+                ? `Rejected: ${o.rejection_reason ?? 'risk check failed'}`
+                : `${o.side.toUpperCase()} ${o.symbol} — ${o.status}`,
+            rejected: o.status === 'rejected',
+          }))}
+        />
+        <PaperAssumptionsCard />
         <StrategyRunsPanel paperAccountId={activeAccountId} />
-      </div>
+      </TxPage>
     </div>
   );
 }

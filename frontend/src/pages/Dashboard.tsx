@@ -11,8 +11,15 @@ import {
   ArrowUpRight,
 } from 'lucide-react';
 import { Header } from '../components/layout/Header';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
+import { TxPage } from '../components/ui/TxPage';
+import { TxChartCard } from '../components/ui/TxChartCard';
+import { TxSegmentedControl } from '../components/ui/TxSegmentedControl';
+import { TodayHeroCard } from '../components/dashboard/TodayHeroCard';
+import { DailyRiskCard } from '../components/dashboard/DailyRiskCard';
+import { ActionGrid } from '../components/dashboard/ActionGrid';
+import { BotStatusCard } from '../components/bot/BotStatusCard';
 import { RiskStatusCard } from '../components/status/RiskStatusCard';
-import { HeroMetricCard } from '../components/cards/HeroMetricCard';
 import { StatCard } from '../components/ui/StatCard';
 import { EquityCurve } from '../components/charts/EquityCurve';
 import { PnLCalendar } from '../components/charts/PnLCalendar';
@@ -47,7 +54,7 @@ export function Dashboard() {
   } = useStore();
   const recentActivity = trades.slice(0, 3);
   const topInsight = aiInsights[0];
-  const [dismissingId, setDismissingId] = useState<string | null>(null);
+  const [chartTab, setChartTab] = useState('equity');
 
   const consistencyScore = Math.min(
     100,
@@ -65,6 +72,15 @@ export function Dashboard() {
       ? 'Strong — win rate and expectancy align with your playbook.'
       : 'Focus on repeating high-setup sessions and reducing impulse trades.';
 
+  const [dismissingId, setDismissingId] = useState<string | null>(null);
+
+  const chartTabs = [
+    { id: 'equity', label: 'Equity' },
+    { id: 'pnl', label: 'Daily P&L' },
+    { id: 'winrate', label: 'Win rate' },
+    { id: 'sessions', label: 'Sessions' },
+  ];
+
   const handleDismissInsight = (insight: AIInsight) => {
     setDismissingId(insight.id);
     setTimeout(() => dismissInsight(insight.id), 300);
@@ -72,7 +88,8 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      <Header title="Home" subtitle="Overview of your trading performance" showDateRange={false} />
+      <Header title="Today" subtitle="Daily trading cockpit" showDateRange={false} compact />
+      <ModeHeaderStrip />
 
       {(bootstrapError ||
         dataMode === 'demo' ||
@@ -112,17 +129,14 @@ export function Dashboard() {
         </div>
       )}
 
-      <div className="page-shell px-5 py-6 space-y-7 md:space-y-8">
-        <DashboardStatusStrip />
-        <RiskStatusCard />
-
-        <HeroMetricCard
-          value={`${metrics.totalPnl >= 0 ? '+' : ''}$${metrics.totalPnl.toLocaleString()}`}
-          trend={12.4}
-          trendLabel="vs last period"
-          pnlNonNegative={metrics.totalPnl >= 0}
-          sparklineHeight={isMobile ? 112 : 128}
-        />
+      <TxPage className="page-shell !px-0">
+        <div className="space-y-5 md:space-y-7">
+          <DailyRiskCard />
+          <TodayHeroCard />
+          <ActionGrid onAddTrade={() => navigate('/journal')} />
+          <BotStatusCard />
+          {!isMobile && <DashboardStatusStrip />}
+          {!isMobile && <RiskStatusCard />}
 
         {topInsight && (
           <div
@@ -246,6 +260,31 @@ export function Dashboard() {
           />
         </div>
 
+        {isMobile ? (
+          <div className="space-y-3">
+            <TxSegmentedControl items={chartTabs} value={chartTab} onChange={setChartTab} />
+            {chartTab === 'equity' && (
+              <TxChartCard title="Equity curve" subtitle="Primary performance view">
+                <EquityCurve height={180} />
+              </TxChartCard>
+            )}
+            {chartTab === 'pnl' && (
+              <TxChartCard title="Daily P&L" subtitle="Calendar heatmap">
+                <PnLCalendar />
+              </TxChartCard>
+            )}
+            {chartTab === 'winrate' && (
+              <TxChartCard title="Win rate" subtitle="Outcome distribution">
+                <WinRateDonut />
+              </TxChartCard>
+            )}
+            {chartTab === 'sessions' && (
+              <TxChartCard title="Sessions" subtitle="Performance by session">
+                <SessionHeatmap />
+              </TxChartCard>
+            )}
+          </div>
+        ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="card p-5 lg:col-span-2 min-h-[280px]">
             <div className="flex items-center justify-between mb-4">
@@ -291,6 +330,7 @@ export function Dashboard() {
             </div>
           </div>
         </div>
+        )}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="card p-5">
@@ -446,7 +486,8 @@ export function Dashboard() {
           </div>
           <EquityCurve showDrawdown height={isMobile ? 140 : 160} />
         </div>
-      </div>
+        </div>
+      </TxPage>
     </div>
   );
 }

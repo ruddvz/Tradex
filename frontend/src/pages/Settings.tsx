@@ -27,6 +27,7 @@ import {
   updateNotificationSettings,
 } from '../lib/api/settings';
 import { fetchImportBatches, type ImportBatch } from '../lib/api/imports';
+import { shouldShowInstallPrompt } from '../lib/pwa';
 
 const brokers = [
   { name: 'Exness', logo: 'EX', connected: true },
@@ -198,6 +199,19 @@ export function Settings() {
 
       <div className="page-shell p-6">
         <div className="max-w-3xl mx-auto space-y-5">
+          {shouldShowInstallPrompt() && (
+            <div className="card p-6 border border-[var(--tx-info)]/30 bg-[var(--tx-info-soft)]">
+              <h3 className="font-semibold text-white mb-2">Install TradeX on iPhone</h3>
+              <p className="text-sm text-slate-300 mb-3">
+                Add TradeX to your home screen for a full-screen trading cockpit experience.
+              </p>
+              <ol className="text-sm text-slate-400 space-y-1 list-decimal list-inside">
+                <li>Tap Share in Safari</li>
+                <li>Choose Add to Home Screen</li>
+                <li>Open TradeX from your home screen</li>
+              </ol>
+            </div>
+          )}
           {/* Account */}
           <div className="card p-6">
             <div className="flex items-center gap-2 mb-4">
