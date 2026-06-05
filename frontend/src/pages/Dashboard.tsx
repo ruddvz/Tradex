@@ -15,9 +15,10 @@ import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 import { TxPage } from '../components/ui/TxPage';
 import { TxChartCard } from '../components/ui/TxChartCard';
 import { TxSegmentedControl } from '../components/ui/TxSegmentedControl';
-import { TodayHeroCard } from '../components/dashboard/TodayHeroCard';
-import { DailyRiskCard } from '../components/dashboard/DailyRiskCard';
-import { ActionGrid } from '../components/dashboard/ActionGrid';
+import { TodayHero } from '../components/dashboard/TodayHero';
+import { RiskPulseCard } from '../components/dashboard/RiskPulseCard';
+import { NextActionCard } from '../components/dashboard/NextActionCard';
+import { DateRangeToolbar } from '../components/layout/DateRangeToolbar';
 import { BotStatusCard } from '../components/bot/BotStatusCard';
 import { RiskStatusCard } from '../components/status/RiskStatusCard';
 import { StatCard } from '../components/ui/StatCard';
@@ -90,6 +91,7 @@ export function Dashboard() {
     <div className="min-h-screen">
       <Header title="Today" subtitle="Daily trading cockpit" showDateRange={false} compact />
       <ModeHeaderStrip />
+      <DateRangeToolbar className="md:hidden py-2" />
 
       {(bootstrapError ||
         dataMode === 'demo' ||
@@ -129,16 +131,16 @@ export function Dashboard() {
         </div>
       )}
 
-      <TxPage className="page-shell !px-0">
+      <TxPage density="dashboard" className="!px-0">
         <div className="space-y-5 md:space-y-7">
-          <TodayHeroCard />
-          <DailyRiskCard />
-          <ActionGrid onAddTrade={() => navigate('/journal')} />
-          <BotStatusCard />
+          <TodayHero />
+          <RiskPulseCard />
+          <NextActionCard onAddTrade={() => navigate('/journal')} />
+          {!isMobile && <BotStatusCard />}
           {!isMobile && <DashboardStatusStrip />}
           {!isMobile && <RiskStatusCard />}
 
-          {topInsight && (
+          {!isMobile && topInsight && (
             <div
               className={clsx(
                 'p-4 rounded-[18px] border flex items-start gap-4 transition-all duration-300',
@@ -193,6 +195,8 @@ export function Dashboard() {
             </div>
           )}
 
+          {!isMobile && (
+            <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               title="Win Rate"
@@ -259,6 +263,8 @@ export function Dashboard() {
               size="sm"
             />
           </div>
+            </>
+          )}
 
           {isMobile ? (
             <div className="space-y-3">

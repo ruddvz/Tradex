@@ -45,6 +45,8 @@ export function MobileNav() {
                   '/calculator',
                   '/live-readiness',
                   '/action-center',
+                  '/reports/compare',
+                  '/performance-compare',
                 ].some((p) => location.pathname.startsWith(p))
               : path === '/paper-trading'
                 ? location.pathname.startsWith('/paper') ||

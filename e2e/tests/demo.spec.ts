@@ -9,7 +9,8 @@ test.describe('Tradex demo shell', () => {
 
   test('journal route loads trade list', async ({ page }) => {
     await page.goto('/Tradex/journal');
-    await expect(page.getByText(/trades recorded/i)).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByRole('heading', { name: 'Journal' })).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByPlaceholder(/search symbol/i)).toBeVisible();
   });
 
   test('mobile nav includes Risk and More', async ({ page }) => {

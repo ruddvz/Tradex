@@ -7,7 +7,7 @@
 }
 
 .tx-page-clear-top {
-  padding-top: var(--tx-header-h);
+  padding-top: 0;
 }
 
 .tx-page-clear-bottom {
@@ -43,6 +43,10 @@
 }
 
 .page-shell {
+  padding-top: 0;
+}
+
+.page-shell--with-header-only {
   padding-top: var(--tx-header-h);
 }
 

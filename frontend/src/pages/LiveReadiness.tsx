@@ -59,9 +59,8 @@ export function LiveReadiness() {
             <div>
               <h2 className="font-semibold text-white">Live execution disabled</h2>
               <p className="text-sm text-slate-400 mt-1">
-                Tradex routes automated orders to the paper simulator only. The broker adapter
-                raises an error if live placement is attempted. Use this checklist to see what you
-                should complete before live trading is even discussed.
+                Live broker execution is disabled. TradeX must prove paper performance, risk controls,
+                audit logs, and manual safety checks before live execution is even considered.
               </p>
             </div>
           </div>

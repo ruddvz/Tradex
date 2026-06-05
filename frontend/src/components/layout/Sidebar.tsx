@@ -52,8 +52,9 @@ const navGroups = [
     title: 'Control',
     items: [
       { path: '/risk', label: 'Risk Center', icon: ShieldAlert },
-      { path: '/calculator', label: 'Calculator', icon: Calculator },
       { path: '/propfirm', label: 'Prop Firm', icon: Target },
+      { path: '/calculator', label: 'Calculator', icon: Calculator },
+      { path: '/action-center', label: 'Action Center', icon: Zap },
       { path: '/settings', label: 'Settings', icon: Settings },
     ],
   },
@@ -86,7 +87,7 @@ export function Sidebar() {
 
   const navLinkClass = (isActive: boolean, expanded: boolean) =>
     clsx(
-      'relative flex items-center rounded-lg transition-all duration-200 group',
+      'relative flex min-h-[44px] items-center rounded-[var(--tx-r-16)] transition-all duration-200 group',
       expanded ? 'gap-3 px-3 py-2.5' : 'justify-center px-0 py-2.5',
       isActive
         ? 'text-brand-400 bg-brand-500/10 border border-brand-500/20'
@@ -98,7 +99,7 @@ export function Sidebar() {
       className={clsx(
         'no-print fixed left-0 top-0 h-screen z-40 flex flex-col transition-all duration-300 ease-in-out',
         'bg-surface border-r border-surface-border shadow-xl',
-        sidebarOpen ? 'w-64' : 'w-16'
+        sidebarOpen ? 'w-[var(--tx-sidebar-w)]' : 'w-[var(--tx-sidebar-w-collapsed)]'
       )}
     >
       {/* Logo */}

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { BarChart3, Download, TrendingUp, TrendingDown, Target, Zap, Clock } from 'lucide-react';
+import { BarChart3, TrendingUp, TrendingDown, Target, Zap, Clock } from 'lucide-react';
 import { subDays, parseISO } from 'date-fns';
 import { Header } from '../components/layout/Header';
 import { useStore } from '../store/useStore';
@@ -28,6 +28,11 @@ import {
 import { clsx } from 'clsx';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
+import { DateRangeToolbar } from '../components/layout/DateRangeToolbar';
+import { TxPage } from '../components/ui/TxPage';
+import { ReportHero } from '../components/reports/ReportHero';
+import { ExportReportButton } from '../components/reports/ExportReportButton';
+import { resolveDataViewMode } from '../lib/resolveDataViewMode';
 
 const CustomTooltip = ({
   active,
@@ -66,8 +71,14 @@ const TAB_ITEMS = [
 ];
 
 export function Reports() {
-  const { trades, selectedDateRange, setDateRange, dataMode, metrics, refreshAnalyticsFromApi } =
-    useStore();
+  const {
+    trades,
+    selectedDateRange,
+    dataMode,
+    paperModeActive,
+    metrics,
+    refreshAnalyticsFromApi,
+  } = useStore();
 
   useEffect(() => {
     if (dataMode === 'live') void refreshAnalyticsFromApi();
@@ -359,20 +370,14 @@ export function Reports() {
       <Header
         title="Reports"
         subtitle="Performance analytics for the selected range"
-        action={
-          <button
-            type="button"
-            className="no-print btn-secondary text-sm"
-            onClick={() => window.print()}
-          >
-            <Download className="w-4 h-4" /> Export PDF
-          </button>
-        }
+        compact
+        action={<span className="hidden md:inline-flex"><ExportReportButton /></span>}
       />
 
       <ModeHeaderStrip />
+      <DateRangeToolbar className="py-2" />
 
-      <div className="page-shell px-6 pt-4 pb-8 space-y-5">
+      <TxPage density="dashboard" className="space-y-5">
         <div className="flex flex-wrap items-center gap-2">
           <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
           <Link
@@ -387,23 +392,20 @@ export function Reports() {
             </span>
           )}
         </div>
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap gap-2">
-            {RANGE_KEYS.map(({ key, label }) => (
-              <button
-                key={key}
-                type="button"
-                className={clsx('chip', selectedDateRange === key && 'chip-active')}
-                onClick={() => setDateRange(key)}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          <p className="text-xs text-slate-500">{tradesInRange.length} trades in range</p>
-        </div>
+        <ReportHero
+          periodLabel={RANGE_KEYS.find((r) => r.key === selectedDateRange)?.label ?? 'Period'}
+          netPnl={`${m.totalPnl >= 0 ? '+' : ''}$${m.totalPnl.toFixed(0)}`}
+          profitFactor={m.profitFactor.toFixed(2)}
+          maxDrawdown={`${m.maxDrawdown.toFixed(1)}%`}
+          sampleSize={tradesInRange.length}
+          mode={resolveDataViewMode({ dataMode, paperModeActive })}
+          lowSampleWarning={tradesInRange.length > 0 && tradesInRange.length < 20}
+        />
 
-        <SegmentedControl items={TAB_ITEMS} value={tab} onChange={setTab} />
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <SegmentedControl items={TAB_ITEMS} value={tab} onChange={setTab} />
+          <ExportReportButton />
+        </div>
 
         {emptyRange ? (
           <div className="card p-12 text-center text-slate-500">
@@ -453,7 +455,7 @@ export function Reports() {
             )}
           </>
         )}
-      </div>
+      </TxPage>
     </div>
   );
 }

@@ -114,6 +114,10 @@ export function More() {
       <Header title="More" subtitle="Secondary tools and settings" showDateRange={false} compact />
       <ModeHeaderStrip />
       <TxPage title="More" subtitle="Automation, performance, planning, and account">
+        <div className="rounded-[var(--tx-r-20)] border border-[var(--tx-line-1)] bg-[var(--tx-surface-1)] px-4 py-3 text-sm text-[var(--tx-text-2)]">
+          {dataMode === 'demo' ? 'Demo data' : 'Live journal'} · Live execution disabled · Risk
+          monitoring active
+        </div>
         <MoreGrid sections={sections} />
       </TxPage>
     </div>

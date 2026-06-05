@@ -31,7 +31,7 @@ export function TxPage({
   return (
     <div
       className={clsx(
-        'mx-auto w-full tx-page-clear-bottom',
+        'mx-auto w-full tx-page-clear-bottom tx-page-clear-top',
         MAX_W[maxWidth],
         density === 'compact' && 'px-3 py-4 space-y-4',
         density === 'standard' &&

@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from 'react';
-import { Search, Download, Plus, Clock, Trash2, BarChart3, ImagePlus, Save } from 'lucide-react';
+import { Download, Plus, Clock, Trash2, BarChart3, ImagePlus, Save } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { AddTradeModal } from '../components/journal/AddTradeModal';
 import { useStore } from '../store/useStore';
@@ -13,6 +13,15 @@ import type { Trade } from '../types';
 import { EmptyState } from '../components/common/EmptyState';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
+import { BottomActionBar } from '../components/layout/BottomActionBar';
+import { TxPage } from '../components/ui/TxPage';
+import { TxButton } from '../components/ui/TxButton';
+import { TxSearchField } from '../components/ui/TxSearchField';
+import { PageToolbar } from '../components/layout/PageToolbar';
+import {
+  TradeFilterSheet,
+  type JournalFilterState,
+} from '../components/journal/TradeFilterSheet';
 import { JournalTradeCard } from '../components/journal/JournalTradeCard';
 
 const emotionEmojis: Record<string, string> = {
@@ -379,8 +388,19 @@ export function Journal() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const [addTradeOpen, setAddTradeOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   const symbols = useMemo(() => Array.from(new Set(trades.map((t) => t.symbol))).sort(), [trades]);
+  const strategies = useMemo(
+    () => Array.from(new Set(trades.map((t) => t.strategy).filter(Boolean))).sort(),
+    [trades]
+  );
+  const sheetFilters: JournalFilterState = {
+    status: outFilter === 'all' ? 'all' : outFilter === 'WIN' ? 'WIN' : 'LOSS',
+    symbol: symbolFilter === 'all' ? '' : symbolFilter,
+    strategy: '',
+    session: '',
+  };
 
   const symbolCounts = useMemo(() => {
     const m = new Map<string, number>();
@@ -438,15 +458,16 @@ export function Journal() {
 
   return (
     <div className="min-h-screen">
-      <Header
-        title="Journal"
-        subtitle={`${trades.length} trades recorded`}
-        onAddTrade={() => setAddTradeOpen(true)}
-      />
+      <Header title="Journal" subtitle={`${trades.length} trades recorded`} compact showDateRange={false} />
 
       <ModeHeaderStrip />
 
-      <div className="page-shell p-6 space-y-5 pb-28 md:pb-6">
+      <TxPage density="dashboard" className="space-y-5 pb-28 md:pb-6">
+        {dataMode === 'demo' && (
+          <div className="rounded-[var(--tx-r-20)] border border-[var(--tx-warning)]/30 bg-[var(--tx-warning-soft)] px-4 py-2 text-xs text-[var(--tx-warning)]">
+            Demo data — sample trades only. Sign in to load your live journal.
+          </div>
+        )}
         {dataMode === 'live' && (
           <div className="flex flex-wrap items-center gap-2">
             <DataSourceBadge source="live" />
@@ -507,16 +528,27 @@ export function Journal() {
           ))}
         </div>
 
+        <PageToolbar onFilter={() => setFilterOpen(true)} filterLabel="Filter trades" />
+
+        <TradeFilterSheet
+          open={filterOpen}
+          onClose={() => setFilterOpen(false)}
+          filters={sheetFilters}
+          symbols={symbols}
+          strategies={strategies}
+          onChange={(next) => {
+            setOutFilter(next.status === 'all' ? 'all' : next.status);
+            setSymbolFilter(next.symbol || 'all');
+          }}
+        />
+
         <div className="space-y-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-            <input
-              className="input pl-10 min-h-[48px]"
-              placeholder="Search symbol, strategy, notes…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
+          <TxSearchField
+            placeholder="Search symbol, strategy, notes…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            aria-label="Search trades"
+          />
 
           <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
             <button
@@ -687,17 +719,14 @@ export function Journal() {
             </div>
           )}
         </div>
-      </div>
+      </TxPage>
 
-      <button
-        type="button"
-        className="fixed z-40 md:z-30 bottom-[calc(5.25rem+env(safe-area-inset-bottom))] right-5 md:bottom-8 md:right-8 rounded-full btn-primary shadow-glow min-h-[52px] min-w-[52px] px-5 flex items-center gap-2"
-        onClick={() => setAddTradeOpen(true)}
-        aria-label="Add trade"
-      >
-        <Plus className="w-5 h-5" />
-        <span className="hidden sm:inline font-semibold">Add trade</span>
-      </button>
+      <BottomActionBar>
+        <TxButton variant="primary" size="lg" fullWidth onClick={() => setAddTradeOpen(true)}>
+          <Plus className="h-5 w-5" />
+          Add trade
+        </TxButton>
+      </BottomActionBar>
 
       {selectedTrade &&
         (() => {
