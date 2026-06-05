@@ -52,6 +52,10 @@ Docker Compose:  not run in cloud VM (no docker); validate locally
 - Live broker disabled (`DisabledLiveBroker`)
 - MT5 demo fallback gates (`DEBUG` + `ALLOW_DEMO_MT5_FALLBACK`)
 - Production `SECRET_KEY` guard when `DEBUG=false`
+- Import batch API + MT5 sync batch tracking
+- CSV candle upload + `csv_upload` backtest data label
+- Strategy version snapshots on create/backtest/paper run
+- Walk-forward OOS warnings on backtest results
 
 ---
 
@@ -70,9 +74,9 @@ Docker Compose:  not run in cloud VM (no docker); validate locally
 - **Live broker order execution** — blocked in code and UI
 - **Real-money bot mode** — not a product goal
 - **Production-grade auth** — JWT in localStorage; httpOnly cookies deferred (P2)
-- **Real historical candle feeds by default** — backtests use synthetic OHLC unless CSV adapter added (P1 backlog)
-- **Import batch audit UI** — model backlog (P1.2)
-- **Walk-forward / OOS optimization** — backlog (P1.10)
+- **Real historical candle feeds by default** — backtests default to synthetic OHLC; CSV upload available
+- ~~**Import batch audit UI**~~ — done (Settings → Import History)
+- ~~**Walk-forward / OOS optimization**~~ — OOS warnings shipped; full optimization UI deferred
 
 ---
 
@@ -102,13 +106,13 @@ Docker Compose:  not run in cloud VM (no docker); validate locally
 
 ### P1 — next engineering slices
 
-1. **Import batches** — `import_batches` table + Settings → Imports UI
-2. **CSV candle provider** — upload historical OHLC for honest backtests
-3. **Strategy versioning** — immutable rule snapshots linked to backtest/paper runs
-4. **Metrics single source of truth** — backend fixtures mirrored in frontend
-5. **Walk-forward / OOS warnings** on backtest results
+1. ~~**Import batches**~~ — done (`import_batches` + Settings Import History + MT5 sync wiring)
+2. ~~**CSV candle provider**~~ — done (upload + backtest integration)
+3. ~~**Strategy versioning**~~ — done (`strategy_versions` + backtest/paper run FKs)
+4. **Metrics single source of truth** — backend fixtures mirrored in frontend (partial — journal analytics exist)
+5. ~~**Walk-forward / OOS warnings**~~ — done on backtest results
 
-### P2 — before public production
+### P2 — before public production (next)
 
 - httpOnly cookie auth + refresh rotation
 - Rate limiting + security headers

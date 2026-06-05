@@ -249,10 +249,15 @@ async def upload_trade_screenshot(
     if len(raw) > _MAX_SCREENSHOT_BYTES:
         raise HTTPException(status_code=400, detail="Image too large (max 5 MB)")
 
+    try:
+        validate_image_upload(raw, ct)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     base_dir = Path(settings.UPLOAD_ROOT) / "screenshots" / user.id
     base_dir.mkdir(parents=True, exist_ok=True)
     ext = _ALLOWED_IMAGE_TYPES[ct]
-    fname = f"{trade_id}_{slot}{ext}"
+    fname = f"{uuid.uuid4().hex}_{slot}{ext}"
     dest = base_dir / fname
 
     async with aiofiles.open(dest, "wb") as out:

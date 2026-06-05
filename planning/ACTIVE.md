@@ -22,10 +22,13 @@ P0 audit and P1 backlog are complete on branch `cursor/audit-plan-complete-32fb`
 - [x] Walk-forward OOS warnings on backtest results
 - [x] 45 pytest + verify.sh green
 
+### Recently Done (P2 partial — 2026-06-05)
+- [x] Security headers + request ID middleware
+- [x] Auth rate limiting (login/register)
+- [x] Screenshot upload magic-byte validation + randomized filenames
+
 ### Next P2 slices
 - [ ] httpOnly cookie auth + refresh rotation
-- [ ] Rate limiting + security headers
-- [ ] Upload MIME/magic-byte validation
 - [ ] Docker full-stack verification (human/local)
 - [ ] Metrics parity fixtures (Reports ↔ backend)
 
