@@ -17,7 +17,7 @@ import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
 import { clsx } from 'clsx';
 import { useState, useEffect } from 'react';
-import { clearToken, getToken } from '../lib/auth';
+import { getToken, logoutSession } from '../lib/auth';
 import { authUiEnabled } from '../lib/featureFlags';
 import { fetchRiskProfiles, updateRiskProfile, type RiskProfileRow } from '../lib/api/risk';
 import {
@@ -243,11 +243,13 @@ export function Settings() {
                 type="button"
                 className="btn-secondary mt-3 w-full sm:w-auto"
                 onClick={() => {
-                  clearToken();
-                  void hydrateLiveSession();
-                  useStore.getState().clearPaperState();
-                  showToast(authUiEnabled ? 'Signed out' : 'API session cleared');
-                  navigate('/', { replace: true });
+                  void (async () => {
+                    await logoutSession();
+                    void hydrateLiveSession();
+                    useStore.getState().clearPaperState();
+                    showToast(authUiEnabled ? 'Signed out' : 'API session cleared');
+                    navigate('/', { replace: true });
+                  })();
                 }}
               >
                 {authUiEnabled ? 'Sign out' : 'Clear saved API session'}

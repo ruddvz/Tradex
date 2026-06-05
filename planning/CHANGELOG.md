@@ -17,6 +17,15 @@
 - Next up: Plan0 manual device QA (human)
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
+## 2026-06-05 — cursor/p2-plan-complete-32fb — P2: httpOnly auth, EXIF strip, metrics parity
+- Commit: (pending)
+- Files touched: `backend/app/core/{auth_cookies,security,config,upload_validation}.py`, `backend/app/api/{deps,v1/auth_api,v1/trades_api}.py`, `backend/tests/{test_auth_refresh,test_metrics_parity}.py`, `frontend/src/lib/{auth,api/client}.ts`, `frontend/src/components/auth/{ProtectedLayout,AuthBootstrap}.tsx`, `frontend/src/pages/{Auth,Settings}.tsx`, `scripts/docker-verify.sh`, `planning/{ACTIVE,CURRENT-STATE-AND-NEXT-WORK,CHANGELOG}.md`
+- Tests added / changed: 5 (`test_auth_refresh`, `test_metrics_parity`)
+- Build: pass (`./scripts/verify.sh`)
+- Status: done
+- Next up: human Docker + device QA only
+- Notes: Access token in memory + httpOnly cookies; refresh on 401; legacy localStorage migrated once.
+
 ## 2026-06-05 — cursor/audit-plan-complete-32fb — P2: security headers, rate limits, upload validation
 - Commit: d92dbda (feat: P2 security — rate limits, security headers, upload magic-byte check)
 - Files touched: `middleware/security.py`, `middleware/rate_limit.py`, `core/upload_validation.py`, `trades_api.py`, `main.py`, `planning/ACTIVE.md`

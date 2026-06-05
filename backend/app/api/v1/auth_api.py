@@ -5,12 +5,19 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from ...core.security import create_access_token, hash_password, verify_password
+from ...core.auth_cookies import REFRESH_COOKIE, clear_auth_cookies, set_auth_cookies
+from ...core.security import (
+    create_access_token,
+    create_refresh_token,
+    decode_token,
+    hash_password,
+    verify_password,
+)
 from ...database import get_db
 from ...models.trading_account import TradingAccount, TradingAccountType
 from ...models.user import User, UserPlan
@@ -38,13 +45,20 @@ class TokenResponse(BaseModel):
     token_type: str = "bearer"
 
 
+def _issue_tokens(response: Response, user_id: str) -> TokenResponse:
+    access = create_access_token(user_id)
+    refresh = create_refresh_token(user_id)
+    set_auth_cookies(response, access_token=access, refresh_token=refresh)
+    return TokenResponse(access_token=access)
+
+
 @router.get("/health")
 async def health():
     return {"status": "ok", "version": "1.0.0", "timestamp": datetime.utcnow().isoformat()}
 
 
 @router.post("/auth/register", status_code=201)
-def register(body: UserRegister, db: Session = Depends(get_db)):
+def register(body: UserRegister, response: Response, db: Session = Depends(get_db)):
     email = body.email.lower().strip()
     existing = db.execute(select(User).where(User.email == email)).scalar_one_or_none()
     if existing:
@@ -84,19 +98,37 @@ def register(body: UserRegister, db: Session = Depends(get_db)):
     db.add(acc)
     db.commit()
 
-    token = create_access_token(user.id)
-    return TokenResponse(access_token=token)
+    return _issue_tokens(response, user.id)
 
 
 @router.post("/auth/login")
-def login(body: UserLogin, db: Session = Depends(get_db)):
+def login(body: UserLogin, response: Response, db: Session = Depends(get_db)):
     email = body.email.lower().strip()
     user = db.execute(select(User).where(User.email == email)).scalar_one_or_none()
     if user is None or not verify_password(body.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
 
-    token = create_access_token(user.id)
-    return TokenResponse(access_token=token)
+    return _issue_tokens(response, user.id)
+
+
+@router.post("/auth/refresh", response_model=TokenResponse)
+def refresh_session(request: Request, response: Response, db: Session = Depends(get_db)):
+    raw_refresh = request.cookies.get(REFRESH_COOKIE)
+    if not raw_refresh:
+        raise HTTPException(status_code=401, detail="Refresh token missing")
+    user_id = decode_token(raw_refresh, expected_type="refresh")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+    user = db.execute(select(User).where(User.id == user_id)).scalar_one_or_none()
+    if user is None:
+        raise HTTPException(status_code=401, detail="User not found")
+    return _issue_tokens(response, user.id)
+
+
+@router.post("/auth/logout")
+def logout(response: Response):
+    clear_auth_cookies(response)
+    return {"ok": True}
 
 
 @router.get("/auth/me")
