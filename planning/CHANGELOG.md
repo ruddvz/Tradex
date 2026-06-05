@@ -9,7 +9,7 @@
 ---
 
 ## 2026-06-05 — cursor/plan-complete-final-a3a6 — Frontend metrics parity in verify gate
-- Commit: 1fac24a (feat: frontend metrics parity check in verify gate)
+- Commit: 3b6450c (feat: frontend metrics parity check in verify gate)
 - Files touched: `frontend/scripts/check-metrics-parity.ts`, `frontend/src/lib/metricsParityFixture.ts`, `scripts/verify.sh`, `planning/{ACTIVE,CURRENT-STATE-AND-NEXT-WORK,CHANGELOG}.md`
 - Tests added / changed: 0 (frontend tsx check mirrors existing `test_metrics_parity.py`)
 - Build: pass (`./scripts/verify.sh` — 53 pytest, lint, metrics parity, build, e2e x3)
