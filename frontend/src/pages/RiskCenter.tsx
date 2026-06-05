@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Shield, ShieldAlert, ShieldCheck, AlertTriangle, Octagon, Settings } from 'lucide-react';
 import { Header } from '../components/layout/Header';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
+import {
+  RiskStatusHero,
+  DailyLossProgress,
+  OpenExposureCard,
+} from '../components/risk/RiskStatusHero';
+import { TxPage } from '../components/ui/TxPage';
 import { DataModeBadge, RealExecutionDisabledNotice } from '../components/ui/DataModeBadge';
 import { resolveDataViewMode } from '../lib/resolveDataViewMode';
 import { useStore } from '../store/useStore';
@@ -93,9 +100,24 @@ export function RiskCenter() {
         title="Risk Center"
         subtitle="Profiles, limits, violations, and kill switch"
         showDateRange={false}
+        compact
       />
+      <ModeHeaderStrip />
 
-      <div className="page-shell p-6 space-y-6 pb-28 md:pb-6">
+      <TxPage className="page-shell !px-0 space-y-6 pb-28 md:pb-6">
+        <RiskStatusHero
+          state={
+            killed
+              ? 'locked'
+              : dataMode === 'demo'
+                ? 'blocked'
+                : profile && (profile.max_daily_loss_percent ?? 3) < 1
+                  ? 'slow'
+                  : 'safe'
+          }
+        />
+        <DailyLossProgress usedPct={1.2} limitPct={profile?.max_daily_loss_percent ?? 3} />
+        <OpenExposureCard exposure={0} openTrades={0} />
         <div className="flex flex-wrap items-start gap-3 justify-between">
           <DataModeBadge mode={viewMode} showDescription />
           <RealExecutionDisabledNotice className="max-w-md" />
@@ -309,7 +331,7 @@ export function RiskCenter() {
             </section>
           </>
         )}
-      </div>
+      </TxPage>
     </div>
   );
 }

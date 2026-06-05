@@ -15,8 +15,6 @@ import {
   RefreshCw,
   TrendingUp,
   Award,
-  Wallet,
-  ClipboardList,
   Landmark,
   FlaskConical,
   ShieldCheck,
@@ -25,21 +23,40 @@ import {
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
-const navItems = [
-  { path: '/', label: 'Home', icon: LayoutDashboard },
-  { path: '/action-center', label: 'Action Center', icon: ClipboardList },
-  { path: '/journal', label: 'Trade Journal', icon: BookOpen },
-  { path: '/paper', label: 'Paper', icon: Wallet },
-  { path: '/playbooks', label: 'AI Playbooks', icon: Brain },
-  { path: '/paper-trading', label: 'Paper Trading', icon: Landmark },
-  { path: '/backtests', label: 'Backtests', icon: FlaskConical },
-  { path: '/risk', label: 'Risk Center', icon: ShieldAlert },
-  { path: '/live-readiness', label: 'Live readiness', icon: ShieldCheck },
-  { path: '/propfirm', label: 'Prop Firm Mode', icon: Target },
-  { path: '/notebook', label: 'Notebook', icon: NotebookPen },
-  { path: '/reports', label: 'Reports', icon: BarChart3 },
-  { path: '/reports/compare', label: 'Compare', icon: TrendingUp },
-  { path: '/calculator', label: 'Risk Calc', icon: Calculator },
+const navGroups = [
+  {
+    title: 'Trade',
+    items: [
+      { path: '/', label: 'Today', icon: LayoutDashboard },
+      { path: '/journal', label: 'Journal', icon: BookOpen },
+      { path: '/notebook', label: 'Notebook', icon: NotebookPen },
+    ],
+  },
+  {
+    title: 'Automation',
+    items: [
+      { path: '/paper-trading', label: 'Paper Bot', icon: Landmark },
+      { path: '/backtests', label: 'Backtests', icon: FlaskConical },
+      { path: '/live-readiness', label: 'Live Readiness', icon: ShieldCheck },
+    ],
+  },
+  {
+    title: 'Performance',
+    items: [
+      { path: '/reports', label: 'Reports', icon: BarChart3 },
+      { path: '/reports/compare', label: 'Compare', icon: TrendingUp },
+      { path: '/playbooks', label: 'Playbooks', icon: Brain },
+    ],
+  },
+  {
+    title: 'Control',
+    items: [
+      { path: '/risk', label: 'Risk Center', icon: ShieldAlert },
+      { path: '/calculator', label: 'Calculator', icon: Calculator },
+      { path: '/propfirm', label: 'Prop Firm', icon: Target },
+      { path: '/settings', label: 'Settings', icon: Settings },
+    ],
+  },
 ];
 
 function Tooltip({ label, children }: { label: string; children: ReactNode }) {
@@ -147,56 +164,40 @@ export function Sidebar() {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto no-scrollbar">
-        {sidebarOpen && (
-          <div className="px-2 mb-2 text-xs font-semibold text-slate-600 uppercase tracking-wider">
-            Main
-          </div>
-        )}
-        {navItems.map(({ path, label, icon: Icon }) => {
-          const isActive =
-            path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
-          const link = (
-            <NavLink to={path} title={undefined} className={navLinkClass(isActive, sidebarOpen)}>
-              {isActive && sidebarOpen && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-brand-400 rounded-r-full" />
-              )}
-              <Icon className={clsx('flex-shrink-0 w-5 h-5', isActive ? 'text-brand-400' : '')} />
-              {sidebarOpen && <span className="text-sm font-medium animate-fade-in">{label}</span>}
-            </NavLink>
-          );
-
-          return (
-            <div key={path}>{!sidebarOpen ? <Tooltip label={label}>{link}</Tooltip> : link}</div>
-          );
-        })}
-
-        {sidebarOpen && (
-          <div className="px-2 pt-4 mb-2 text-xs font-semibold text-slate-600 uppercase tracking-wider">
-            Account
-          </div>
-        )}
-        {!sidebarOpen ? (
-          <Tooltip label="Settings">
-            <NavLink
-              to="/settings"
-              className={navLinkClass(location.pathname === '/settings', sidebarOpen)}
-            >
-              <Settings className="flex-shrink-0 w-5 h-5" />
-            </NavLink>
-          </Tooltip>
-        ) : (
-          <NavLink
-            to="/settings"
-            className={navLinkClass(location.pathname === '/settings', sidebarOpen)}
-          >
-            {location.pathname === '/settings' && (
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-brand-400 rounded-r-full" />
+      <nav className="flex-1 px-2 py-4 space-y-4 overflow-y-auto no-scrollbar">
+        {navGroups.map((group) => (
+          <div key={group.title}>
+            {sidebarOpen && (
+              <div className="px-2 mb-2 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                {group.title}
+              </div>
             )}
-            <Settings className="flex-shrink-0 w-5 h-5" />
-            <span className="text-sm font-medium">Settings</span>
-          </NavLink>
-        )}
+            <div className="space-y-1">
+              {group.items.map(({ path, label, icon: Icon }) => {
+                const isActive =
+                  path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
+                const link = (
+                  <NavLink to={path} className={navLinkClass(isActive, sidebarOpen)}>
+                    {isActive && sidebarOpen && (
+                      <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-brand-400 rounded-r-full" />
+                    )}
+                    <Icon
+                      className={clsx('flex-shrink-0 w-5 h-5', isActive ? 'text-brand-400' : '')}
+                    />
+                    {sidebarOpen && (
+                      <span className="text-sm font-medium animate-fade-in">{label}</span>
+                    )}
+                  </NavLink>
+                );
+                return (
+                  <div key={path}>
+                    {!sidebarOpen ? <Tooltip label={label}>{link}</Tooltip> : link}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
       </nav>
 
       {/* Bottom Balance */}

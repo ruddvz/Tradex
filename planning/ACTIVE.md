@@ -1,34 +1,36 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **Human validation only**
+## 👉 NEXT UP: **Human validation — iOS PWA device QA**
 
-Status: [x] P2 engineering complete (2026-06-05)
+Status: [x] iOS PWA UI/UX engineering complete (2026-06-05)
 
-**Canonical state:** `planning/CURRENT-STATE-AND-NEXT-WORK.md`
+**Canonical state:** `planning/CURRENT-STATE-AND-NEXT-WORK.md`  
+**UI/UX checklist:** `planning/UI_UX_PROGRESS.md`
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** Post-audit — plan complete  
-**Branch:** `main` (merge via PR after P2)
+**Phase:** Post UI/UX redesign — device QA  
+**Branch:** `main`
 
-### Recently Done (P2 — 2026-06-05)
-- [x] httpOnly cookie auth + refresh rotation + logout
-- [x] Frontend session bootstrap (`AuthBootstrap`, `ProtectedLayout` refresh)
-- [x] EXIF strip on screenshot uploads (Pillow)
-- [x] Metrics parity golden fixture test
-- [x] `scripts/docker-verify.sh` for local full-stack check
-- [x] Auth token/cookie unit tests
+### Recently Done (iOS PWA UI/UX — 2026-06-05)
+- [x] Design tokens + Tx* component system
+- [x] 5-tab mobile nav (Today, Journal, Bot, Risk, More)
+- [x] Today cockpit hierarchy (risk → P&L → actions → bot)
+- [x] Paper Bot + Risk Center cockpit cards
+- [x] Live Readiness locked UX + Settings PWA install card
+- [x] Playbooks sample-size honesty
+- [x] verify.sh green (e2e x4)
 
 ### Human-only follow-ups
-- [ ] Docker full-stack verification (`./scripts/docker-verify.sh`)
-- [ ] Physical iPhone PWA install QA (`planning/DEVICE-QA.md`)
+- [ ] Physical iPhone PWA QA (`planning/DEVICE-QA.md`)
+- [ ] Docker full-stack verification
 - [ ] GitHub branch protection requiring CI green
 
 ---
 
 ## Notes
 
-- Verification: `./scripts/verify.sh` (53 pytest, lint, metrics parity, build, SW, e2e x3)
+- Verification: `./scripts/verify.sh`
 - Product identity: **trading performance lab** — no live execution

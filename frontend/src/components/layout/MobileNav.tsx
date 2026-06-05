@@ -1,14 +1,14 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Brain, BarChart3, Wallet } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Activity, ShieldAlert, Grid3X3 } from 'lucide-react';
 import { clsx } from 'clsx';
 
-/** Five primary destinations — sized for iPhone home indicator and 44pt touch targets. */
+/** Five-tab iPhone-first navigation — Today, Journal, Bot, Risk, More */
 const mobileNavItems = [
-  { path: '/', label: 'Home', icon: LayoutDashboard },
+  { path: '/', label: 'Today', icon: LayoutDashboard },
   { path: '/journal', label: 'Journal', icon: BookOpen },
-  { path: '/paper-trading', label: 'Paper', icon: Wallet },
-  { path: '/playbooks', label: 'AI', icon: Brain },
-  { path: '/reports', label: 'Reports', icon: BarChart3 },
+  { path: '/paper-trading', label: 'Bot', icon: Activity },
+  { path: '/risk', label: 'Risk', icon: ShieldAlert },
+  { path: '/more', label: 'More', icon: Grid3X3 },
 ] as const;
 
 export function MobileNav() {
@@ -20,24 +20,34 @@ export function MobileNav() {
       aria-label="Primary mobile"
       className={clsx(
         'fixed z-50 md:hidden',
-        'left-[max(0.5rem,env(safe-area-inset-left))]',
-        'right-[max(0.5rem,env(safe-area-inset-right))]',
-        'bottom-[max(0.5rem,env(safe-area-inset-bottom))]',
-        'min-h-[64px] rounded-[22px]',
+        'left-3 right-3',
+        'bottom-[max(10px,env(safe-area-inset-bottom))]',
+        'min-h-[64px] rounded-[var(--tx-radius-lg)]',
         'flex items-stretch justify-between gap-0.5 px-1.5 pt-2',
-        'bg-[rgba(12,18,32,0.88)] backdrop-blur-[24px]',
-        'border border-[rgba(126,146,185,0.2)]',
-        'shadow-[0_16px_48px_rgba(0,0,0,0.45)]',
-        'supports-[backdrop-filter]:bg-[rgba(12,18,32,0.78)]'
+        'bg-[var(--tx-surface-1)] backdrop-blur-[24px]',
+        'border border-[var(--tx-line-2)] shadow-[var(--tx-shadow-float)]'
       )}
-      style={{
-        paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
-      }}
+      style={{ paddingBottom: 'max(10px, env(safe-area-inset-bottom))' }}
     >
       {mobileNavItems.map(({ path, label, icon: Icon }) => {
         const isActive =
-          path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
-        const isAi = path === '/playbooks';
+          path === '/'
+            ? location.pathname === '/'
+            : path === '/more'
+              ? location.pathname === '/more' ||
+                [
+                  '/playbooks',
+                  '/reports',
+                  '/settings',
+                  '/backtests',
+                  '/propfirm',
+                  '/notebook',
+                  '/calculator',
+                  '/live-readiness',
+                  '/action-center',
+                ].some((p) => location.pathname.startsWith(p))
+              : location.pathname.startsWith(path);
+        const isRisk = path === '/risk';
         return (
           <NavLink
             key={path}
@@ -45,12 +55,12 @@ export function MobileNav() {
             end={path === '/'}
             aria-current={isActive ? 'page' : undefined}
             className={clsx(
-              'relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[16px]',
-              'min-h-[48px] min-w-[48px] px-0.5 py-1.5 transition-colors duration-200',
+              'relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[var(--tx-radius-sm)]',
+              'min-h-[52px] min-w-[48px] px-0.5 py-1.5 transition-colors duration-[var(--tx-motion-fast)]',
               'active:scale-[0.97]',
-              isActive && !isAi && 'bg-success/15 text-success',
-              isActive && isAi && 'bg-ai/15 text-ai',
-              !isActive && 'text-text-muted hover:text-text-secondary'
+              isActive && !isRisk && 'bg-[var(--tx-profit-soft)] text-[var(--tx-profit)]',
+              isActive && isRisk && 'bg-[var(--tx-warning-soft)] text-[var(--tx-warning)]',
+              !isActive && 'text-[var(--tx-text-4)]'
             )}
           >
             <Icon className="w-[22px] h-[22px] shrink-0" strokeWidth={isActive ? 2.25 : 2} />

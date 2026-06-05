@@ -8,6 +8,15 @@
 
 ---
 
+## 2026-06-05 — cursor/ios-pwa-ui-ux-a3a6 — iOS PWA UI/UX redesign (Phases 1–10)
+- Commit: af9eff2 (feat: iOS PWA UI/UX redesign — cockpit shell, Tx design system, 5-tab nav)
+- Files touched: `frontend/src/styles/tokens.css`, `frontend/src/components/ui/Tx*.tsx`, `frontend/src/components/layout/{ModeHeaderStrip,MoreGrid,MobileNav,Header,Layout,Sidebar}.tsx`, `frontend/src/pages/{Dashboard,More,PaperTrading,RiskCenter,LiveReadiness,Settings,Playbooks}.tsx`, `frontend/src/components/{dashboard,bot,risk,journal}/*`, `frontend/src/lib/{pwa,formatters,a11y,resolveTxMode}.ts`, `e2e/tests/demo.spec.ts`, `planning/{UI_UX_PROGRESS,ACTIVE,CHANGELOG}.md`
+- Tests added / changed: 1 e2e (mobile nav Risk/More)
+- Build: pass (`./scripts/verify.sh` — 53 pytest, lint, metrics parity, build, e2e x4)
+- Status: done
+- Next up: Human iPhone PWA QA (`DEVICE-QA.md`)
+- Notes: Mobile nav Today/Journal/Bot/Risk/More; Today cockpit puts risk before charts; live locked by default.
+
 ## 2026-06-05 — cursor/plan-complete-final-a3a6 — Frontend metrics parity in verify gate
 - Commit: 3b6450c (feat: frontend metrics parity check in verify gate)
 - Files touched: `frontend/scripts/check-metrics-parity.ts`, `frontend/src/lib/metricsParityFixture.ts`, `scripts/verify.sh`, `planning/{ACTIVE,CURRENT-STATE-AND-NEXT-WORK,CHANGELOG}.md`

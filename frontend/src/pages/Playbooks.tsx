@@ -3,6 +3,8 @@ import { Brain, Target, Plus, Sparkles, Loader2 } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { CreatePlaybookModal } from '../components/playbooks/CreatePlaybookModal';
 import { useToast } from '../components/ui/Toast';
+import { AIInsightTrustMeta } from '../components/ai/AIInsightTrustMeta';
+import { sampleSizeLabel } from '../lib/formatters';
 import { useStore } from '../store/useStore';
 import { Badge, PnlBadge } from '../components/ui/Badge';
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
@@ -364,6 +366,14 @@ export function Playbooks() {
                       </Badge>
                     </div>
                     <p className="text-xs text-slate-400 mb-2">{insight.description}</p>
+                    <AIInsightTrustMeta insight={insight} />
+                    <p className="text-[11px] text-slate-500 mt-2">
+                      {sampleSizeLabel(
+                        typeof insight.data?.trade_count === 'number'
+                          ? insight.data.trade_count
+                          : trades.length
+                      )}
+                    </p>
                     <div className="p-2 bg-black/20 rounded-lg">
                       <span className="text-xs font-medium text-brand-400">→ {insight.action}</span>
                     </div>

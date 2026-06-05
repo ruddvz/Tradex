@@ -3,13 +3,21 @@ import { test, expect } from '@playwright/test';
 test.describe('Tradex demo shell', () => {
   test('home loads with demo context', async ({ page }) => {
     await page.goto('/Tradex/');
-    await expect(page.getByRole('heading', { name: 'Home' })).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible({ timeout: 15_000 });
     await expect(page.getByText(/demo/i).first()).toBeVisible();
   });
 
   test('journal route loads trade list', async ({ page }) => {
     await page.goto('/Tradex/journal');
     await expect(page.getByText(/trades recorded/i)).toBeVisible({ timeout: 20_000 });
+  });
+
+  test('mobile nav includes Risk and More', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto('/Tradex/');
+    await expect(page.getByRole('navigation', { name: 'Primary mobile' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Risk' })).toBeVisible();
+    await expect(page.getByRole('link', { name: 'More' })).toBeVisible();
   });
 
   test('service worker registered in production build', async ({ page, context }) => {

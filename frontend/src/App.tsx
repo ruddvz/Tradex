@@ -43,6 +43,7 @@ const PerformanceCompare = lazy(() =>
 const RiskCenter = lazy(() =>
   import('./pages/RiskCenter').then((m) => ({ default: m.RiskCenter }))
 );
+const More = lazy(() => import('./pages/More').then((m) => ({ default: m.More })));
 
 const AppShell = requireLogin ? ProtectedLayout : Layout;
 
@@ -154,6 +155,14 @@ const router = createBrowserRouter(
               element: (
                 <Suspense fallback={<RouteFallback />}>
                   <RiskCenter />
+                </Suspense>
+              ),
+            },
+            {
+              path: 'more',
+              element: (
+                <Suspense fallback={<RouteFallback />}>
+                  <More />
                 </Suspense>
               ),
             },
