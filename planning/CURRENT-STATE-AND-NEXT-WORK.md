@@ -26,13 +26,14 @@ TradeX is a **trading performance lab** — journal trades, import MT5 history, 
 | Strategy runner | Done | Paper-only ticks; `DisabledLiveBroker` blocks live |
 | AI trust layer | Done | Phrase scrub + metadata (`data_used`, `confidence`, `limitations`) |
 | Risk Center | Done | `/risk`, profiles, violations, kill switch |
-| Verification gate | Done | `./scripts/verify.sh` — pytest, lint, build, SW, e2e |
+| Verification gate | Done | `./scripts/verify.sh` — pytest, lint, metrics parity, build, SW, e2e |
 
 ### Latest verification run (2026-06-05, cloud agent)
 
 ```
 Backend pytest:  53 passed (P2 auth cookies, metrics parity)
 Frontend lint:   pass
+Metrics parity:  pass (backend pytest + frontend tsx golden fixture)
 Frontend build:  pass
 Service worker:  dist/sw.js present
 Playwright e2e:  3 passed

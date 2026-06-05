@@ -6,11 +6,15 @@ cd "$ROOT"
 
 echo "== Backend pytest =="
 cd backend
+python3 -m pip install -q -r requirements-ci.txt
 python3 -m pytest tests/ -q --tb=short
 
 echo "== Frontend lint =="
 cd "$ROOT/frontend"
 npm run lint
+
+echo "== Frontend metrics parity =="
+npx --yes tsx scripts/check-metrics-parity.ts
 
 echo "== Frontend build =="
 npm run build

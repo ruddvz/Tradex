@@ -30,5 +30,5 @@ Status: [x] P2 engineering complete (2026-06-05)
 
 ## Notes
 
-- Verification: `./scripts/verify.sh` (53 pytest, lint, build, SW, e2e x3)
+- Verification: `./scripts/verify.sh` (53 pytest, lint, metrics parity, build, SW, e2e x3)
 - Product identity: **trading performance lab** — no live execution
