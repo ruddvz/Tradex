@@ -1,9 +1,9 @@
 """
 AI Service: Uses OpenAI to generate trading insights from performance data.
 """
-from typing import List, Dict, Any, Optional
-import json
 
+import json
+from typing import Any, Dict, List, Optional
 
 SYSTEM_PROMPT = """You are an expert trading performance analyst AI embedded in Tradex, 
 a professional trading journal platform. You analyze traders' performance data and provide 
@@ -61,6 +61,7 @@ async def generate_ai_insights(
 
     try:
         from openai import AsyncOpenAI
+
         client = AsyncOpenAI(api_key=api_key)
 
         response = await client.chat.completions.create(
@@ -95,79 +96,107 @@ def _generate_rule_based_insights(
 
     # Win rate analysis
     if win_rate >= 65:
-        insights.append({
-            "type": "achievement", "impact": "high",
-            "title": f"Strong {win_rate}% Win Rate",
-            "description": f"Your {win_rate}% win rate is above the professional trader benchmark of 60%. "
-                           f"This places you in the top tier of consistent traders.",
-            "action": "Maintain your current trade selection criteria and avoid overtrading to preserve this edge.",
-        })
+        insights.append(
+            {
+                "type": "achievement",
+                "impact": "high",
+                "title": f"Strong {win_rate}% Win Rate",
+                "description": f"Your {win_rate}% win rate is above the professional trader benchmark of 60%. "
+                f"This places you in the top tier of consistent traders.",
+                "action": "Maintain your current trade selection criteria and avoid overtrading to preserve this edge.",
+            }
+        )
     elif win_rate < 50:
-        insights.append({
-            "type": "warning", "impact": "high",
-            "title": f"Win Rate Below 50% ({win_rate}%)",
-            "description": f"Your {win_rate}% win rate means you lose more often than you win. "
-                           f"This is only sustainable with a high R:R ratio.",
-            "action": "Focus on improving trade selection or increase your minimum R:R requirement to 1:3.",
-        })
+        insights.append(
+            {
+                "type": "warning",
+                "impact": "high",
+                "title": f"Win Rate Below 50% ({win_rate}%)",
+                "description": f"Your {win_rate}% win rate means you lose more often than you win. "
+                f"This is only sustainable with a high R:R ratio.",
+                "action": "Focus on improving trade selection or increase your minimum R:R requirement to 1:3.",
+            }
+        )
 
     # Drawdown analysis
     if max_dd > 15:
-        insights.append({
-            "type": "warning", "impact": "high",
-            "title": f"High Drawdown at {max_dd:.1f}%",
-            "description": f"Your maximum drawdown of {max_dd:.1f}% is dangerously high. "
-                           f"Professional risk management targets <10% max drawdown.",
-            "action": "Immediately reduce position sizes to 0.5% risk per trade until drawdown recovers.",
-        })
+        insights.append(
+            {
+                "type": "warning",
+                "impact": "high",
+                "title": f"High Drawdown at {max_dd:.1f}%",
+                "description": f"Your maximum drawdown of {max_dd:.1f}% is dangerously high. "
+                f"Professional risk management targets <10% max drawdown.",
+                "action": "Immediately reduce position sizes to 0.5% risk per trade until drawdown recovers.",
+            }
+        )
     elif max_dd <= 5:
-        insights.append({
-            "type": "achievement", "impact": "medium",
-            "title": f"Excellent Risk Control ({max_dd:.1f}% DD)",
-            "description": f"Your {max_dd:.1f}% max drawdown demonstrates exceptional risk management discipline.",
-            "action": "Your risk management is excellent. Consider gradually increasing position sizes to 1.5%.",
-        })
+        insights.append(
+            {
+                "type": "achievement",
+                "impact": "medium",
+                "title": f"Excellent Risk Control ({max_dd:.1f}% DD)",
+                "description": f"Your {max_dd:.1f}% max drawdown demonstrates exceptional risk management discipline.",
+                "action": "Your risk management is excellent. Consider gradually increasing position sizes to 1.5%.",
+            }
+        )
 
     # Profit factor
     if profit_factor >= 3:
-        insights.append({
-            "type": "pattern", "impact": "high",
-            "title": f"Elite Profit Factor of {profit_factor}x",
-            "description": f"A {profit_factor}x profit factor means you earn ${profit_factor:.1f} for every $1 risked. "
-                           f"Hedge funds target 1.5x; you're significantly above.",
-            "action": "Document exactly what is working and create formal playbook entries for your best setups.",
-        })
+        insights.append(
+            {
+                "type": "pattern",
+                "impact": "high",
+                "title": f"Elite Profit Factor of {profit_factor}x",
+                "description": f"A {profit_factor}x profit factor means you earn ${profit_factor:.1f} for every $1 risked. "
+                f"Hedge funds target 1.5x; you're significantly above.",
+                "action": "Document exactly what is working and create formal playbook entries for your best setups.",
+            }
+        )
 
     # R:R analysis
     if avg_rr >= 2.5:
-        insights.append({
-            "type": "opportunity", "impact": "medium",
-            "title": f"Strong Risk:Reward at 1:{avg_rr}",
-            "description": f"Your average 1:{avg_rr} R:R means you can be profitable with as low as "
-                           f"{100 / (1 + avg_rr):.0f}% win rate.",
-            "action": "Your R:R is excellent. Focus on maintaining consistency rather than seeking higher targets.",
-        })
+        insights.append(
+            {
+                "type": "opportunity",
+                "impact": "medium",
+                "title": f"Strong Risk:Reward at 1:{avg_rr}",
+                "description": f"Your average 1:{avg_rr} R:R means you can be profitable with as low as "
+                f"{100 / (1 + avg_rr):.0f}% win rate.",
+                "action": "Your R:R is excellent. Focus on maintaining consistency rather than seeking higher targets.",
+            }
+        )
     elif avg_rr < 1.5:
-        insights.append({
-            "type": "warning", "impact": "medium",
-            "title": f"Low R:R Ratio (1:{avg_rr})",
-            "description": f"Your average 1:{avg_rr} R:R is below the recommended 1:2 minimum. "
-                           f"This makes consistent profitability challenging.",
-            "action": "Move your take profit targets further or tighten stop losses on each setup.",
-        })
+        insights.append(
+            {
+                "type": "warning",
+                "impact": "medium",
+                "title": f"Low R:R Ratio (1:{avg_rr})",
+                "description": f"Your average 1:{avg_rr} R:R is below the recommended 1:2 minimum. "
+                f"This makes consistent profitability challenging.",
+                "action": "Move your take profit targets further or tighten stop losses on each setup.",
+            }
+        )
 
     # Psychology
     psychology = trades_summary.get("psychology", [])
     if psychology:
         best_emotion = psychology[0]
         worst_emotion = psychology[-1] if len(psychology) > 1 else None
-        insights.append({
-            "type": "psychology", "impact": "high",
-            "title": f"'{best_emotion.get('emotion')}' is Your Best Mental State",
-            "description": f"You win {best_emotion.get('win_rate', 0)}% of trades when feeling '{best_emotion.get('emotion')}'. "
-                           + (f"Trades when '{worst_emotion.get('emotion')}' only produce {worst_emotion.get('win_rate', 0)}% win rate." if worst_emotion else ""),
-            "action": f"Build a pre-trade checklist that ensures you only enter trades when feeling '{best_emotion.get('emotion')}'.",
-        })
+        insights.append(
+            {
+                "type": "psychology",
+                "impact": "high",
+                "title": f"'{best_emotion.get('emotion')}' is Your Best Mental State",
+                "description": f"You win {best_emotion.get('win_rate', 0)}% of trades when feeling '{best_emotion.get('emotion')}'. "
+                + (
+                    f"Trades when '{worst_emotion.get('emotion')}' only produce {worst_emotion.get('win_rate', 0)}% win rate."
+                    if worst_emotion
+                    else ""
+                ),
+                "action": f"Build a pre-trade checklist that ensures you only enter trades when feeling '{best_emotion.get('emotion')}'.",
+            }
+        )
 
     return insights[:5]
 
@@ -175,17 +204,28 @@ def _generate_rule_based_insights(
 async def analyze_trade_note(note: str, api_key: Optional[str] = None) -> Dict[str, Any]:
     """Use AI to analyze a trade note for psychological patterns."""
     if not api_key:
-        return {"sentiment": "neutral", "keywords": [], "suggestion": "Add an OpenAI API key for AI note analysis."}
+        return {
+            "sentiment": "neutral",
+            "keywords": [],
+            "suggestion": "Add an OpenAI API key for AI note analysis.",
+        }
 
     try:
         from openai import AsyncOpenAI
+
         client = AsyncOpenAI(api_key=api_key)
 
         response = await client.chat.completions.create(
             model="gpt-4o-mini",
             messages=[
-                {"role": "system", "content": "You are a trading psychology analyst. Analyze this trade note for emotional state and provide JSON output."},
-                {"role": "user", "content": f'Analyze this trade note and return JSON with sentiment (positive/negative/neutral), keywords (array), and a brief suggestion:\n\n"{note}"'},
+                {
+                    "role": "system",
+                    "content": "You are a trading psychology analyst. Analyze this trade note for emotional state and provide JSON output.",
+                },
+                {
+                    "role": "user",
+                    "content": f'Analyze this trade note and return JSON with sentiment (positive/negative/neutral), keywords (array), and a brief suggestion:\n\n"{note}"',
+                },
             ],
             response_format={"type": "json_object"},
             temperature=0.3,

@@ -1,5 +1,12 @@
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
 } from 'recharts';
 import { format, parseISO } from 'date-fns';
 import { useStore } from '../../store/useStore';
@@ -19,7 +26,7 @@ const CustomTooltip = ({
   return (
     <div className="bg-surface border border-surface-border rounded-lg p-3 shadow-card text-sm">
       <p className="text-slate-400 mb-2">{label}</p>
-      {payload.map(p => (
+      {payload.map((p) => (
         <div key={p.name} className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full" style={{ background: p.color }} />
           <span className="text-slate-400 capitalize">{p.name}:</span>
@@ -44,10 +51,14 @@ function formatChartDate(date: string) {
   }
 }
 
-export function EquityCurve({ showDrawdown = false, height = 220, showSourceBadge = false }: EquityCurveProps) {
+export function EquityCurve({
+  showDrawdown = false,
+  height = 220,
+  showSourceBadge = false,
+}: EquityCurveProps) {
   const { dataMode, equityCurve } = useStore();
   const source = dataMode === 'live' && equityCurve.length > 0 ? equityCurve : mockEquityCurve;
-  const data = source.map(d => ({ ...d, date: formatChartDate(d.date) }));
+  const data = source.map((d) => ({ ...d, date: formatChartDate(d.date) }));
   const initialEquity = data[0]?.equity || 10000;
 
   return (
@@ -70,10 +81,29 @@ export function EquityCurve({ showDrawdown = false, height = 220, showSourceBadg
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(42,53,80,0.6)" />
-              <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-              <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${Number(v).toFixed(1)}%`} dataKey="drawdown" />
+              <XAxis
+                dataKey="date"
+                tick={{ fill: '#64748b', fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                interval="preserveStartEnd"
+              />
+              <YAxis
+                tick={{ fill: '#64748b', fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => `${Number(v).toFixed(1)}%`}
+                dataKey="drawdown"
+              />
               <Tooltip content={<CustomTooltip />} />
-              <Area type="monotone" dataKey="drawdown" stroke="#ef4444" fill="url(#drawdownGrad)" strokeWidth={2} name="Drawdown %" />
+              <Area
+                type="monotone"
+                dataKey="drawdown"
+                stroke="#ef4444"
+                fill="url(#drawdownGrad)"
+                strokeWidth={2}
+                name="Drawdown %"
+              />
             </AreaChart>
           ) : (
             <AreaChart data={data} margin={{ top: 5, right: 5, left: 0, bottom: 0 }}>
@@ -88,12 +118,39 @@ export function EquityCurve({ showDrawdown = false, height = 220, showSourceBadg
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(42,53,80,0.6)" />
-              <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} interval="preserveStartEnd" />
-              <YAxis tick={{ fill: '#64748b', fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `$${(Number(v) / 1000).toFixed(1)}k`} domain={['dataMin - 200', 'dataMax + 200']} />
+              <XAxis
+                dataKey="date"
+                tick={{ fill: '#64748b', fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                interval="preserveStartEnd"
+              />
+              <YAxis
+                tick={{ fill: '#64748b', fontSize: 11 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => `$${(Number(v) / 1000).toFixed(1)}k`}
+                domain={['dataMin - 200', 'dataMax + 200']}
+              />
               <Tooltip content={<CustomTooltip />} />
               <ReferenceLine y={initialEquity} stroke="#2a3550" strokeDasharray="4 4" />
-              <Area type="monotone" dataKey="balance" stroke="#4A9DFF" fill="url(#balanceGrad)" strokeWidth={1.5} name="Balance" strokeDasharray="4 2" />
-              <Area type="monotone" dataKey="equity" stroke="#2DD4A3" fill="url(#equityGrad)" strokeWidth={2.5} name="Equity" />
+              <Area
+                type="monotone"
+                dataKey="balance"
+                stroke="#4A9DFF"
+                fill="url(#balanceGrad)"
+                strokeWidth={1.5}
+                name="Balance"
+                strokeDasharray="4 2"
+              />
+              <Area
+                type="monotone"
+                dataKey="equity"
+                stroke="#2DD4A3"
+                fill="url(#equityGrad)"
+                strokeWidth={2.5}
+                name="Equity"
+              />
             </AreaChart>
           )}
         </ResponsiveContainer>

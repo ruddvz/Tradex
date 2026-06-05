@@ -1,6 +1,6 @@
 """Per-user manual / setup tasks (Action Center)."""
 
-from sqlalchemy import Column, DateTime, ForeignKey, JSON, String, Text, func
+from sqlalchemy import JSON, Column, DateTime, ForeignKey, String, Text, func
 
 from .base import Base
 

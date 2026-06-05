@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import enum
 
-from sqlalchemy import Column, DateTime, Enum as SAEnum, Float, ForeignKey, String, Text, func
+from sqlalchemy import Column, DateTime, Float, ForeignKey, String, Text, func
+from sqlalchemy import Enum as SAEnum
 
 from .base import Base
 
@@ -40,7 +41,9 @@ class PaperOrder(Base):
 
     id = Column(String, primary_key=True)
     user_id = Column(String, nullable=False, index=True)
-    paper_account_id = Column(String, ForeignKey("paper_accounts.id", ondelete="CASCADE"), nullable=False, index=True)
+    paper_account_id = Column(
+        String, ForeignKey("paper_accounts.id", ondelete="CASCADE"), nullable=False, index=True
+    )
     symbol = Column(String(32), nullable=False)
     side = Column(SAEnum(PaperOrderSide), nullable=False)
     order_type = Column(SAEnum(PaperOrderType), nullable=False, default=PaperOrderType.MARKET)

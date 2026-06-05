@@ -13,7 +13,9 @@ export function mapPaperAccountRow(row: Record<string, unknown>): PaperAccount {
     maxDailyLoss: Number(row.max_daily_loss ?? 500),
     maxRiskPerTradePercent: Number(row.max_risk_per_trade_percent ?? 1),
     isActive: Boolean(row.is_active ?? true),
-    createdAt: String(row.created_at ?? '').slice(0, 19).replace(' ', 'T'),
+    createdAt: String(row.created_at ?? '')
+      .slice(0, 19)
+      .replace(' ', 'T'),
   };
 }
 

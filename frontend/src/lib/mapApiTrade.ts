@@ -56,15 +56,10 @@ export function mapApiTradeRow(row: Record<string, unknown>): Trade {
     broker: String(row.broker ?? ''),
     account: String(row.account_id ?? ''),
     source: normalizeTradeSource(row.source),
-    screenshot:
-      typeof row.screenshot_url === 'string' ? row.screenshot_url : undefined,
+    screenshot: typeof row.screenshot_url === 'string' ? row.screenshot_url : undefined,
     screenshotBeforeUrl:
-      typeof row.screenshot_before_url === 'string'
-        ? row.screenshot_before_url
-        : undefined,
+      typeof row.screenshot_before_url === 'string' ? row.screenshot_before_url : undefined,
     screenshotAfterUrl:
-      typeof row.screenshot_after_url === 'string'
-        ? row.screenshot_after_url
-        : undefined,
+      typeof row.screenshot_after_url === 'string' ? row.screenshot_after_url : undefined,
   };
 }

@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+import uuid
 from datetime import datetime, timedelta
 from typing import Optional
-import uuid
 
 from fastapi import APIRouter, Body, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -109,10 +109,7 @@ async def sync_mt5(
     if connected:
         message = None
     elif used_demo_fallback:
-        message = (
-            "Demo sample import — not live broker data "
-            "(ALLOW_DEMO_MT5_FALLBACK + DEBUG)."
-        )
+        message = "Demo sample import — not live broker data " "(ALLOW_DEMO_MT5_FALLBACK + DEBUG)."
     return {
         "status": status,
         "import_kind": import_source,

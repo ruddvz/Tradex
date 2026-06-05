@@ -3,31 +3,29 @@ import { clsx } from 'clsx';
 /** Canonical view mode — how data on screen should be interpreted. */
 export type DataViewMode = 'demo' | 'live_journal' | 'paper' | 'backtest';
 
-const MODE_CONFIG: Record<
-  DataViewMode,
-  { label: string; description: string; className: string }
-> = {
-  demo: {
-    label: 'Demo data',
-    description: 'Sample trades only. Not your account.',
-    className: 'border-amber-500/40 bg-amber-500/12 text-amber-200',
-  },
-  live_journal: {
-    label: 'Live journal',
-    description: 'Imported historical trades. No orders can be placed.',
-    className: 'border-emerald-500/40 bg-emerald-500/12 text-emerald-300',
-  },
-  paper: {
-    label: 'Paper mode',
-    description: 'Simulated trading. No real money.',
-    className: 'border-analytics/45 bg-analytics/12 text-analytics',
-  },
-  backtest: {
-    label: 'Backtest result',
-    description: 'Historical simulation. May not match live execution.',
-    className: 'border-purple-500/40 bg-purple-500/12 text-purple-200',
-  },
-};
+const MODE_CONFIG: Record<DataViewMode, { label: string; description: string; className: string }> =
+  {
+    demo: {
+      label: 'Demo data',
+      description: 'Sample trades only. Not your account.',
+      className: 'border-amber-500/40 bg-amber-500/12 text-amber-200',
+    },
+    live_journal: {
+      label: 'Live journal',
+      description: 'Imported historical trades. No orders can be placed.',
+      className: 'border-emerald-500/40 bg-emerald-500/12 text-emerald-300',
+    },
+    paper: {
+      label: 'Paper mode',
+      description: 'Simulated trading. No real money.',
+      className: 'border-analytics/45 bg-analytics/12 text-analytics',
+    },
+    backtest: {
+      label: 'Backtest result',
+      description: 'Historical simulation. May not match live execution.',
+      className: 'border-purple-500/40 bg-purple-500/12 text-purple-200',
+    },
+  };
 
 interface DataModeBadgeProps {
   mode: DataViewMode;

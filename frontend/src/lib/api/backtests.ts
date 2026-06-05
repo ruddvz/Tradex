@@ -79,7 +79,9 @@ export async function fetchBacktestTrades(id: string): Promise<BacktestTrade[]> 
 }
 
 export async function fetchBacktestEquity(id: string): Promise<{ date: string; equity: number }[]> {
-  const { ok, data } = await apiFetch<{ date: string; equity: number }[]>(`/backtests/${id}/equity-curve`);
+  const { ok, data } = await apiFetch<{ date: string; equity: number }[]>(
+    `/backtests/${id}/equity-curve`
+  );
   if (!ok) throw new Error(detailMessage(data));
   return Array.isArray(data) ? data : [];
 }

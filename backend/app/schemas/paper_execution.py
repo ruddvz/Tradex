@@ -13,7 +13,9 @@ class PaperOrderCreate(BaseModel):
     symbol: str = Field(min_length=2, max_length=32)
     side: str = Field(pattern="^(buy|sell|BUY|SELL)$")
     lot_size: float = Field(gt=0)
-    reference_price: float = Field(gt=0, description="Last known or user-supplied price for fill simulation")
+    reference_price: float = Field(
+        gt=0, description="Last known or user-supplied price for fill simulation"
+    )
     stop_loss: float = Field(gt=0)
     take_profit: Optional[float] = None
 

@@ -8,8 +8,8 @@ from pathlib import Path
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import sessionmaker
 
-from app.models.base import Base
 from app.models import user  # noqa: F401
+from app.models.base import Base
 
 
 def test_auto_stamp_legacy_database(monkeypatch):

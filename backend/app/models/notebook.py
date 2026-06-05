@@ -1,6 +1,6 @@
 """Notebook entry ORM — stored per user."""
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, JSON, String, Text, func
+from sqlalchemy import JSON, Boolean, Column, DateTime, ForeignKey, String, Text, func
 
 from .base import Base
 

@@ -32,7 +32,19 @@
 
 ---
 
-## Phase 11 — Paper trading realism
+## Post-audit P1 (next engineering)
+
+See **`planning/CURRENT-STATE-AND-NEXT-WORK.md`** for verification evidence and backlog detail.
+
+1. Import batches — MT5/sync transparency
+2. CSV historical candles — honest backtests beyond synthetic OHLC
+3. Strategy versioning — immutable rule snapshots
+4. Metrics parity — backend as source of truth
+5. Walk-forward / OOS warnings
+
+---
+
+## Phase 11 — Paper trading realism (shipped)
 
 Make paper mode useful for learning, not pretending.
 

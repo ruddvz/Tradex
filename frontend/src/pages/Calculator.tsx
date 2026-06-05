@@ -1,5 +1,12 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Calculator as CalcIcon, AlertTriangle, CheckCircle2, TrendingUp, Copy, Check } from 'lucide-react';
+import {
+  Calculator as CalcIcon,
+  AlertTriangle,
+  CheckCircle2,
+  TrendingUp,
+  Copy,
+  Check,
+} from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { RiskPath } from '../components/calculator/RiskPath';
 import { clsx } from 'clsx';
@@ -7,6 +14,7 @@ import { useStore } from '../store/useStore';
 import { getToken } from '../lib/auth';
 import { fetchRiskProfiles } from '../lib/api/risk';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
+import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
 
 const instruments = [
   { name: 'XAUUSD', pip: 0.01, pipValue: 1.0 },
@@ -32,7 +40,7 @@ export function Calculator() {
   const [symbol, setSymbol] = useState('XAUUSD');
   const [copied, setCopied] = useState(false);
 
-  const inst = instruments.find(i => i.name === symbol) || instruments[0];
+  const inst = instruments.find((i) => i.name === symbol) || instruments[0];
 
   const calc = useMemo(() => {
     const riskAmount = accountBalance * (riskPercent / 100);
@@ -86,25 +94,35 @@ export function Calculator() {
     <div className="min-h-screen">
       <Header title="Risk Calculator" subtitle="Position sizing & risk engine (Ui.md §10.6)" />
 
+      <PageDataTrustBar />
+
       <div className="page-shell p-6 pb-28">
         <div className="flex flex-wrap items-center gap-2 mb-4 max-w-3xl mx-auto">
           <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
           {dataMode === 'live' && (
-            <span className="text-xs text-slate-500">Balance and risk % seeded from your account and risk profile.</span>
+            <span className="text-xs text-slate-500">
+              Balance and risk % seeded from your account and risk profile.
+            </span>
           )}
         </div>
         <div className="max-w-3xl mx-auto space-y-5">
           <div className="flex gap-2">
             <button
               type="button"
-              className={clsx('chip flex-1 justify-center min-h-[44px]', mode === 'position' && 'chip-active')}
+              className={clsx(
+                'chip flex-1 justify-center min-h-[44px]',
+                mode === 'position' && 'chip-active'
+              )}
               onClick={() => setMode('position')}
             >
               Position size
             </button>
             <button
               type="button"
-              className={clsx('chip flex-1 justify-center min-h-[44px]', mode === 'risk' && 'chip-active')}
+              className={clsx(
+                'chip flex-1 justify-center min-h-[44px]',
+                mode === 'risk' && 'chip-active'
+              )}
               onClick={() => setMode('risk')}
             >
               Risk analysis
@@ -120,23 +138,33 @@ export function Calculator() {
               </div>
               <div>
                 <div className="text-[10px] uppercase tracking-wide text-slate-500">Risk</div>
-                <div className="text-lg font-bold text-red-400 tabular-nums">${calc.riskAmount}</div>
+                <div className="text-lg font-bold text-red-400 tabular-nums">
+                  ${calc.riskAmount}
+                </div>
               </div>
               <div>
                 <div className="text-[10px] uppercase tracking-wide text-slate-500">R:R</div>
-                <div className={clsx('text-lg font-bold tabular-nums', calc.isGoodRR ? 'text-brand-400' : 'text-amber-400')}>
+                <div
+                  className={clsx(
+                    'text-lg font-bold tabular-nums',
+                    calc.isGoodRR ? 'text-brand-400' : 'text-amber-400'
+                  )}
+                >
                   1:{calc.rr}
                 </div>
               </div>
               <div>
                 <div className="text-[10px] uppercase tracking-wide text-slate-500">Reward</div>
-                <div className="text-lg font-bold text-brand-400 tabular-nums">${calc.potentialProfit}</div>
+                <div className="text-lg font-bold text-brand-400 tabular-nums">
+                  ${calc.potentialProfit}
+                </div>
               </div>
             </div>
             {slInvalid && (
               <p className="text-xs text-amber-400 mt-2 px-2 flex items-center gap-1">
                 <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                Stop loss is on the wrong side of entry for this direction — fix SL before trading live.
+                Stop loss is on the wrong side of entry for this direction — fix SL before trading
+                live.
               </p>
             )}
           </div>
@@ -158,12 +186,14 @@ export function Calculator() {
               <div>
                 <label className="label">Account Balance (USD)</label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
+                    $
+                  </span>
                   <input
                     type="number"
                     className="input pl-7 min-h-[52px]"
                     value={accountBalance}
-                    onChange={e => setAccountBalance(Number(e.target.value))}
+                    onChange={(e) => setAccountBalance(Number(e.target.value))}
                   />
                 </div>
               </div>
@@ -172,7 +202,7 @@ export function Calculator() {
                 <label className="label">Risk Per Trade</label>
                 <div className="space-y-2">
                   <div className="flex gap-1.5">
-                    {presetRisks.map(r => (
+                    {presetRisks.map((r) => (
                       <button
                         key={r}
                         type="button"
@@ -195,7 +225,7 @@ export function Calculator() {
                       max="5"
                       step="0.1"
                       value={riskPercent}
-                      onChange={e => setRiskPercent(Number(e.target.value))}
+                      onChange={(e) => setRiskPercent(Number(e.target.value))}
                       className="w-full accent-brand-500 min-h-[44px]"
                     />
                     <div className="flex justify-between text-xs text-slate-600 mt-0.5">
@@ -209,8 +239,12 @@ export function Calculator() {
 
               <div>
                 <label className="label">Instrument</label>
-                <select className="select min-h-[52px]" value={symbol} onChange={e => setSymbol(e.target.value)}>
-                  {instruments.map(i => (
+                <select
+                  className="select min-h-[52px]"
+                  value={symbol}
+                  onChange={(e) => setSymbol(e.target.value)}
+                >
+                  {instruments.map((i) => (
                     <option key={i.name} value={i.name}>
                       {i.name}
                     </option>
@@ -240,7 +274,7 @@ export function Calculator() {
                   step="0.0001"
                   className="input min-h-[52px]"
                   value={entryPrice}
-                  onChange={e => setEntryPrice(Number(e.target.value))}
+                  onChange={(e) => setEntryPrice(Number(e.target.value))}
                 />
               </div>
 
@@ -249,9 +283,12 @@ export function Calculator() {
                 <input
                   type="number"
                   step="0.0001"
-                  className={clsx('input min-h-[52px]', slInvalid && 'border-amber-500/70 ring-2 ring-amber-500/25')}
+                  className={clsx(
+                    'input min-h-[52px]',
+                    slInvalid && 'border-amber-500/70 ring-2 ring-amber-500/25'
+                  )}
                   value={stopLoss}
-                  onChange={e => setStopLoss(Number(e.target.value))}
+                  onChange={(e) => setStopLoss(Number(e.target.value))}
                 />
               </div>
 
@@ -262,7 +299,7 @@ export function Calculator() {
                   step="0.0001"
                   className="input min-h-[52px] border-brand-500/30 focus:ring-brand-500/30"
                   value={takeProfit}
-                  onChange={e => setTakeProfit(Number(e.target.value))}
+                  onChange={(e) => setTakeProfit(Number(e.target.value))}
                 />
               </div>
             </div>
@@ -292,18 +329,30 @@ export function Calculator() {
                       className="p-1.5 rounded hover:bg-surface-border text-slate-400 hover:text-white transition-colors"
                       title="Copy lot size"
                     >
-                      {copied ? <Check className="w-4 h-4 text-brand-400" /> : <Copy className="w-4 h-4" />}
+                      {copied ? (
+                        <Check className="w-4 h-4 text-brand-400" />
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
                     </button>
                   </div>
                   <div className="text-xl font-bold text-white">{calc.lotSize} lots</div>
                 </div>
                 {[
                   { label: 'Risk amount', value: `$${calc.riskAmount}`, color: 'text-red-400' },
-                  { label: 'Potential profit', value: `$${calc.potentialProfit}`, color: 'text-brand-400' },
-                  { label: 'Risk:Reward', value: `1:${calc.rr}`, color: calc.isGoodRR ? 'text-brand-400' : 'text-amber-400' },
+                  {
+                    label: 'Potential profit',
+                    value: `$${calc.potentialProfit}`,
+                    color: 'text-brand-400',
+                  },
+                  {
+                    label: 'Risk:Reward',
+                    value: `1:${calc.rr}`,
+                    color: calc.isGoodRR ? 'text-brand-400' : 'text-amber-400',
+                  },
                   { label: 'SL pips', value: `${calc.slPips} pips`, color: 'text-red-400' },
                   { label: 'TP pips', value: `${calc.tpPips} pips`, color: 'text-brand-400' },
-                ].map(r => (
+                ].map((r) => (
                   <div key={r.label} className="bg-dark-300 rounded-xl p-4">
                     <div className="text-xs text-slate-500 mb-1">{r.label}</div>
                     <div className={clsx('text-xl font-bold', r.color)}>{r.value}</div>
@@ -314,7 +363,9 @@ export function Calculator() {
               <div
                 className={clsx(
                   'p-4 rounded-xl border flex items-center gap-3',
-                  calc.isGoodRR ? 'bg-brand-500/5 border-brand-500/20' : 'bg-amber-500/5 border-amber-500/20'
+                  calc.isGoodRR
+                    ? 'bg-brand-500/5 border-brand-500/20'
+                    : 'bg-amber-500/5 border-amber-500/20'
                 )}
               >
                 {calc.isGoodRR ? (
@@ -323,7 +374,12 @@ export function Calculator() {
                   <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
                 )}
                 <div>
-                  <p className={clsx('text-sm font-semibold', calc.isGoodRR ? 'text-brand-400' : 'text-amber-400')}>
+                  <p
+                    className={clsx(
+                      'text-sm font-semibold',
+                      calc.isGoodRR ? 'text-brand-400' : 'text-amber-400'
+                    )}
+                  >
                     {calc.isGoodRR ? 'Strong risk:reward' : 'Weak risk:reward'}
                   </p>
                   <p className="text-xs text-slate-400 mt-0.5">
@@ -338,8 +394,8 @@ export function Calculator() {
                 <div className="rounded-xl border border-surface-border bg-dark-300/50 p-4 text-sm text-slate-300">
                   <p className="font-semibold text-white mb-2">Analysis mode</p>
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Use this view to sanity-check distance to stop vs target. Pair the risk path above with your session
-                    rules — never widen stops emotionally after entry.
+                    Use this view to sanity-check distance to stop vs target. Pair the risk path
+                    above with your session rules — never widen stops emotionally after entry.
                   </p>
                 </div>
               )}
@@ -350,12 +406,35 @@ export function Calculator() {
             <h3 className="font-semibold text-white mb-3">Risk management guidelines</h3>
             <div className="space-y-2">
               {[
-                { rule: 'Risk per trade', rec: '0.5% - 2%', current: `${riskPercent}%`, ok: riskPercent <= 2 },
-                { rule: 'Min R:R ratio', rec: '1:1.5 or better', current: `1:${calc.rr}`, ok: calc.rr >= 1.5 },
-                { rule: 'Max daily risk', rec: '3% - 5% of account', current: `Est. ${(riskPercent * 3).toFixed(0)}%`, ok: riskPercent * 3 <= 5 },
-                { rule: 'Stop placement', rec: 'Beyond structure', current: slInvalid ? 'Invalid side' : 'OK', ok: !slInvalid },
-              ].map(r => (
-                <div key={r.rule} className="flex items-center justify-between p-3 bg-dark-300 rounded-lg">
+                {
+                  rule: 'Risk per trade',
+                  rec: '0.5% - 2%',
+                  current: `${riskPercent}%`,
+                  ok: riskPercent <= 2,
+                },
+                {
+                  rule: 'Min R:R ratio',
+                  rec: '1:1.5 or better',
+                  current: `1:${calc.rr}`,
+                  ok: calc.rr >= 1.5,
+                },
+                {
+                  rule: 'Max daily risk',
+                  rec: '3% - 5% of account',
+                  current: `Est. ${(riskPercent * 3).toFixed(0)}%`,
+                  ok: riskPercent * 3 <= 5,
+                },
+                {
+                  rule: 'Stop placement',
+                  rec: 'Beyond structure',
+                  current: slInvalid ? 'Invalid side' : 'OK',
+                  ok: !slInvalid,
+                },
+              ].map((r) => (
+                <div
+                  key={r.rule}
+                  className="flex items-center justify-between p-3 bg-dark-300 rounded-lg"
+                >
                   <div className="flex items-center gap-2">
                     {r.ok ? (
                       <CheckCircle2 className="w-4 h-4 text-brand-400" />
@@ -365,7 +444,14 @@ export function Calculator() {
                     <span className="text-sm text-slate-300">{r.rule}</span>
                   </div>
                   <div className="text-right">
-                    <div className={clsx('text-xs font-semibold', r.ok ? 'text-brand-400' : 'text-amber-400')}>{r.current}</div>
+                    <div
+                      className={clsx(
+                        'text-xs font-semibold',
+                        r.ok ? 'text-brand-400' : 'text-amber-400'
+                      )}
+                    >
+                      {r.current}
+                    </div>
                     <div className="text-xs text-slate-600">{r.rec}</div>
                   </div>
                 </div>

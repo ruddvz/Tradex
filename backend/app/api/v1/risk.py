@@ -54,9 +54,15 @@ class PaperViolationOut(BaseModel):
 def list_risk_profiles(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
     ensure_default_risk_profile(db, user.id)
     db.commit()
-    rows = db.execute(
-        select(RiskProfile).where(RiskProfile.user_id == user.id).order_by(RiskProfile.created_at.asc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(RiskProfile)
+            .where(RiskProfile.user_id == user.id)
+            .order_by(RiskProfile.created_at.asc())
+        )
+        .scalars()
+        .all()
+    )
     return [
         RiskProfileOut(
             id=r.id,
@@ -111,12 +117,16 @@ def list_risk_events(
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    rows = db.execute(
-        select(AuditLog)
-        .where(AuditLog.user_id == user.id)
-        .order_by(AuditLog.created_at.desc())
-        .limit(limit)
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(AuditLog)
+            .where(AuditLog.user_id == user.id)
+            .order_by(AuditLog.created_at.desc())
+            .limit(limit)
+        )
+        .scalars()
+        .all()
+    )
     return [
         AuditEventOut(
             id=r.id,
@@ -129,6 +139,7 @@ def list_risk_events(
         )
         for r in rows
     ]
+
 
 class RiskProfileUpdate(BaseModel):
     name: Optional[str] = None
@@ -149,6 +160,7 @@ def update_risk_profile(
     row = db.get(RiskProfile, profile_id)
     if not row or row.user_id != user.id:
         from fastapi import HTTPException
+
         raise HTTPException(status_code=404, detail="Risk profile not found")
     if body.name is not None:
         row.name = body.name.strip()

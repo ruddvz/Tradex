@@ -19,7 +19,9 @@ class ManualTaskCreate(BaseModel):
     description: Optional[str] = None
     category: str = Field(min_length=1, max_length=64)
     priority: Literal["critical", "high", "medium", "low"] = "medium"
-    status: Literal["not_started", "in_progress", "blocked", "done", "skipped", "failed"] = "not_started"
+    status: Literal["not_started", "in_progress", "blocked", "done", "skipped", "failed"] = (
+        "not_started"
+    )
     checklist: list[ChecklistItemIn] = Field(default_factory=list)
     action_type: Optional[Literal["internal_route", "external_url", "command", "manual"]] = None
     action_payload: Optional[dict[str, Any]] = None
@@ -32,7 +34,9 @@ class ManualTaskUpdate(BaseModel):
     description: Optional[str] = None
     category: Optional[str] = Field(default=None, min_length=1, max_length=64)
     priority: Optional[Literal["critical", "high", "medium", "low"]] = None
-    status: Optional[Literal["not_started", "in_progress", "blocked", "done", "skipped", "failed"]] = None
+    status: Optional[
+        Literal["not_started", "in_progress", "blocked", "done", "skipped", "failed"]
+    ] = None
     checklist: Optional[list[ChecklistItemIn]] = None
     action_type: Optional[Literal["internal_route", "external_url", "command", "manual"]] = None
     action_payload: Optional[dict[str, Any]] = None

@@ -85,15 +85,22 @@ export function Paper() {
 
   return (
     <div className="min-h-screen">
-      <Header title="Paper" subtitle="Virtual balance and risk-gated simulated trades" showDateRange={false} />
+      <Header
+        title="Paper"
+        subtitle="Virtual balance and risk-gated simulated trades"
+        showDateRange={false}
+      />
       <div className="page-shell px-5 py-6 space-y-6">
         <div className="flex flex-wrap items-center gap-2">
           <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
-          <Link to="/paper-trading" className="text-xs text-analytics hover:underline">Open Paper Trading →</Link>
+          <Link to="/paper-trading" className="text-xs text-analytics hover:underline">
+            Open Paper Trading →
+          </Link>
         </div>
         {dataMode === 'demo' && (
           <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-            Sign in to use paper accounts on the server. Demo mode below is read-only for this screen.
+            Sign in to use paper accounts on the server. Demo mode below is read-only for this
+            screen.
           </div>
         )}
         {error && (
@@ -102,7 +109,12 @@ export function Paper() {
           </div>
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <button type="button" className="btn-primary" disabled={loading || !getToken()} onClick={() => void onCreate()}>
+          <button
+            type="button"
+            className="btn-primary"
+            disabled={loading || !getToken()}
+            onClick={() => void onCreate()}
+          >
             New paper account
           </button>
           {accounts.length > 0 && (
@@ -124,25 +136,36 @@ export function Paper() {
           <div className="grid gap-4 md:grid-cols-3">
             <div className="card-hover p-5">
               <div className="text-xs uppercase tracking-wide text-slate-500">Balance</div>
-              <div className="text-2xl font-bold text-white">${selectedAcc.balance.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-white">
+                ${selectedAcc.balance.toLocaleString()}
+              </div>
             </div>
             <div className="card-hover p-5">
               <div className="text-xs uppercase tracking-wide text-slate-500">Equity</div>
-              <div className="text-2xl font-bold text-brand-400">${selectedAcc.equity.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-brand-400">
+                ${selectedAcc.equity.toLocaleString()}
+              </div>
             </div>
             <div className="card-hover p-5">
               <div className="text-xs uppercase tracking-wide text-slate-500">Daily loss cap</div>
-              <div className="text-2xl font-bold text-slate-200">${selectedAcc.max_daily_loss.toLocaleString()}</div>
+              <div className="text-2xl font-bold text-slate-200">
+                ${selectedAcc.max_daily_loss.toLocaleString()}
+              </div>
             </div>
           </div>
         )}
 
-        <div className={clsx('rounded-xl border border-surface-border bg-surface/60 p-5 text-sm text-slate-400')}>
+        <div
+          className={clsx(
+            'rounded-xl border border-surface-border bg-surface/60 p-5 text-sm text-slate-400'
+          )}
+        >
           <p className="mb-2 text-white font-semibold">API</p>
           <p>
-            Closed paper trades: <code className="text-brand-300">POST /api/v1/paper/trades</code> with{' '}
-            <code className="text-brand-300">paper_account_id</code>, prices, lot size, and optional stop loss for risk
-            checks. Oversized risk returns <code className="text-red-300">400</code> with a plain-language reason.
+            Closed paper trades: <code className="text-brand-300">POST /api/v1/paper/trades</code>{' '}
+            with <code className="text-brand-300">paper_account_id</code>, prices, lot size, and
+            optional stop loss for risk checks. Oversized risk returns{' '}
+            <code className="text-red-300">400</code> with a plain-language reason.
           </p>
         </div>
       </div>

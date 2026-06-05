@@ -71,7 +71,8 @@ export function Layout() {
             role="status"
             className="no-print sticky top-0 z-[25] px-4 py-2 text-center text-xs font-semibold text-amber-100 bg-amber-950/90 border-b border-amber-500/30 pt-[env(safe-area-inset-top)]"
           >
-            You are offline — showing the cached app shell. Reconnect to refresh live journal data from the API.
+            You are offline — showing the cached app shell. Reconnect to refresh live journal data
+            from the API.
           </div>
         )}
         {bootOverlay && (

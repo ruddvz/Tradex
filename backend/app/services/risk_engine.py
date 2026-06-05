@@ -11,8 +11,8 @@ from sqlalchemy.orm import Session
 
 from ..models.audit_log import AuditLog
 from ..models.bot_control import BotControl
-from ..models.paper_violation import PaperViolation
 from ..models.paper_order import PaperOrderSide
+from ..models.paper_violation import PaperViolation
 from ..models.risk_profile import RiskProfile
 
 
@@ -74,9 +74,15 @@ def get_or_create_bot_control(db: Session, user_id: str) -> BotControl:
 
 
 def get_default_risk_profile(db: Session, user_id: str) -> Optional[RiskProfile]:
-    return db.execute(
-        select(RiskProfile).where(RiskProfile.user_id == user_id).order_by(RiskProfile.created_at.asc())
-    ).scalars().first()
+    return (
+        db.execute(
+            select(RiskProfile)
+            .where(RiskProfile.user_id == user_id)
+            .order_by(RiskProfile.created_at.asc())
+        )
+        .scalars()
+        .first()
+    )
 
 
 def ensure_default_risk_profile(db: Session, user_id: str) -> RiskProfile:

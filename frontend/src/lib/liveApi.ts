@@ -94,7 +94,9 @@ export function mapApiChallenge(row: Record<string, unknown>): PropFirmChallenge
     currentPnl: Number(row.current_pnl ?? 0),
     currentDrawdown: Number(row.current_drawdown ?? 0),
     dailyLoss: Number(row.daily_loss ?? 0),
-    status: (allowed.includes(st as PropFirmChallenge['status']) ? st : 'active') as PropFirmChallenge['status'],
+    status: (allowed.includes(st as PropFirmChallenge['status'])
+      ? st
+      : 'active') as PropFirmChallenge['status'],
     phase: 'phase1',
     trades: Number(row.trades ?? 0),
     daysTraded: Number(row.days_traded ?? 0),
@@ -110,8 +112,12 @@ export function mapApiNotebookEntry(row: Record<string, unknown>): NotebookEntry
     content: String(row.content ?? ''),
     type: (allowed.includes(t as NotebookEntry['type']) ? t : 'note') as NotebookEntry['type'],
     tags: Array.isArray(row.tags) ? (row.tags as string[]) : [],
-    createdAt: String(row.created_at ?? '').slice(0, 19).replace(' ', 'T'),
-    updatedAt: String(row.updated_at ?? row.created_at ?? '').slice(0, 19).replace(' ', 'T'),
+    createdAt: String(row.created_at ?? '')
+      .slice(0, 19)
+      .replace(' ', 'T'),
+    updatedAt: String(row.updated_at ?? row.created_at ?? '')
+      .slice(0, 19)
+      .replace(' ', 'T'),
     pinned: Boolean(row.pinned),
   };
 }
@@ -119,7 +125,13 @@ export function mapApiNotebookEntry(row: Record<string, unknown>): NotebookEntry
 export function mapApiInsights(raw: Record<string, unknown>[]): AIInsight[] {
   return raw.map((ins, i) => {
     const t = String(ins.type ?? 'pattern');
-    const types: AIInsight['type'][] = ['pattern', 'warning', 'opportunity', 'achievement', 'psychology'];
+    const types: AIInsight['type'][] = [
+      'pattern',
+      'warning',
+      'opportunity',
+      'achievement',
+      'psychology',
+    ];
     const imp = String(ins.impact ?? 'medium');
     const impacts: AIInsight['impact'][] = ['high', 'medium', 'low'];
     return {
@@ -127,7 +139,9 @@ export function mapApiInsights(raw: Record<string, unknown>[]): AIInsight[] {
       type: (types.includes(t as AIInsight['type']) ? t : 'pattern') as AIInsight['type'],
       title: String(ins.title ?? 'Insight'),
       description: String(ins.description ?? ''),
-      impact: (impacts.includes(imp as AIInsight['impact']) ? imp : 'medium') as AIInsight['impact'],
+      impact: (impacts.includes(imp as AIInsight['impact'])
+        ? imp
+        : 'medium') as AIInsight['impact'],
       action: String(ins.action ?? ''),
       createdAt: new Date().toISOString(),
     };
@@ -158,7 +172,10 @@ export async function fetchTradesList(token: string): Promise<Trade[]> {
   return data.trades.map((r) => mapApiTradeRow(r));
 }
 
-export async function fetchMetrics(token: string, range: '7d' | '30d' | '90d' | 'all'): Promise<PerformanceMetrics> {
+export async function fetchMetrics(
+  token: string,
+  range: '7d' | '30d' | '90d' | 'all'
+): Promise<PerformanceMetrics> {
   const qs = dateRangeToQueryParams(range);
   const url = qs ? `/api/v1/analytics/metrics?${qs}` : '/api/v1/analytics/metrics';
   const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
@@ -199,7 +216,9 @@ export async function fetchAuthMe(token: string): Promise<Account | null> {
 }
 
 export async function fetchSetupHealth(token: string): Promise<SetupHealth | null> {
-  const res = await fetch('/api/v1/setup/health', { headers: { Authorization: `Bearer ${token}` } });
+  const res = await fetch('/api/v1/setup/health', {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   const row = (await res.json().catch(() => ({}))) as SetupHealth;
   if (!res.ok) return null;
   return row;

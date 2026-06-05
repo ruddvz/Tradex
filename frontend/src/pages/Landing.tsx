@@ -1,15 +1,61 @@
-import { TrendingUp, Brain, Target, BarChart3, Shield, Zap, CheckCircle2, ArrowRight, Star, RefreshCw, BookOpen, Calculator, NotebookPen } from 'lucide-react';
+import {
+  TrendingUp,
+  Brain,
+  Target,
+  BarChart3,
+  Shield,
+  Zap,
+  CheckCircle2,
+  ArrowRight,
+  Star,
+  RefreshCw,
+  BookOpen,
+  Calculator,
+  NotebookPen,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const features = [
-  { icon: RefreshCw,  title: 'MT5 Auto-Sync',       desc: 'Automatically import trades from MetaTrader 5. Connect 100+ brokers instantly.' },
-  { icon: Brain,      title: 'AI Pattern Detection', desc: 'Our AI analyzes your trades to surface your most profitable patterns and psychology.' },
-  { icon: BarChart3,  title: 'Deep Analytics',       desc: '20+ performance metrics including P&L, win rate, drawdown, and R-multiples.' },
-  { icon: Target,     title: 'Prop Firm Mode',        desc: 'Track FTMO-style challenges with profit targets and drawdown monitoring.' },
-  { icon: BookOpen,   title: 'Trade Journal',         desc: 'Log every trade with screenshots, emotions, tags, and detailed notes.' },
-  { icon: Calculator, title: 'Risk Calculator',       desc: 'Instantly calculate optimal lot sizes for any instrument and account size.' },
-  { icon: NotebookPen,title: 'Trading Notebook',      desc: 'Your personal knowledge base for rules, setups, lessons, and checklists.' },
-  { icon: Shield,     title: 'Bank-Level Security',   desc: '256-bit encryption with SOC 2 compliance. Your data is always safe.' },
+  {
+    icon: RefreshCw,
+    title: 'MT5 Auto-Sync',
+    desc: 'Automatically import trades from MetaTrader 5. Connect 100+ brokers instantly.',
+  },
+  {
+    icon: Brain,
+    title: 'AI Pattern Detection',
+    desc: 'Our AI analyzes your trades to surface your most profitable patterns and psychology.',
+  },
+  {
+    icon: BarChart3,
+    title: 'Deep Analytics',
+    desc: '20+ performance metrics including P&L, win rate, drawdown, and R-multiples.',
+  },
+  {
+    icon: Target,
+    title: 'Prop Firm Mode',
+    desc: 'Track FTMO-style challenges with profit targets and drawdown monitoring.',
+  },
+  {
+    icon: BookOpen,
+    title: 'Trade Journal',
+    desc: 'Log every trade with screenshots, emotions, tags, and detailed notes.',
+  },
+  {
+    icon: Calculator,
+    title: 'Risk Calculator',
+    desc: 'Instantly calculate optimal lot sizes for any instrument and account size.',
+  },
+  {
+    icon: NotebookPen,
+    title: 'Trading Notebook',
+    desc: 'Your personal knowledge base for rules, setups, lessons, and checklists.',
+  },
+  {
+    icon: Shield,
+    title: 'Bank-Level Security',
+    desc: '256-bit encryption with SOC 2 compliance. Your data is always safe.',
+  },
 ];
 
 const stats = [
@@ -20,9 +66,27 @@ const stats = [
 ];
 
 const testimonials = [
-  { name: 'Alex R.', role: 'Prop Firm Trader', text: 'Tradex helped me pass my FTMO challenge by keeping my drawdown in check. The analytics are exceptional.', rating: 5, pnl: '+$8,200' },
-  { name: 'Sarah M.', role: 'Forex Trader', text: 'The AI insights revealed I was trading at the wrong time of day. Win rate jumped 15% in one month.', rating: 5, pnl: '+$5,400' },
-  { name: 'James K.', role: 'Gold Trader', text: 'Best trading journal I\'ve used. The XAUUSD playbook feature alone is worth the subscription.', rating: 5, pnl: '+$12,100' },
+  {
+    name: 'Alex R.',
+    role: 'Prop Firm Trader',
+    text: 'Tradex helped me pass my FTMO challenge by keeping my drawdown in check. The analytics are exceptional.',
+    rating: 5,
+    pnl: '+$8,200',
+  },
+  {
+    name: 'Sarah M.',
+    role: 'Forex Trader',
+    text: 'The AI insights revealed I was trading at the wrong time of day. Win rate jumped 15% in one month.',
+    rating: 5,
+    pnl: '+$5,400',
+  },
+  {
+    name: 'James K.',
+    role: 'Gold Trader',
+    text: "Best trading journal I've used. The XAUUSD playbook feature alone is worth the subscription.",
+    rating: 5,
+    pnl: '+$12,100',
+  },
 ];
 
 export function Landing() {
@@ -63,13 +127,14 @@ export function Landing() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
-            Your Trades, Journaled.<br />
+            Your Trades, Journaled.
+            <br />
             <span className="text-gradient">Your Edge, Revealed.</span>
           </h1>
 
           <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-            The AI-powered trading journal that auto-syncs your MT5 trades, tracks every metric,
-            and helps you build real consistency in Forex, Gold, Indices & more.
+            The AI-powered trading journal that auto-syncs your MT5 trades, tracks every metric, and
+            helps you build real consistency in Forex, Gold, Indices & more.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
@@ -86,7 +151,7 @@ export function Landing() {
 
           {/* Stats */}
           <div className="flex flex-wrap items-center justify-center gap-8">
-            {stats.map(s => (
+            {stats.map((s) => (
               <div key={s.label} className="text-center">
                 <div className="text-2xl font-black text-white">{s.value}</div>
                 <div className="text-xs text-slate-500">{s.label}</div>
@@ -112,8 +177,11 @@ export function Landing() {
                 { label: 'Win Rate', value: '67.2%', color: 'text-white' },
                 { label: 'Profit Factor', value: '3.8x', color: 'text-blue-400' },
                 { label: 'Trades Today', value: '12 synced', color: 'text-amber-400' },
-              ].map(m => (
-                <div key={m.label} className="bg-dark-300 rounded-xl p-4 border border-surface-border">
+              ].map((m) => (
+                <div
+                  key={m.label}
+                  className="bg-dark-300 rounded-xl p-4 border border-surface-border"
+                >
                   <div className="text-xs text-slate-500 mb-1">{m.label}</div>
                   <div className={`text-lg font-bold ${m.color}`}>{m.value}</div>
                 </div>
@@ -140,11 +208,16 @@ export function Landing() {
       <section className="py-16 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-black text-white mb-3">Everything You Need to <span className="text-gradient">Trade Smarter</span></h2>
-            <p className="text-slate-400 max-w-xl mx-auto">7 powerful modules working together to help you analyze, track, and improve your performance.</p>
+            <h2 className="text-3xl font-black text-white mb-3">
+              Everything You Need to <span className="text-gradient">Trade Smarter</span>
+            </h2>
+            <p className="text-slate-400 max-w-xl mx-auto">
+              7 powerful modules working together to help you analyze, track, and improve your
+              performance.
+            </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {features.map(f => (
+            {features.map((f) => (
               <div key={f.title} className="card-hover p-5">
                 <div className="w-10 h-10 rounded-xl bg-brand-500/15 flex items-center justify-center mb-3">
                   <f.icon className="w-5 h-5 text-brand-400" />
@@ -165,7 +238,7 @@ export function Landing() {
             <p className="text-slate-400">Real results from real traders</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            {testimonials.map(t => (
+            {testimonials.map((t) => (
               <div key={t.name} className="card p-5">
                 <div className="flex items-center gap-1 mb-3">
                   {Array.from({ length: t.rating }).map((_, i) => (
@@ -196,17 +269,40 @@ export function Landing() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl mx-auto">
             {[
               {
-                name: 'Free', price: '$0', period: 'forever', highlight: false,
-                features: ['50 trades/month', 'Basic journal', 'Manual entry', '7-day history', 'Email support'],
+                name: 'Free',
+                price: '$0',
+                period: 'forever',
+                highlight: false,
+                features: [
+                  '50 trades/month',
+                  'Basic journal',
+                  'Manual entry',
+                  '7-day history',
+                  'Email support',
+                ],
                 cta: 'Get Started Free',
               },
               {
-                name: 'Pro', price: '$19', period: '/month', highlight: true,
-                features: ['Unlimited trades', 'MT5 Auto-sync', 'AI Pattern Detection', 'Advanced analytics', 'Notebook + Playbooks', 'Prop firm mode', 'Priority support'],
+                name: 'Pro',
+                price: '$19',
+                period: '/month',
+                highlight: true,
+                features: [
+                  'Unlimited trades',
+                  'MT5 Auto-sync',
+                  'AI Pattern Detection',
+                  'Advanced analytics',
+                  'Notebook + Playbooks',
+                  'Prop firm mode',
+                  'Priority support',
+                ],
                 cta: 'Start 3-Day Free Trial',
               },
-            ].map(p => (
-              <div key={p.name} className={`card p-6 ${p.highlight ? 'border-brand-500/40 bg-gradient-to-b from-brand-500/5 to-transparent shadow-glow-sm' : ''}`}>
+            ].map((p) => (
+              <div
+                key={p.name}
+                className={`card p-6 ${p.highlight ? 'border-brand-500/40 bg-gradient-to-b from-brand-500/5 to-transparent shadow-glow-sm' : ''}`}
+              >
                 {p.highlight && (
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-500/20 text-brand-400 text-xs font-semibold mb-3">
                     <Zap className="w-3 h-3" /> Most Popular
@@ -220,7 +316,7 @@ export function Landing() {
                   </div>
                 </div>
                 <ul className="space-y-2 mb-5">
-                  {p.features.map(f => (
+                  {p.features.map((f) => (
                     <li key={f} className="flex items-center gap-2 text-sm text-slate-300">
                       <CheckCircle2 className="w-4 h-4 text-brand-400 flex-shrink-0" />
                       {f}
@@ -229,7 +325,11 @@ export function Landing() {
                 </ul>
                 <button
                   onClick={() => navigate('/')}
-                  className={p.highlight ? 'btn-primary w-full justify-center' : 'btn-secondary w-full justify-center'}
+                  className={
+                    p.highlight
+                      ? 'btn-primary w-full justify-center'
+                      : 'btn-secondary w-full justify-center'
+                  }
                 >
                   {p.cta} <ArrowRight className="w-4 h-4" />
                 </button>
@@ -243,11 +343,18 @@ export function Landing() {
       <section className="py-16 px-6 text-center">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-black text-white mb-4">Ready to Trade Like a Pro?</h2>
-          <p className="text-slate-400 mb-8">Join 500+ traders who transformed their trading with data-driven insights.</p>
-          <button onClick={() => navigate('/')} className="btn-primary text-lg px-8 py-4 shadow-glow-lg mx-auto">
+          <p className="text-slate-400 mb-8">
+            Join 500+ traders who transformed their trading with data-driven insights.
+          </p>
+          <button
+            onClick={() => navigate('/')}
+            className="btn-primary text-lg px-8 py-4 shadow-glow-lg mx-auto"
+          >
             Start Free Trial Today <ArrowRight className="w-5 h-5" />
           </button>
-          <p className="text-xs text-slate-600 mt-4">No credit card required · Cancel anytime · 3-day free trial</p>
+          <p className="text-xs text-slate-600 mt-4">
+            No credit card required · Cancel anytime · 3-day free trial
+          </p>
         </div>
       </section>
 

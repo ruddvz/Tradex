@@ -87,15 +87,7 @@ def grade_from_str(raw: str) -> TradeGrade:
 
 def compute_grade_and_rr(pnl: float, status_str: str) -> tuple[str, float]:
     grade = (
-        "A"
-        if pnl > 300
-        else "B"
-        if pnl > 100
-        else "C"
-        if pnl > 0
-        else "D"
-        if pnl > -100
-        else "F"
+        "A" if pnl > 300 else "B" if pnl > 100 else "C" if pnl > 0 else "D" if pnl > -100 else "F"
     )
     rr = abs(pnl) / max(abs(pnl * 0.4), 1)
     r_multiple = round(rr, 2) if status_str == "WIN" else -round(rr * 0.5, 2)
@@ -141,4 +133,3 @@ def trade_from_mt5_dict(user_id: str, trade_id: str, d: Dict[str, Any]) -> Trade
         r_multiple=r_mult,
         mt5_ticket=mt5_ticket,
     )
-

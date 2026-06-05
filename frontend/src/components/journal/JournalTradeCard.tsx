@@ -27,7 +27,12 @@ interface JournalTradeCardProps {
 }
 
 /** Expandable journal row — Ui.md §10.2 trade card structure (without chart thumbnail). */
-export function JournalTradeCard({ trade, expanded, onToggle, onOpenDrawer }: JournalTradeCardProps) {
+export function JournalTradeCard({
+  trade,
+  expanded,
+  onToggle,
+  onOpenDrawer,
+}: JournalTradeCardProps) {
   const timeLabel = format(parseISO(trade.entryTime), 'h:mm a');
 
   return (

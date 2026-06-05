@@ -48,7 +48,6 @@ export async function fetchRiskEvents(limit = 20): Promise<AuditEventRow[]> {
   return Array.isArray(data) ? data : [];
 }
 
-
 export type RiskProfileUpdate = {
   name?: string;
   max_risk_per_trade_percent?: number;

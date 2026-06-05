@@ -98,7 +98,9 @@ export function PaperTrading() {
 
   const onCreate = async () => {
     if (!token) {
-      showToast(authUiEnabled ? 'Sign in to create a paper account.' : 'Save an API session token first.');
+      showToast(
+        authUiEnabled ? 'Sign in to create a paper account.' : 'Save an API session token first.'
+      );
       return;
     }
     setBusy(true);
@@ -223,7 +225,12 @@ export function PaperTrading() {
               body="Create a paper account to test strategies without risking real money."
               actions={
                 token ? (
-                  <button type="button" className="btn-primary text-sm" disabled={busy} onClick={() => void onCreate()}>
+                  <button
+                    type="button"
+                    className="btn-primary text-sm"
+                    disabled={busy}
+                    onClick={() => void onCreate()}
+                  >
                     Create paper account
                   </button>
                 ) : undefined
@@ -260,7 +267,9 @@ export function PaperTrading() {
                     onClick={() => setTab(t)}
                     className={clsx(
                       'px-3 py-2 text-xs font-semibold capitalize border-b-2 -mb-px',
-                      tab === t ? 'border-analytics text-analytics' : 'border-transparent text-text-muted'
+                      tab === t
+                        ? 'border-analytics text-analytics'
+                        : 'border-transparent text-text-muted'
                     )}
                   >
                     {t}
@@ -272,12 +281,16 @@ export function PaperTrading() {
                   onClick={() => void loadBook()}
                   disabled={loadingBook}
                 >
-                  <RefreshCw className={clsx('inline w-3 h-3 mr-1', loadingBook && 'animate-spin')} />
+                  <RefreshCw
+                    className={clsx('inline w-3 h-3 mr-1', loadingBook && 'animate-spin')}
+                  />
                   Refresh
                 </button>
               </div>
 
-              {loadError && <ErrorState message={loadError} onRetry={() => void loadBook()} className="mb-4" />}
+              {loadError && (
+                <ErrorState message={loadError} onRetry={() => void loadBook()} className="mb-4" />
+              )}
               {loadingBook && !loadError && <LoadingState label="Loading orders and positions…" />}
 
               {!loadingBook && tab === 'overview' && selected && (
@@ -288,49 +301,77 @@ export function PaperTrading() {
                     recentFills={fills.length}
                   />
                   <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <h3 className="text-sm font-semibold text-text-primary">New market order</h3>
-                    <div className="grid grid-cols-2 gap-2">
-                      <label className="text-xs text-text-muted col-span-2">
-                        Symbol
-                        <input className="input mt-1 w-full" value={symbol} onChange={(e) => setSymbol(e.target.value)} />
-                      </label>
-                      <label className="text-xs text-text-muted">
-                        Side
-                        <select className="select mt-1 w-full" value={side} onChange={(e) => setSide(e.target.value as 'buy' | 'sell')}>
-                          <option value="buy">Buy</option>
-                          <option value="sell">Sell</option>
-                        </select>
-                      </label>
-                      <label className="text-xs text-text-muted">
-                        Lots
-                        <input className="input mt-1 w-full" value={lotSize} onChange={(e) => setLotSize(e.target.value)} />
-                      </label>
-                      <label className="text-xs text-text-muted">
-                        Reference price
-                        <input className="input mt-1 w-full" value={refPrice} onChange={(e) => setRefPrice(e.target.value)} />
-                      </label>
-                      <label className="text-xs text-text-muted">
-                        Stop loss (required)
-                        <input className="input mt-1 w-full" value={stopLoss} onChange={(e) => setStopLoss(e.target.value)} />
-                      </label>
+                    <div className="space-y-3">
+                      <h3 className="text-sm font-semibold text-text-primary">New market order</h3>
+                      <div className="grid grid-cols-2 gap-2">
+                        <label className="text-xs text-text-muted col-span-2">
+                          Symbol
+                          <input
+                            className="input mt-1 w-full"
+                            value={symbol}
+                            onChange={(e) => setSymbol(e.target.value)}
+                          />
+                        </label>
+                        <label className="text-xs text-text-muted">
+                          Side
+                          <select
+                            className="select mt-1 w-full"
+                            value={side}
+                            onChange={(e) => setSide(e.target.value as 'buy' | 'sell')}
+                          >
+                            <option value="buy">Buy</option>
+                            <option value="sell">Sell</option>
+                          </select>
+                        </label>
+                        <label className="text-xs text-text-muted">
+                          Lots
+                          <input
+                            className="input mt-1 w-full"
+                            value={lotSize}
+                            onChange={(e) => setLotSize(e.target.value)}
+                          />
+                        </label>
+                        <label className="text-xs text-text-muted">
+                          Reference price
+                          <input
+                            className="input mt-1 w-full"
+                            value={refPrice}
+                            onChange={(e) => setRefPrice(e.target.value)}
+                          />
+                        </label>
+                        <label className="text-xs text-text-muted">
+                          Stop loss (required)
+                          <input
+                            className="input mt-1 w-full"
+                            value={stopLoss}
+                            onChange={(e) => setStopLoss(e.target.value)}
+                          />
+                        </label>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn-primary w-full"
+                        disabled={busy}
+                        onClick={() => void onSubmitOrder()}
+                      >
+                        Submit paper order
+                      </button>
                     </div>
-                    <button type="button" className="btn-primary w-full" disabled={busy} onClick={() => void onSubmitOrder()}>
-                      Submit paper order
-                    </button>
+                    <div className="space-y-2 text-sm">
+                      <p className="text-text-muted">
+                        Open positions:{' '}
+                        <span className="text-text-primary font-medium">{positions.length}</span>
+                      </p>
+                      <p className="text-text-muted">
+                        Recent fills:{' '}
+                        <span className="text-text-primary font-medium">{fills.length}</span>
+                      </p>
+                      <p className="text-xs text-text-muted">
+                        Closing a position creates a journal trade with{' '}
+                        <code className="text-analytics">source=paper</code>.
+                      </p>
+                    </div>
                   </div>
-                  <div className="space-y-2 text-sm">
-                    <p className="text-text-muted">
-                      Open positions: <span className="text-text-primary font-medium">{positions.length}</span>
-                    </p>
-                    <p className="text-text-muted">
-                      Recent fills: <span className="text-text-primary font-medium">{fills.length}</span>
-                    </p>
-                    <p className="text-xs text-text-muted">
-                      Closing a position creates a journal trade with <code className="text-analytics">source=paper</code>.
-                    </p>
-                  </div>
-                </div>
                 </div>
               )}
 
@@ -345,15 +386,22 @@ export function PaperTrading() {
                     orders
                       .filter((o) => o.status === 'rejected')
                       .map((o) => (
-                        <li key={o.id} className="rounded-lg border border-loss/30 bg-loss/5 px-3 py-2 text-sm">
+                        <li
+                          key={o.id}
+                          className="rounded-lg border border-loss/30 bg-loss/5 px-3 py-2 text-sm"
+                        >
                           <div className="flex justify-between gap-2">
                             <span>
                               {o.symbol} {o.side.toUpperCase()} · {o.lot_size} lot
                             </span>
-                            <span className="text-xs font-semibold uppercase text-loss">rejected</span>
+                            <span className="text-xs font-semibold uppercase text-loss">
+                              rejected
+                            </span>
                           </div>
                           {o.rejection_reason && (
-                            <p className="text-xs text-loss mt-1 leading-relaxed">{o.rejection_reason}</p>
+                            <p className="text-xs text-loss mt-1 leading-relaxed">
+                              {o.rejection_reason}
+                            </p>
                           )}
                         </li>
                       ))
@@ -390,7 +438,9 @@ export function PaperTrading() {
                           </span>
                         </div>
                         {o.rejection_reason && (
-                          <p className="text-xs text-loss mt-1 leading-relaxed">{o.rejection_reason}</p>
+                          <p className="text-xs text-loss mt-1 leading-relaxed">
+                            {o.rejection_reason}
+                          </p>
                         )}
                       </li>
                     ))
@@ -402,14 +452,21 @@ export function PaperTrading() {
                 <div className="space-y-3">
                   <label className="text-xs text-text-muted block max-w-xs">
                     Exit price for close
-                    <input className="input mt-1 w-full" value={exitPrice} onChange={(e) => setExitPrice(e.target.value)} />
+                    <input
+                      className="input mt-1 w-full"
+                      value={exitPrice}
+                      onChange={(e) => setExitPrice(e.target.value)}
+                    />
                   </label>
                   <ul className="space-y-2">
                     {positions.length === 0 ? (
                       <p className="text-sm text-text-muted">No open positions.</p>
                     ) : (
                       positions.map((p) => (
-                        <li key={p.id} className="rounded-lg border border-analytics/25 bg-analytics/5 px-3 py-3 text-sm">
+                        <li
+                          key={p.id}
+                          className="rounded-lg border border-analytics/25 bg-analytics/5 px-3 py-3 text-sm"
+                        >
                           <div className="flex justify-between gap-2">
                             <span className="font-medium">
                               {p.symbol} {p.side.toUpperCase()} @ {p.avg_entry_price}

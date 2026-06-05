@@ -10,7 +10,9 @@ class Backtest(Base):
 
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    strategy_id = Column(String, ForeignKey("strategies.id", ondelete="SET NULL"), nullable=True, index=True)
+    strategy_id = Column(
+        String, ForeignKey("strategies.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     name = Column(String(160), nullable=False)
     symbol = Column(String(32), nullable=False, default="EURUSD")
     status = Column(String(32), nullable=False, default="completed")

@@ -4,7 +4,15 @@ import { useStore } from '../../store/useStore';
 const COLORS = ['#10b981', '#ef4444', '#64748b'];
 
 const CustomLabel = ({ cx, cy, value }: { cx?: number; cy?: number; value?: string | number }) => (
-  <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central" fill="white" fontSize={22} fontWeight={700}>
+  <text
+    x={cx}
+    y={cy}
+    textAnchor="middle"
+    dominantBaseline="central"
+    fill="white"
+    fontSize={22}
+    fontWeight={700}
+  >
     {value}%
   </text>
 );
@@ -38,11 +46,15 @@ export function WinRateDonut() {
             ))}
           </Pie>
           <Tooltip
-            content={({ active, payload }) => active && payload?.length ? (
-              <div className="bg-surface border border-surface-border rounded-lg p-2 text-xs shadow-card">
-                <span className="text-white font-semibold">{payload[0].name}: {payload[0].value} trades</span>
-              </div>
-            ) : null}
+            content={({ active, payload }) =>
+              active && payload?.length ? (
+                <div className="bg-surface border border-surface-border rounded-lg p-2 text-xs shadow-card">
+                  <span className="text-white font-semibold">
+                    {payload[0].name}: {payload[0].value} trades
+                  </span>
+                </div>
+              ) : null
+            }
           />
         </PieChart>
       </ResponsiveContainer>
@@ -51,7 +63,9 @@ export function WinRateDonut() {
         {data.map((d, i) => (
           <div key={d.name} className="flex items-center gap-1.5 text-xs">
             <div className="w-2.5 h-2.5 rounded-full" style={{ background: COLORS[i] }} />
-            <span className="text-slate-400">{d.name}: <span className="text-white font-medium">{d.value}</span></span>
+            <span className="text-slate-400">
+              {d.name}: <span className="text-white font-medium">{d.value}</span>
+            </span>
           </div>
         ))}
       </div>

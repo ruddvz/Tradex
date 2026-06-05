@@ -48,11 +48,18 @@ export type TradeSource =
   | 'demo'
   | 'csv';
 
-export type EmotionType = 
-  | 'Confident' | 'Focused' | 'Calm' 
-  | 'Anxious' | 'Fearful' | 'Greedy' 
-  | 'FOMO' | 'Revenge' | 'Neutral' 
-  | 'Excited' | 'Patient';
+export type EmotionType =
+  | 'Confident'
+  | 'Focused'
+  | 'Calm'
+  | 'Anxious'
+  | 'Fearful'
+  | 'Greedy'
+  | 'FOMO'
+  | 'Revenge'
+  | 'Neutral'
+  | 'Excited'
+  | 'Patient';
 
 export interface DailyStats {
   date: string;

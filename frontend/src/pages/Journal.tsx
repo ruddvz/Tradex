@@ -12,6 +12,7 @@ import { clsx } from 'clsx';
 import type { Trade } from '../types';
 import { EmptyState } from '../components/common/EmptyState';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
+import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
 import { JournalTradeCard } from '../components/journal/JournalTradeCard';
 
 const emotionEmojis: Record<string, string> = {
@@ -110,13 +111,7 @@ function ScreenshotUploadZone({
 const SESSION_OPTIONS: Trade['session'][] = ['London', 'New York', 'Tokyo', 'Sydney', 'Overlap'];
 const GRADE_OPTIONS = ['A', 'B', 'C', 'D', 'F'] as const;
 
-function TradeDrawer({
-  trade,
-  onClose,
-}: {
-  trade: Trade;
-  onClose: () => void;
-}) {
+function TradeDrawer({ trade, onClose }: { trade: Trade; onClose: () => void }) {
   const { deleteTrade, updateTrade, dataMode } = useStore();
   const { showToast } = useToast();
   const [notes, setNotes] = useState(trade.notes ?? '');
@@ -155,7 +150,7 @@ function TradeDrawer({
     >
       <div
         className="bg-surface border border-surface-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[90vh] overflow-y-auto shadow-card-hover animate-slide-up"
-        onClick={e => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
@@ -193,7 +188,12 @@ function TradeDrawer({
                 : 'bg-red-500/10 border border-red-500/20'
             )}
           >
-            <div className={clsx('text-3xl font-bold', trade.pnl >= 0 ? 'text-brand-400' : 'text-red-400')}>
+            <div
+              className={clsx(
+                'text-3xl font-bold',
+                trade.pnl >= 0 ? 'text-brand-400' : 'text-red-400'
+              )}
+            >
               {trade.pnl >= 0 ? '+' : ''}${trade.pnl.toFixed(2)}
             </div>
             <div className="text-sm text-slate-400 mt-1">
@@ -205,8 +205,14 @@ function TradeDrawer({
 
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: 'Entry Price', value: trade.entryPrice.toFixed(trade.symbol === 'XAUUSD' ? 2 : 5) },
-              { label: 'Exit Price', value: trade.exitPrice.toFixed(trade.symbol === 'XAUUSD' ? 2 : 5) },
+              {
+                label: 'Entry Price',
+                value: trade.entryPrice.toFixed(trade.symbol === 'XAUUSD' ? 2 : 5),
+              },
+              {
+                label: 'Exit Price',
+                value: trade.exitPrice.toFixed(trade.symbol === 'XAUUSD' ? 2 : 5),
+              },
               { label: 'Stop Loss', value: trade.stopLoss.toFixed(2) },
               { label: 'Take Profit', value: trade.takeProfit.toFixed(2) },
               { label: 'Lot Size', value: trade.lotSize.toFixed(2) },
@@ -227,10 +233,10 @@ function TradeDrawer({
                 <span className="text-xs text-slate-500">Session</span>
                 <select
                   value={session}
-                  onChange={e => setSession(e.target.value as Trade['session'])}
+                  onChange={(e) => setSession(e.target.value as Trade['session'])}
                   className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white min-h-[44px]"
                 >
-                  {SESSION_OPTIONS.map(s => (
+                  {SESSION_OPTIONS.map((s) => (
                     <option key={s} value={s}>
                       {s}
                     </option>
@@ -241,10 +247,10 @@ function TradeDrawer({
                 <span className="text-xs text-slate-500">Grade</span>
                 <select
                   value={grade}
-                  onChange={e => setGrade(e.target.value as Trade['grade'])}
+                  onChange={(e) => setGrade(e.target.value as Trade['grade'])}
                   className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white min-h-[44px]"
                 >
-                  {GRADE_OPTIONS.map(g => (
+                  {GRADE_OPTIONS.map((g) => (
                     <option key={g} value={g}>
                       {g}
                     </option>
@@ -256,7 +262,7 @@ function TradeDrawer({
               <span className="text-xs text-slate-500">Strategy / setup</span>
               <input
                 value={strategy}
-                onChange={e => setStrategy(e.target.value)}
+                onChange={(e) => setStrategy(e.target.value)}
                 className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white min-h-[44px]"
               />
             </label>
@@ -264,10 +270,10 @@ function TradeDrawer({
               <span className="text-xs text-slate-500">Emotion</span>
               <select
                 value={emotion}
-                onChange={e => setEmotion(e.target.value as Trade['emotion'])}
+                onChange={(e) => setEmotion(e.target.value as Trade['emotion'])}
                 className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white min-h-[44px]"
               >
-                {Object.keys(emotionEmojis).map(e => (
+                {Object.keys(emotionEmojis).map((e) => (
                   <option key={e} value={e}>
                     {emotionEmojis[e]} {e}
                   </option>
@@ -281,7 +287,7 @@ function TradeDrawer({
                 min={1}
                 max={10}
                 value={emotionScore}
-                onChange={e => setEmotionScore(Number(e.target.value))}
+                onChange={(e) => setEmotionScore(Number(e.target.value))}
                 className="w-full accent-brand-500 min-h-[44px]"
               />
             </div>
@@ -289,7 +295,7 @@ function TradeDrawer({
               <span className="text-xs text-slate-500">Trade notes</span>
               <textarea
                 value={notes}
-                onChange={e => setNotes(e.target.value)}
+                onChange={(e) => setNotes(e.target.value)}
                 rows={4}
                 className="mt-1 w-full rounded-lg border border-surface-border bg-surface px-3 py-2.5 text-sm text-white resize-y"
                 placeholder="What went well? What to improve?"
@@ -308,7 +314,7 @@ function TradeDrawer({
 
           {trade.tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5">
-              {trade.tags.map(tag => (
+              {trade.tags.map((tag) => (
                 <span
                   key={tag}
                   className="px-2 py-1 bg-surface-light rounded-lg text-xs text-slate-400 border border-surface-border"
@@ -329,14 +335,14 @@ function TradeDrawer({
                 slot="before"
                 label="Before trade"
                 url={beforeSrc}
-                onUploaded={partial => updateTrade(trade.id, partial)}
+                onUploaded={(partial) => updateTrade(trade.id, partial)}
               />
               <ScreenshotUploadZone
                 tradeId={trade.id}
                 slot="after"
                 label="After trade"
                 url={afterSrc}
-                onUploaded={partial => updateTrade(trade.id, partial)}
+                onUploaded={(partial) => updateTrade(trade.id, partial)}
               />
             </div>
           </div>
@@ -374,17 +380,17 @@ export function Journal() {
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const [addTradeOpen, setAddTradeOpen] = useState(false);
 
-  const symbols = useMemo(() => Array.from(new Set(trades.map(t => t.symbol))).sort(), [trades]);
+  const symbols = useMemo(() => Array.from(new Set(trades.map((t) => t.symbol))).sort(), [trades]);
 
   const symbolCounts = useMemo(() => {
     const m = new Map<string, number>();
-    trades.forEach(t => m.set(t.symbol, (m.get(t.symbol) ?? 0) + 1));
+    trades.forEach((t) => m.set(t.symbol, (m.get(t.symbol) ?? 0) + 1));
     return m;
   }, [trades]);
 
   const filtered = useMemo(
     () =>
-      trades.filter(t => {
+      trades.filter((t) => {
         const q = search.toLowerCase();
         const matchSearch =
           !search ||
@@ -420,7 +426,7 @@ export function Journal() {
   }, [filtered]);
 
   const totalPnl = filtered.reduce((s, t) => s + t.pnl, 0);
-  const wins = filtered.filter(t => t.status === 'WIN').length;
+  const wins = filtered.filter((t) => t.status === 'WIN').length;
 
   const resetQuickFilters = () => {
     setSymbolFilter('all');
@@ -438,6 +444,8 @@ export function Journal() {
         onAddTrade={() => setAddTradeOpen(true)}
       />
 
+      <PageDataTrustBar />
+
       <div className="page-shell p-6 space-y-5 pb-28 md:pb-6">
         {dataMode === 'live' && (
           <div className="flex flex-wrap items-center gap-2">
@@ -449,7 +457,11 @@ export function Journal() {
             title="No trades in your journal"
             body="Sync from MT5 or add a trade manually to populate this view."
             actions={
-              <button type="button" className="btn-primary text-sm" onClick={() => setAddTradeOpen(true)}>
+              <button
+                type="button"
+                className="btn-primary text-sm"
+                onClick={() => setAddTradeOpen(true)}
+              >
                 Add trade
               </button>
             }
@@ -475,13 +487,17 @@ export function Journal() {
               value: filtered.length ? `$${(totalPnl / filtered.length).toFixed(0)}` : '—',
               sub: 'per trade',
             },
-          ].map(s => (
+          ].map((s) => (
             <div key={s.label} className="card p-4">
               <div className="text-xs text-slate-500 mb-1">{s.label}</div>
               <div
                 className={clsx(
                   'text-xl font-bold',
-                  s.label === 'Net P&L' ? (totalPnl >= 0 ? 'text-brand-400' : 'text-red-400') : 'text-white'
+                  s.label === 'Net P&L'
+                    ? totalPnl >= 0
+                      ? 'text-brand-400'
+                      : 'text-red-400'
+                    : 'text-white'
                 )}
               >
                 {s.value}
@@ -498,7 +514,7 @@ export function Journal() {
               className="input pl-10 min-h-[48px]"
               placeholder="Search symbol, strategy, notes…"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
 
@@ -521,15 +537,14 @@ export function Journal() {
             >
               All {trades.length}
             </button>
-            {symbols.map(sym => (
+            {symbols.map((sym) => (
               <button
                 key={sym}
                 type="button"
                 className={clsx('chip', symbolFilter === sym && 'chip-active')}
-                onClick={() => setSymbolFilter(prev => (prev === sym ? 'all' : sym))}
+                onClick={() => setSymbolFilter((prev) => (prev === sym ? 'all' : sym))}
               >
-                {sym}{' '}
-                <span className="text-slate-500">{symbolCounts.get(sym) ?? 0}</span>
+                {sym} <span className="text-slate-500">{symbolCounts.get(sym) ?? 0}</span>
               </button>
             ))}
           </div>
@@ -629,7 +644,11 @@ export function Journal() {
         <div className="card overflow-hidden">
           <div className="flex items-center justify-between px-5 py-4 border-b border-surface-border">
             <span className="text-sm font-semibold text-white">{filtered.length} trades</span>
-            <button type="button" className="btn-primary text-sm hidden sm:inline-flex" onClick={() => setAddTradeOpen(true)}>
+            <button
+              type="button"
+              className="btn-primary text-sm hidden sm:inline-flex"
+              onClick={() => setAddTradeOpen(true)}
+            >
               <Plus className="w-4 h-4" /> Add trade
             </button>
           </div>
@@ -651,13 +670,13 @@ export function Journal() {
                     </span>
                   </div>
                   <div className="space-y-3">
-                    {dayTrades.map(trade => (
+                    {dayTrades.map((trade) => (
                       <JournalTradeCard
                         key={trade.id}
                         trade={trade}
                         expanded={expandedId === trade.id}
                         onToggle={() =>
-                          setExpandedId(prev => (prev === trade.id ? null : trade.id))
+                          setExpandedId((prev) => (prev === trade.id ? null : trade.id))
                         }
                         onOpenDrawer={() => setSelectedTrade(trade)}
                       />
@@ -680,16 +699,17 @@ export function Journal() {
         <span className="hidden sm:inline font-semibold">Add trade</span>
       </button>
 
-      {selectedTrade && (() => {
-        const drawerTrade = trades.find(t => t.id === selectedTrade.id) ?? selectedTrade;
-        return (
-          <TradeDrawer
-            key={drawerTrade.id}
-            trade={drawerTrade}
-            onClose={() => setSelectedTrade(null)}
-          />
-        );
-      })()}
+      {selectedTrade &&
+        (() => {
+          const drawerTrade = trades.find((t) => t.id === selectedTrade.id) ?? selectedTrade;
+          return (
+            <TradeDrawer
+              key={drawerTrade.id}
+              trade={drawerTrade}
+              onClose={() => setSelectedTrade(null)}
+            />
+          );
+        })()}
     </div>
   );
 }

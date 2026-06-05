@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import enum
 
-from sqlalchemy import Column, DateTime, Enum as SAEnum, JSON, String, Text, func
+from sqlalchemy import JSON, Column, DateTime, String, Text, func
+from sqlalchemy import Enum as SAEnum
 
 from .base import Base
 

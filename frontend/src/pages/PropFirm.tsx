@@ -1,20 +1,44 @@
-import { Target, AlertTriangle, CheckCircle2, XCircle, TrendingUp, Calendar, BarChart3, Shield } from 'lucide-react';
+import {
+  Target,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+  TrendingUp,
+  Calendar,
+  BarChart3,
+  Shield,
+} from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { ProgressRing } from '../components/ui/ProgressRing';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
+import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
 import { PnLBarChart } from '../components/charts/PnLBarChart';
 import { clsx } from 'clsx';
 import { format, differenceInDays } from 'date-fns';
 
-function ProgressBar({ value, max, color, label, sublabel }: { value: number; max: number; color: string; label: string; sublabel?: string }) {
+function ProgressBar({
+  value,
+  max,
+  color,
+  label,
+  sublabel,
+}: {
+  value: number;
+  max: number;
+  color: string;
+  label: string;
+  sublabel?: string;
+}) {
   const pct = Math.min((value / max) * 100, 100);
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-sm">
         <span className="text-slate-300 font-medium">{label}</span>
-        <span className="text-white font-bold">${value.toLocaleString()} / ${max.toLocaleString()}</span>
+        <span className="text-white font-bold">
+          ${value.toLocaleString()} / ${max.toLocaleString()}
+        </span>
       </div>
       <div className="h-3 bg-dark-300 rounded-full overflow-hidden border border-surface-border">
         <div
@@ -35,10 +59,10 @@ function ProgressBar({ value, max, color, label, sublabel }: { value: number; ma
 }
 
 const statusConfig = {
-  active:   { label: 'Active',   color: 'bg-brand-500',  icon: CheckCircle2, badge: 'profit' as const },
-  at_risk:  { label: 'At Risk',  color: 'bg-amber-500',  icon: AlertTriangle, badge: 'warn' as const },
-  failed:   { label: 'Failed',   color: 'bg-red-500',    icon: XCircle,      badge: 'loss' as const },
-  passed:   { label: 'Passed',   color: 'bg-blue-500',   icon: CheckCircle2, badge: 'info' as const },
+  active: { label: 'Active', color: 'bg-brand-500', icon: CheckCircle2, badge: 'profit' as const },
+  at_risk: { label: 'At Risk', color: 'bg-amber-500', icon: AlertTriangle, badge: 'warn' as const },
+  failed: { label: 'Failed', color: 'bg-red-500', icon: XCircle, badge: 'loss' as const },
+  passed: { label: 'Passed', color: 'bg-blue-500', icon: CheckCircle2, badge: 'info' as const },
 };
 
 export function PropFirm() {
@@ -76,15 +100,17 @@ export function PropFirm() {
   );
 
   const challengeTrades = trades.slice(0, propChallenge.trades);
-  const challengeWins = challengeTrades.filter(t => t.status === 'WIN').length;
+  const challengeWins = challengeTrades.filter((t) => t.status === 'WIN').length;
 
   return (
     <div className="min-h-screen">
       <Header title="Prop Firm Mode" subtitle="Track your funded challenge progress" />
+      <PageDataTrustBar />
       {propChallenge.id === '__empty__' && (
         <div className="px-4 md:px-6 lg:px-8 max-w-6xl mx-auto pt-2">
           <div className="rounded-xl border border-surface-border bg-dark-300/40 px-4 py-3 text-sm text-slate-400">
-            No prop challenge saved yet. Add one via the API or a future in-app wizard; numbers below are neutral placeholders.
+            No prop challenge saved yet. Add one via the API or a future in-app wizard; numbers
+            below are neutral placeholders.
           </div>
         </div>
       )}
@@ -93,12 +119,16 @@ export function PropFirm() {
         <div className="flex flex-wrap items-center gap-2">
           <DataSourceBadge source={dataMode === 'live' ? 'live' : 'demo'} />
           {dataMode === 'live' && (
-            <span className="text-xs text-slate-500">Challenge from API when configured; otherwise demo challenge shape.</span>
+            <span className="text-xs text-slate-500">
+              Challenge from API when configured; otherwise demo challenge shape.
+            </span>
           )}
         </div>
         {/* Challenge selector + hero ring (Ui.md §10.4) */}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">Challenge</span>
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            Challenge
+          </span>
           <select
             className="chip pr-8 appearance-none bg-dark-300 cursor-default"
             aria-label="Select challenge"
@@ -108,7 +138,11 @@ export function PropFirm() {
             <option value={propChallenge.id}>{propChallenge.name}</option>
           </select>
           <Badge variant="neutral" size="xs">
-            {propChallenge.phase === 'phase1' ? 'Phase 1' : propChallenge.phase === 'phase2' ? 'Phase 2' : 'Funded'}
+            {propChallenge.phase === 'phase1'
+              ? 'Phase 1'
+              : propChallenge.phase === 'phase2'
+                ? 'Phase 2'
+                : 'Funded'}
           </Badge>
           <Badge variant={cfg.badge}>
             <StatusIcon className="w-3 h-3" />
@@ -140,16 +174,26 @@ export function PropFirm() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="rounded-2xl border border-surface-border bg-dark-300/60 p-4">
-                  <div className="text-[11px] uppercase tracking-wide text-slate-500">Pass probability</div>
+                  <div className="text-[11px] uppercase tracking-wide text-slate-500">
+                    Pass probability
+                  </div>
                   <div className="text-2xl font-bold text-brand-400 mt-1">{passProbability}%</div>
-                  <p className="text-xs text-slate-500 mt-1">Heuristic from progress &amp; drawdown headroom</p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Heuristic from progress &amp; drawdown headroom
+                  </p>
                 </div>
                 <div className="rounded-2xl border border-surface-border bg-dark-300/60 p-4">
-                  <div className="text-[11px] uppercase tracking-wide text-slate-500">Rule pressure</div>
+                  <div className="text-[11px] uppercase tracking-wide text-slate-500">
+                    Rule pressure
+                  </div>
                   <div
                     className={clsx(
                       'text-2xl font-bold mt-1',
-                      drawdownPct >= 80 ? 'text-red-400' : drawdownPct >= 55 ? 'text-amber-400' : 'text-brand-400'
+                      drawdownPct >= 80
+                        ? 'text-red-400'
+                        : drawdownPct >= 55
+                          ? 'text-amber-400'
+                          : 'text-brand-400'
                     )}
                   >
                     {drawdownPct.toFixed(0)}%
@@ -164,8 +208,20 @@ export function PropFirm() {
         {/* Key Stats Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           {[
-            { label: 'Account Size', value: `$${(propChallenge.accountSize / 1000).toFixed(0)}K`, sub: propChallenge.firm, icon: Shield, color: 'text-white' },
-            { label: 'Current P&L', value: `+$${propChallenge.currentPnl.toLocaleString()}`, sub: `${((propChallenge.currentPnl / propChallenge.accountSize) * 100).toFixed(2)}%`, icon: TrendingUp, color: 'text-brand-400' },
+            {
+              label: 'Account Size',
+              value: `$${(propChallenge.accountSize / 1000).toFixed(0)}K`,
+              sub: propChallenge.firm,
+              icon: Shield,
+              color: 'text-white',
+            },
+            {
+              label: 'Current P&L',
+              value: `+$${propChallenge.currentPnl.toLocaleString()}`,
+              sub: `${((propChallenge.currentPnl / propChallenge.accountSize) * 100).toFixed(2)}%`,
+              icon: TrendingUp,
+              color: 'text-brand-400',
+            },
             {
               label: 'Days Remaining',
               value: daysRemaining,
@@ -174,14 +230,28 @@ export function PropFirm() {
               color: isExpiringSoon ? 'text-red-400' : 'text-blue-400',
               pulse: isExpiringSoon,
             },
-            { label: 'Total Trades', value: propChallenge.trades, sub: `${challengeWins}W / ${propChallenge.trades - challengeWins}L`, icon: BarChart3, color: 'text-white' },
-          ].map(s => (
+            {
+              label: 'Total Trades',
+              value: propChallenge.trades,
+              sub: `${challengeWins}W / ${propChallenge.trades - challengeWins}L`,
+              icon: BarChart3,
+              color: 'text-white',
+            },
+          ].map((s) => (
             <div key={s.label} className="card p-5">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-slate-500">{s.label}</span>
                 <s.icon className="w-4 h-4 text-slate-600" />
               </div>
-              <div className={clsx('text-2xl font-bold', s.color, 'pulse' in s && s.pulse && 'animate-pulse')}>{s.value}</div>
+              <div
+                className={clsx(
+                  'text-2xl font-bold',
+                  s.color,
+                  'pulse' in s && s.pulse && 'animate-pulse'
+                )}
+              >
+                {s.value}
+              </div>
               <div className="text-xs text-slate-500 mt-1">{s.sub}</div>
             </div>
           ))}
@@ -194,7 +264,10 @@ export function PropFirm() {
             <div className="flex items-center gap-2 mb-4">
               <Target className="w-5 h-5 text-brand-400" />
               <h3 className="font-semibold text-white">Profit Target</h3>
-              <Badge variant={profitPct >= 100 ? 'profit' : profitPct >= 50 ? 'info' : 'neutral'} size="xs">
+              <Badge
+                variant={profitPct >= 100 ? 'profit' : profitPct >= 50 ? 'info' : 'neutral'}
+                size="xs"
+              >
                 {profitPct.toFixed(1)}% of 8%
               </Badge>
             </div>
@@ -213,7 +286,10 @@ export function PropFirm() {
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle className="w-5 h-5 text-amber-400" />
               <h3 className="font-semibold text-white">Drawdown Usage</h3>
-              <Badge variant={drawdownPct >= 80 ? 'loss' : drawdownPct >= 50 ? 'warn' : 'profit'} size="xs">
+              <Badge
+                variant={drawdownPct >= 80 ? 'loss' : drawdownPct >= 50 ? 'warn' : 'profit'}
+                size="xs"
+              >
                 {drawdownPct.toFixed(1)}% used
               </Badge>
             </div>
@@ -222,7 +298,8 @@ export function PropFirm() {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-slate-300 font-medium">Overall Drawdown (10% Max)</span>
                 <span className="text-white font-bold">
-                  ${propChallenge.currentDrawdown.toLocaleString()} / ${propChallenge.maxDrawdown.toLocaleString()}
+                  ${propChallenge.currentDrawdown.toLocaleString()} / $
+                  {propChallenge.maxDrawdown.toLocaleString()}
                 </span>
               </div>
               <div className="h-3 bg-dark-300 rounded-full overflow-hidden border border-surface-border">
@@ -230,14 +307,23 @@ export function PropFirm() {
                   className={clsx(
                     'h-full rounded-full transition-all duration-700',
                     drawdownPct > 70 ? 'animate-pulse' : '',
-                    drawdownPct > 80 ? 'bg-red-500' : drawdownPct > 60 ? 'bg-amber-500' : 'bg-brand-500'
+                    drawdownPct > 80
+                      ? 'bg-red-500'
+                      : drawdownPct > 60
+                        ? 'bg-amber-500'
+                        : 'bg-brand-500'
                   )}
                   style={{ width: `${Math.min(drawdownPct, 100)}%` }}
                 />
               </div>
               <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-500">0% used</span>
-                <span className={clsx('font-semibold', drawdownPct >= 80 ? 'text-amber-400' : 'text-slate-400')}>
+                <span
+                  className={clsx(
+                    'font-semibold',
+                    drawdownPct >= 80 ? 'text-amber-400' : 'text-slate-400'
+                  )}
+                >
                   {drawdownPct.toFixed(1)}% used
                 </span>
               </div>
@@ -258,25 +344,56 @@ export function PropFirm() {
           <h3 className="font-semibold text-white mb-4">Challenge Rules Status</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { rule: 'Minimum Trading Days', req: `${propChallenge.minTradingDays} days`, current: `${propChallenge.daysTraded} days`, ok: propChallenge.daysTraded >= propChallenge.minTradingDays },
-              { rule: 'Profit Target', req: `$${propChallenge.profitTarget.toLocaleString()} (8%)`, current: `$${propChallenge.currentPnl.toLocaleString()}`, ok: propChallenge.currentPnl >= propChallenge.profitTarget },
-              { rule: 'Max Drawdown', req: `Max $${propChallenge.maxDrawdown.toLocaleString()} (10%)`, current: `$${propChallenge.currentDrawdown.toLocaleString()} used`, ok: propChallenge.currentDrawdown < propChallenge.maxDrawdown },
-              { rule: 'Daily Loss Limit', req: `Max $${propChallenge.dailyDrawdown.toLocaleString()} (5%)`, current: `$${propChallenge.dailyLoss.toLocaleString()} today`, ok: propChallenge.dailyLoss < propChallenge.dailyDrawdown },
-            ].map(item => (
-              <div key={item.rule} className={clsx(
-                'flex items-center gap-3 p-4 rounded-xl border',
-                item.ok ? 'bg-brand-500/5 border-brand-500/20' : 'bg-amber-500/5 border-amber-500/20'
-              )}>
-                {item.ok
-                  ? <CheckCircle2 className="w-5 h-5 text-brand-400 flex-shrink-0" />
-                  : <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
-                }
+              {
+                rule: 'Minimum Trading Days',
+                req: `${propChallenge.minTradingDays} days`,
+                current: `${propChallenge.daysTraded} days`,
+                ok: propChallenge.daysTraded >= propChallenge.minTradingDays,
+              },
+              {
+                rule: 'Profit Target',
+                req: `$${propChallenge.profitTarget.toLocaleString()} (8%)`,
+                current: `$${propChallenge.currentPnl.toLocaleString()}`,
+                ok: propChallenge.currentPnl >= propChallenge.profitTarget,
+              },
+              {
+                rule: 'Max Drawdown',
+                req: `Max $${propChallenge.maxDrawdown.toLocaleString()} (10%)`,
+                current: `$${propChallenge.currentDrawdown.toLocaleString()} used`,
+                ok: propChallenge.currentDrawdown < propChallenge.maxDrawdown,
+              },
+              {
+                rule: 'Daily Loss Limit',
+                req: `Max $${propChallenge.dailyDrawdown.toLocaleString()} (5%)`,
+                current: `$${propChallenge.dailyLoss.toLocaleString()} today`,
+                ok: propChallenge.dailyLoss < propChallenge.dailyDrawdown,
+              },
+            ].map((item) => (
+              <div
+                key={item.rule}
+                className={clsx(
+                  'flex items-center gap-3 p-4 rounded-xl border',
+                  item.ok
+                    ? 'bg-brand-500/5 border-brand-500/20'
+                    : 'bg-amber-500/5 border-amber-500/20'
+                )}
+              >
+                {item.ok ? (
+                  <CheckCircle2 className="w-5 h-5 text-brand-400 flex-shrink-0" />
+                ) : (
+                  <AlertTriangle className="w-5 h-5 text-amber-400 flex-shrink-0" />
+                )}
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium text-white">{item.rule}</div>
                   <div className="text-xs text-slate-500 mt-0.5">{item.req}</div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <div className={clsx('text-sm font-semibold', item.ok ? 'text-brand-400' : 'text-amber-400')}>
+                  <div
+                    className={clsx(
+                      'text-sm font-semibold',
+                      item.ok ? 'text-brand-400' : 'text-amber-400'
+                    )}
+                  >
                     {item.current}
                   </div>
                   <div className="text-xs text-slate-600">{item.ok ? 'On track' : 'Pending'}</div>

@@ -10,7 +10,9 @@ class PaperViolation(Base):
 
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
-    paper_account_id = Column(String, ForeignKey("paper_accounts.id", ondelete="SET NULL"), nullable=True, index=True)
+    paper_account_id = Column(
+        String, ForeignKey("paper_accounts.id", ondelete="SET NULL"), nullable=True, index=True
+    )
     paper_order_id = Column(String, nullable=True, index=True)
     violation_type = Column(String(64), nullable=False)
     reason = Column(Text, nullable=False)

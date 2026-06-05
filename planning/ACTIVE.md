@@ -1,31 +1,31 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **Maintenance — optional Plan0 device QA**
+## 👉 NEXT UP: **P1.2 — Import batches (MT5 transparency)**
 
-Status: [ ] optional (human)
+Status: [ ] pending
 
-Phases **0–15** from `planning/EXECUTION-PLAN.md` are complete on branch `cursor/phases-11-15-a3a6`.
+Phases **0–15** are complete. Audit hardening (P0) is done on branch `cursor/audit-plan-complete-32fb`.
 
-See `planning/Plan0-AUDIT.md` for manual iPhone/Lighthouse checks.
+**Canonical state:** `planning/CURRENT-STATE-AND-NEXT-WORK.md`
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **Complete (Q2 2026 roadmap)**  
-**Branch:** `cursor/phases-11-15-a3a6`
+**Phase:** Post-audit P1 backlog  
+**Branch:** `cursor/audit-plan-complete-32fb` (or new `cursor/<slice>-32fb`)
 
-### Recently Done (Phases 11–15)
-- [x] **11** — Paper order lifecycle, per-account fill assumptions, paper cockpit UI
-- [x] **12** — Backtest assumptions panel, `/reports/compare`, export trust copy
-- [x] **13** — Dashboard status strip, PWA-safe inputs, empty states
-- [x] **14** — AI trust metadata + prediction language scrub
-- [x] **15** — `scripts/verify.sh`, Playwright e2e, expanded pytest
+### Recently Done (Audit P0 — 2026-06-05)
+- [x] Safety tests — live broker disabled, MT5 fallback, AI trust expansion
+- [x] Planning reconciliation — `CURRENT-STATE-AND-NEXT-WORK.md`, `NEXT_STEPS.md`, `DEVICE-QA.md`
+- [x] CI workflows — frontend, backend, security
+- [x] Prettier + `PageDataTrustBar` on major pages
+- [x] Production `SECRET_KEY` guard on app startup
 
 ---
 
 ## Notes
 
-- Verification: `./scripts/verify.sh` (pytest + lint + build + SW + e2e)
+- Verification: `./scripts/verify.sh`
 - Product identity: **trading performance lab** — no live execution
-- E2E lives in `e2e/` (Playwright, production preview + `/Tradex/` base)
+- Manual iPhone PWA: `planning/DEVICE-QA.md` (device steps for humans)

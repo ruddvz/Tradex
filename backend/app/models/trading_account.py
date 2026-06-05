@@ -4,7 +4,8 @@ from __future__ import annotations
 
 import enum
 
-from sqlalchemy import Column, DateTime, Enum as SAEnum, Float, String, func
+from sqlalchemy import Column, DateTime, Float, String, func
+from sqlalchemy import Enum as SAEnum
 
 from .base import Base
 
@@ -23,7 +24,9 @@ class TradingAccount(Base):
     user_id = Column(String, nullable=False, index=True)
     name = Column(String(120), nullable=False)
     broker = Column(String(120))
-    account_type = Column(SAEnum(TradingAccountType), nullable=False, default=TradingAccountType.DEMO)
+    account_type = Column(
+        SAEnum(TradingAccountType), nullable=False, default=TradingAccountType.DEMO
+    )
     base_currency = Column(String(8), nullable=False, default="USD")
     starting_balance = Column(Float, nullable=False, default=10000.0)
     current_balance = Column(Float, nullable=False, default=10000.0)

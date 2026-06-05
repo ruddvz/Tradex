@@ -32,12 +32,12 @@ export function detailMessage(data: unknown): string {
   if (typeof det === 'string') return det;
   if (Array.isArray(det)) {
     const parts = det
-      .map(item => {
+      .map((item) => {
         if (!item || typeof item !== 'object') return null;
         const row = item as { msg?: string; loc?: (string | number)[] };
         if (!row.msg) return null;
         const field = Array.isArray(row.loc)
-          ? row.loc.filter(x => typeof x === 'string' && x !== 'body').join('.')
+          ? row.loc.filter((x) => typeof x === 'string' && x !== 'body').join('.')
           : '';
         return field ? `${field}: ${row.msg}` : row.msg;
       })
@@ -56,11 +56,7 @@ export async function apiFetch<T = unknown>(
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
-  if (
-    init.body !== undefined &&
-    typeof init.body === 'string' &&
-    !headers.has('Content-Type')
-  ) {
+  if (init.body !== undefined && typeof init.body === 'string' && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
   const res = await fetch(apiUrl(path), { ...init, headers });

@@ -17,6 +17,15 @@
 - Next up: Plan0 manual device QA (human)
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
+## 2026-06-05 — cursor/audit-plan-complete-32fb — Audit P0: verify, docs, CI, safety
+- Commit: (pending)
+- Files touched: `backend/tests/{test_live_disabled,test_mt5_fallback,test_config_production}.py`, `backend/app/services/ai_trust.py`, `backend/app/core/config.py`, `backend/app/main.py`, `backend/requirements-ci.txt`, `backend/pyproject.toml`, `.github/workflows/{frontend-ci,backend-ci,security}.yml`, `scripts/verify.sh`, `frontend/.prettierrc`, `planning/{CURRENT-STATE-AND-NEXT-WORK,DEVICE-QA,ACTIVE,NEXT_STEPS,ROADMAP-2026-Q2}.md`, formatting across frontend/backend
+- Tests added / changed: 25+ (live disabled, MT5 fallback x3, config production x3, AI trust parametrized)
+- Build: pass (`./scripts/verify.sh` — 41 pytest, lint, build, SW, e2e x3)
+- Status: done
+- Next up: **P1.2** — Import batches (`planning/CURRENT-STATE-AND-NEXT-WORK.md`)
+- Notes: Fixed verify.sh e2e path (cd to ROOT). Prettier + black + ruff CI. PageDataTrustBar on Journal/Reports/Calculator/Playbooks/PropFirm/Settings/ActionCenter.
+
 ## 2026-06-05 — cursor/phases-11-15-a3a6 — Phases 11–15: roadmap complete
 - Commit: ccf4900 (feat: complete Phases 11–15 — paper realism, trust layers, e2e QA)
 - Files touched: paper lifecycle/fill config, PaperTrading cockpit, PerformanceCompare, DashboardStatusStrip, AI trust, Backtests assumptions, e2e/, scripts/verify.sh, planning

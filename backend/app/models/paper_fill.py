@@ -12,8 +12,12 @@ class PaperFill(Base):
 
     id = Column(String, primary_key=True)
     user_id = Column(String, nullable=False, index=True)
-    paper_order_id = Column(String, ForeignKey("paper_orders.id", ondelete="CASCADE"), nullable=False, index=True)
-    paper_position_id = Column(String, ForeignKey("paper_positions.id", ondelete="SET NULL"), index=True)
+    paper_order_id = Column(
+        String, ForeignKey("paper_orders.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    paper_position_id = Column(
+        String, ForeignKey("paper_positions.id", ondelete="SET NULL"), index=True
+    )
     symbol = Column(String(32), nullable=False)
     side = Column(SAEnum(PaperOrderSide), nullable=False)
     quantity = Column(Float, nullable=False)

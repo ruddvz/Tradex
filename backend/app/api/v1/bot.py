@@ -2,15 +2,13 @@
 
 from __future__ import annotations
 
-import uuid
-
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from ...database import get_db
 from ...models.user import User
-from ...services.risk_engine import log_audit_event, get_or_create_bot_control
+from ...services.risk_engine import get_or_create_bot_control, log_audit_event
 from ..deps import get_current_user
 
 router = APIRouter(prefix="/bot", tags=["bot"])

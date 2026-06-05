@@ -21,18 +21,17 @@ const CalendarDayCell = ({ day, data }: { day: Date; data: CalDay | undefined })
   return (
     <div
       className={clsx(
-        'aspect-square rounded-md flex flex-col items-center justify-center p-0.5 cursor-pointer transition-all duration-200 hover:scale-110 relative group',
+        'aspect-square rounded-md flex flex-col items-center justify-center p-0.5 cursor-pointer transition-all duration-200 hover:scale-110 relative group'
       )}
       style={{
-        background: isProfit
-          ? `rgba(16, 185, 129, ${opacity})`
-          : `rgba(239, 68, 68, ${opacity})`,
+        background: isProfit ? `rgba(16, 185, 129, ${opacity})` : `rgba(239, 68, 68, ${opacity})`,
         border: `1px solid ${isProfit ? `rgba(16,185,129,${opacity * 0.6})` : `rgba(239,68,68,${opacity * 0.6})`}`,
       }}
     >
       <span className="text-[9px] font-medium text-white/80">{format(day, 'd')}</span>
       <span className={clsx('text-[8px] font-bold', isProfit ? 'text-white' : 'text-white')}>
-        {isProfit ? '+' : ''}{data.pnl >= 0 ? '' : '-'}${Math.abs(data.pnl).toFixed(0)}
+        {isProfit ? '+' : ''}
+        {data.pnl >= 0 ? '' : '-'}${Math.abs(data.pnl).toFixed(0)}
       </span>
 
       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 pointer-events-none">
@@ -50,7 +49,8 @@ const CalendarDayCell = ({ day, data }: { day: Date; data: CalDay | undefined })
 
 export function PnLCalendar() {
   const { dataMode, calendarDays } = useStore();
-  const calendarSource = dataMode === 'live' && calendarDays.length > 0 ? calendarDays : mockCalendar;
+  const calendarSource =
+    dataMode === 'live' && calendarDays.length > 0 ? calendarDays : mockCalendar;
   const today = new Date();
   const days = eachDayOfInterval({ start: startOfMonth(today), end: endOfMonth(today) });
   const dataMap = useMemo(() => {
@@ -79,8 +79,10 @@ export function PnLCalendar() {
       </div>
 
       <div className="grid grid-cols-7 gap-1 mb-1">
-        {weekDays.map(d => (
-          <div key={d} className="text-center text-[10px] font-medium text-slate-600 py-1">{d}</div>
+        {weekDays.map((d) => (
+          <div key={d} className="text-center text-[10px] font-medium text-slate-600 py-1">
+            {d}
+          </div>
         ))}
       </div>
 
@@ -88,11 +90,9 @@ export function PnLCalendar() {
         {Array.from({ length: firstDayOfWeek }).map((_, i) => (
           <div key={`empty-${i}`} />
         ))}
-        {days.map(day => {
+        {days.map((day) => {
           const dateStr = format(day, 'yyyy-MM-dd');
-          return (
-            <CalendarDayCell key={dateStr} day={day} data={dataMap.get(dateStr)} />
-          );
+          return <CalendarDayCell key={dateStr} day={day} data={dataMap.get(dateStr)} />;
         })}
       </div>
     </div>

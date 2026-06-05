@@ -1,11 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  BookOpen,
-  Brain,
-  BarChart3,
-  Wallet,
-} from 'lucide-react';
+import { LayoutDashboard, BookOpen, Brain, BarChart3, Wallet } from 'lucide-react';
 import { clsx } from 'clsx';
 
 /** Five primary destinations — sized for iPhone home indicator and 44pt touch targets. */

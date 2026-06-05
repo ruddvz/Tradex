@@ -25,7 +25,9 @@ class BacktestCreate(BaseModel):
     name: str = Field(min_length=1, max_length=160)
     symbol: str = Field(default="EURUSD", max_length=32)
     strategy_id: Optional[str] = None
-    rules: dict[str, Any] = Field(default_factory=lambda: {"lookback": 12, "rr_target": 2.0, "stop_pips": 15})
+    rules: dict[str, Any] = Field(
+        default_factory=lambda: {"lookback": 12, "rr_target": 2.0, "stop_pips": 15}
+    )
     spread_pips: float = Field(default=1.2, ge=0)
     slippage_pips: float = Field(default=0.5, ge=0)
     commission_per_lot: float = Field(default=7.0, ge=0)
@@ -106,9 +108,13 @@ def _owned_backtest(db: Session, user_id: str, backtest_id: str) -> Backtest:
 
 @router.get("", response_model=list[BacktestSummary])
 def list_backtests(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    rows = db.execute(
-        select(Backtest).where(Backtest.user_id == user.id).order_by(Backtest.created_at.desc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(Backtest).where(Backtest.user_id == user.id).order_by(Backtest.created_at.desc())
+        )
+        .scalars()
+        .all()
+    )
     return [_summary(r) for r in rows]
 
 
@@ -164,13 +170,15 @@ def create_and_run_backtest(
     )
 
 
-
-
 @router.get("/strategies", response_model=list[StrategyOut])
 def list_strategies(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    rows = db.execute(
-        select(Strategy).where(Strategy.user_id == user.id).order_by(Strategy.created_at.desc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(Strategy).where(Strategy.user_id == user.id).order_by(Strategy.created_at.desc())
+        )
+        .scalars()
+        .all()
+    )
     return [
         StrategyOut(
             id=r.id,

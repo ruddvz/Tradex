@@ -21,7 +21,11 @@ from ...schemas.paper_execution import (
     PaperPositionClose,
     PaperPositionOut,
 )
-from ...services.paper_execution import cancel_paper_order, close_paper_position, submit_paper_market_order
+from ...services.paper_execution import (
+    cancel_paper_order,
+    close_paper_position,
+    submit_paper_market_order,
+)
 from ...services.trade_codec import trade_to_api_dict
 from ..deps import get_current_user
 
@@ -103,14 +107,18 @@ def list_paper_orders(
     db: Session = Depends(get_db),
 ):
     _get_account(db, user.id, paper_account_id)
-    rows = db.execute(
-        select(PaperOrder)
-        .where(
-            PaperOrder.paper_account_id == paper_account_id,
-            PaperOrder.user_id == user.id,
+    rows = (
+        db.execute(
+            select(PaperOrder)
+            .where(
+                PaperOrder.paper_account_id == paper_account_id,
+                PaperOrder.user_id == user.id,
+            )
+            .order_by(PaperOrder.created_at.desc())
         )
-        .order_by(PaperOrder.created_at.desc())
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     return [_order_out(o) for o in rows]
 
 
@@ -223,13 +231,17 @@ def list_paper_fills(
     db: Session = Depends(get_db),
 ):
     _get_account(db, user.id, paper_account_id)
-    rows = db.execute(
-        select(PaperFill)
-        .join(PaperOrder, PaperFill.paper_order_id == PaperOrder.id)
-        .where(
-            PaperOrder.paper_account_id == paper_account_id,
-            PaperFill.user_id == user.id,
+    rows = (
+        db.execute(
+            select(PaperFill)
+            .join(PaperOrder, PaperFill.paper_order_id == PaperOrder.id)
+            .where(
+                PaperOrder.paper_account_id == paper_account_id,
+                PaperFill.user_id == user.id,
+            )
+            .order_by(PaperFill.filled_at.desc())
         )
-        .order_by(PaperFill.filled_at.desc())
-    ).scalars().all()
+        .scalars()
+        .all()
+    )
     return [_fill_out(f) for f in rows]

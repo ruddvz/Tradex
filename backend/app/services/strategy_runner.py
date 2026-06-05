@@ -7,7 +7,8 @@ import uuid
 from datetime import datetime, timezone
 from typing import Any, Optional
 
-from sqlalchemy import func as sql_func, select
+from sqlalchemy import func as sql_func
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from ..models.paper_account import PaperAccount

@@ -66,9 +66,13 @@ def _playbook_dict(db: Session, user_id: str, row: Playbook) -> Dict[str, Any]:
 
 @router.get("/playbooks")
 def list_playbooks(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
-    rows = db.execute(
-        select(Playbook).where(Playbook.user_id == user.id).order_by(Playbook.updated_at.desc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(Playbook).where(Playbook.user_id == user.id).order_by(Playbook.updated_at.desc())
+        )
+        .scalars()
+        .all()
+    )
     return {"playbooks": [_playbook_dict(db, user.id, r) for r in rows]}
 
 

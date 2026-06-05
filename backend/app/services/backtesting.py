@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import math
 import random
 from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
@@ -58,9 +57,17 @@ def generate_demo_candles(
         o = price
         c = max(step, o + drift)
         h = max(o, c) + abs(rng.uniform(0, step * 0.6))
-        l = min(o, c) - abs(rng.uniform(0, step * 0.6))
+        candle_low = min(o, c) - abs(rng.uniform(0, step * 0.6))
         ts = (t0 + timedelta(hours=i)).isoformat()
-        out.append(Candle(ts=ts, open=round(o, 5), high=round(h, 5), low=round(l, 5), close=round(c, 5)))
+        out.append(
+            Candle(
+                ts=ts,
+                open=round(o, 5),
+                high=round(h, 5),
+                low=round(candle_low, 5),
+                close=round(c, 5),
+            )
+        )
         price = c
     return out
 
@@ -240,9 +247,7 @@ def run_backtest(
 ) -> dict[str, Any]:
     assumptions = assumptions or BacktestAssumptions()
     candle_list = candles or generate_demo_candles(symbol)
-    trades, curve, metrics = run_simple_breakout_backtest(
-        candle_list, symbol, rules, assumptions
-    )
+    trades, curve, metrics = run_simple_breakout_backtest(candle_list, symbol, rules, assumptions)
     return {
         "trades": [asdict(t) for t in trades],
         "equity_curve": curve,

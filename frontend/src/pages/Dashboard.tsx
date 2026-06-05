@@ -53,7 +53,11 @@ export function Dashboard() {
     100,
     Math.max(
       35,
-      Math.round(metrics.winRate * 0.65 + Math.min(metrics.profitFactor, 3) * 12 + (metrics.expectancy > 0 ? 8 : 0))
+      Math.round(
+        metrics.winRate * 0.65 +
+          Math.min(metrics.profitFactor, 3) * 12 +
+          (metrics.expectancy > 0 ? 8 : 0)
+      )
     )
   );
   const consistencyCopy =
@@ -68,13 +72,11 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen">
-      <Header
-        title="Home"
-        subtitle="Overview of your trading performance"
-        showDateRange={false}
-      />
+      <Header title="Home" subtitle="Overview of your trading performance" showDateRange={false} />
 
-      {(bootstrapError || dataMode === 'demo' || (dataMode === 'live' && tradingAccounts.length > 0)) && (
+      {(bootstrapError ||
+        dataMode === 'demo' ||
+        (dataMode === 'live' && tradingAccounts.length > 0)) && (
         <div className="px-5 pt-4 space-y-2">
           {dataMode === 'demo' && (
             <div className="rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-2 text-xs text-amber-100 flex flex-wrap items-center gap-2">
@@ -139,7 +141,9 @@ export function Dashboard() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-[11px] font-semibold text-ai uppercase tracking-wider">AI insight</span>
+                <span className="text-[11px] font-semibold text-ai uppercase tracking-wider">
+                  AI insight
+                </span>
                 <Badge
                   variant={
                     topInsight.impact === 'high'
@@ -188,7 +192,9 @@ export function Dashboard() {
             value={`${metrics.profitFactor}x`}
             subtitle="Gross profit / loss"
             icon={BarChart3}
-            variant={metrics.profitFactor >= 2 ? 'profit' : metrics.profitFactor >= 1.5 ? 'info' : 'warn'}
+            variant={
+              metrics.profitFactor >= 2 ? 'profit' : metrics.profitFactor >= 1.5 ? 'info' : 'warn'
+            }
           />
           <StatCard
             title="Avg R:R"
@@ -202,12 +208,20 @@ export function Dashboard() {
             value={`${metrics.maxDrawdown.toFixed(1)}%`}
             subtitle="Peak to trough"
             icon={TrendingDown}
-            variant={metrics.maxDrawdown < 5 ? 'profit' : metrics.maxDrawdown < 10 ? 'warn' : 'loss'}
+            variant={
+              metrics.maxDrawdown < 5 ? 'profit' : metrics.maxDrawdown < 10 ? 'warn' : 'loss'
+            }
           />
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <StatCard title="Total Trades" value={metrics.totalTrades} subtitle="In range" icon={BarChart3} size="sm" />
+          <StatCard
+            title="Total Trades"
+            value={metrics.totalTrades}
+            subtitle="In range"
+            icon={BarChart3}
+            size="sm"
+          />
           <StatCard
             title="Best Trade"
             value={`+$${metrics.bestTrade.toFixed(0)}`}
@@ -215,7 +229,13 @@ export function Dashboard() {
             variant="profit"
             size="sm"
           />
-          <StatCard title="Avg Hold Time" value={`${metrics.avgHoldTime}m`} subtitle="Per trade" icon={Clock} size="sm" />
+          <StatCard
+            title="Avg Hold Time"
+            value={`${metrics.avgHoldTime}m`}
+            subtitle="Per trade"
+            icon={Clock}
+            size="sm"
+          />
           <StatCard
             title="Expectancy"
             value={`$${metrics.expectancy.toFixed(0)}`}
@@ -264,7 +284,9 @@ export function Dashboard() {
               </div>
               <div className="flex items-center justify-between text-xs">
                 <span className="text-text-muted">Sharpe ratio</span>
-                <span className="text-text-primary font-medium">{metrics.sharpeRatio.toFixed(2)}</span>
+                <span className="text-text-primary font-medium">
+                  {metrics.sharpeRatio.toFixed(2)}
+                </span>
               </div>
             </div>
           </div>
@@ -313,12 +335,16 @@ export function Dashboard() {
                 <h3 className="section-title text-base">Recent activity</h3>
                 <p className="section-subtitle">{trades.length} trades in journal</p>
               </div>
-              <button type="button" className="btn-secondary text-xs py-2 px-3 min-h-0" onClick={() => navigate('/journal')}>
+              <button
+                type="button"
+                className="btn-secondary text-xs py-2 px-3 min-h-0"
+                onClick={() => navigate('/journal')}
+              >
                 View all
               </button>
             </div>
             <div className="p-5 space-y-4">
-              {recentActivity.map(trade => (
+              {recentActivity.map((trade) => (
                 <button
                   key={trade.id}
                   type="button"
@@ -328,7 +354,9 @@ export function Dashboard() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-base font-bold text-text-primary">{trade.symbol}</span>
+                        <span className="text-base font-bold text-text-primary">
+                          {trade.symbol}
+                        </span>
                         <DirectionBadge direction={trade.direction} />
                       </div>
                       <p className="text-[12px] text-text-muted mt-1">

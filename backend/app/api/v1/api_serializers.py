@@ -67,7 +67,9 @@ def trading_account_to_dict(a: TradingAccount) -> Dict[str, Any]:
         "user_id": a.user_id,
         "name": a.name,
         "broker": a.broker,
-        "account_type": a.account_type.value if hasattr(a.account_type, "value") else str(a.account_type),
+        "account_type": (
+            a.account_type.value if hasattr(a.account_type, "value") else str(a.account_type)
+        ),
         "base_currency": a.base_currency,
         "starting_balance": a.starting_balance,
         "current_balance": a.current_balance,

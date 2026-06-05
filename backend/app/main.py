@@ -2,6 +2,7 @@
 Tradex Backend API
 AI-Powered Trading Journal Platform
 """
+
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -10,13 +11,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
+from .api.v1.routes import router
 from .core.config import settings
 from .database import init_db
-from .api.v1.routes import router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    settings.validate_production()
     init_db()
     yield
 

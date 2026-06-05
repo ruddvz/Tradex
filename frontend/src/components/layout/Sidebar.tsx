@@ -46,9 +46,7 @@ function Tooltip({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="relative group">
       {children}
-      <div
-        className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 px-2.5 py-1.5 bg-surface-dark border border-surface-border rounded-lg text-xs font-medium text-white whitespace-nowrap shadow-card opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200"
-      >
+      <div className="absolute left-full top-1/2 -translate-y-1/2 ml-3 z-50 px-2.5 py-1.5 bg-surface-dark border border-surface-border rounded-lg text-xs font-medium text-white whitespace-nowrap shadow-card opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-200">
         {label}
         <div className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-surface-border" />
       </div>
@@ -137,7 +135,12 @@ export function Sidebar() {
               className="flex-shrink-0 p-1 rounded hover:bg-surface-border transition-colors"
               title="Sync trades"
             >
-              <RefreshCw className={clsx('w-3.5 h-3.5 text-slate-400', isSyncing && 'animate-spin text-brand-400')} />
+              <RefreshCw
+                className={clsx(
+                  'w-3.5 h-3.5 text-slate-400',
+                  isSyncing && 'animate-spin text-brand-400'
+                )}
+              />
             </button>
           )}
         </div>
@@ -154,25 +157,17 @@ export function Sidebar() {
           const isActive =
             path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
           const link = (
-            <NavLink
-              to={path}
-              title={undefined}
-              className={navLinkClass(isActive, sidebarOpen)}
-            >
+            <NavLink to={path} title={undefined} className={navLinkClass(isActive, sidebarOpen)}>
               {isActive && sidebarOpen && (
                 <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-brand-400 rounded-r-full" />
               )}
               <Icon className={clsx('flex-shrink-0 w-5 h-5', isActive ? 'text-brand-400' : '')} />
-              {sidebarOpen && (
-                <span className="text-sm font-medium animate-fade-in">{label}</span>
-              )}
+              {sidebarOpen && <span className="text-sm font-medium animate-fade-in">{label}</span>}
             </NavLink>
           );
 
           return (
-            <div key={path}>
-              {!sidebarOpen ? <Tooltip label={label}>{link}</Tooltip> : link}
-            </div>
+            <div key={path}>{!sidebarOpen ? <Tooltip label={label}>{link}</Tooltip> : link}</div>
           );
         })}
 
@@ -218,7 +213,8 @@ export function Sidebar() {
             <div className="flex items-center gap-1 mt-0.5">
               <Zap className="w-3 h-3 text-brand-400" />
               <span className="text-xs text-brand-400">
-                +{(((account.equity - account.balance) / account.balance) * 100).toFixed(2)}% open P&L
+                +{(((account.equity - account.balance) / account.balance) * 100).toFixed(2)}% open
+                P&L
               </span>
             </div>
           </div>

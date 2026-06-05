@@ -8,10 +8,10 @@ from sqlalchemy.orm import sessionmaker
 
 from app.models.base import Base
 from app.models.paper_account import PaperAccount  # noqa: F401
+from app.models.paper_order import PaperOrderSide
 from app.models.paper_violation import PaperViolation  # noqa: F401
 from app.models.user import User
-from app.services.risk_engine import evaluate_paper_order, ensure_default_risk_profile
-from app.models.paper_order import PaperOrderSide
+from app.services.risk_engine import ensure_default_risk_profile, evaluate_paper_order
 
 
 @pytest.fixture()
@@ -20,9 +20,7 @@ def db():
     Base.metadata.create_all(bind=engine)
     Session = sessionmaker(bind=engine)
     session = Session()
-    session.add(
-        User(id="u1", email="v@example.com", hashed_password="x", name="V")
-    )
+    session.add(User(id="u1", email="v@example.com", hashed_password="x", name="V"))
     session.commit()
     yield session
     session.close()

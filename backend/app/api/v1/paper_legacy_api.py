@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict
 import uuid
+from typing import Any, Dict
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
@@ -76,9 +76,15 @@ def list_paper_accounts(
     db: Session = Depends(get_db),
 ):
     _deprecate(response)
-    rows = db.execute(
-        select(PaperAccount).where(PaperAccount.user_id == user.id).order_by(PaperAccount.created_at.desc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(PaperAccount)
+            .where(PaperAccount.user_id == user.id)
+            .order_by(PaperAccount.created_at.desc())
+        )
+        .scalars()
+        .all()
+    )
     return {"accounts": [paper_account_to_dict(p) for p in rows]}
 
 
@@ -115,15 +121,21 @@ def list_paper_trades(
 ):
     _deprecate(response)
     ac = db.execute(
-        select(PaperAccount).where(PaperAccount.id == paper_account_id, PaperAccount.user_id == user.id)
+        select(PaperAccount).where(
+            PaperAccount.id == paper_account_id, PaperAccount.user_id == user.id
+        )
     ).scalar_one_or_none()
     if ac is None:
         raise HTTPException(status_code=404, detail="Paper account not found")
-    rows = db.execute(
-        select(PaperTrade)
-        .where(PaperTrade.paper_account_id == paper_account_id)
-        .order_by(PaperTrade.exit_time.desc())
-    ).scalars().all()
+    rows = (
+        db.execute(
+            select(PaperTrade)
+            .where(PaperTrade.paper_account_id == paper_account_id)
+            .order_by(PaperTrade.exit_time.desc())
+        )
+        .scalars()
+        .all()
+    )
     return {"trades": [paper_trade_to_dict(t) for t in rows]}
 
 
@@ -136,7 +148,9 @@ def create_paper_trade_row(
 ):
     _deprecate(response)
     ac = db.execute(
-        select(PaperAccount).where(PaperAccount.id == body.paper_account_id, PaperAccount.user_id == user.id)
+        select(PaperAccount).where(
+            PaperAccount.id == body.paper_account_id, PaperAccount.user_id == user.id
+        )
     ).scalar_one_or_none()
     if ac is None:
         raise HTTPException(status_code=404, detail="Paper account not found")

@@ -2,7 +2,10 @@
 
 > **Trader's Performance Lab** · Your trades, journaled. Your edge, revealed.
 
-A full-stack, production-ready trading journal platform built for Forex, Gold (XAUUSD), Indices (US30, NAS100), and stock traders. Features MT5 auto-sync, AI pattern detection, prop firm challenge tracking, psychology analytics, and a beautiful dark-themed mobile-responsive UI.
+A full-stack trading journal platform built for Forex, Gold (XAUUSD), Indices (US30, NAS100), and stock traders. Features MT5 auto-sync, AI pattern detection, prop firm challenge tracking, psychology analytics, paper simulation, and a dark-themed mobile-responsive PWA.
+
+> **Product identity:** trading performance lab — journal, paper, backtests, and risk review. **Not a live money bot.**  
+> **Current state:** `planning/CURRENT-STATE-AND-NEXT-WORK.md` · **Verify:** `./scripts/verify.sh`
 
 ---
 

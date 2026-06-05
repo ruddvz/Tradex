@@ -17,14 +17,16 @@ export function mapPaperAccountRow(row: Record<string, unknown>): PaperAccount {
     fillSlippageFactor: Number(row.fill_slippage_factor ?? 0.5),
     fillCommissionPerLot: Number(row.fill_commission_per_lot ?? 3.5),
     isActive: Boolean(row.is_active ?? true),
-    createdAt: String(row.created_at ?? '').slice(0, 19).replace(' ', 'T'),
+    createdAt: String(row.created_at ?? '')
+      .slice(0, 19)
+      .replace(' ', 'T'),
   };
 }
 
 export async function fetchPaperAccounts(): Promise<PaperAccount[]> {
   const rows = await apiJson<Record<string, unknown>[]>('/paper-accounts');
   if (!Array.isArray(rows)) return [];
-  return rows.map(r => mapPaperAccountRow(r));
+  return rows.map((r) => mapPaperAccountRow(r));
 }
 
 export async function createPaperAccount(body: {

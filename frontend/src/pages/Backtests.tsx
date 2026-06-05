@@ -1,12 +1,5 @@
 import { useCallback, useState } from 'react';
-import {
-  AlertTriangle,
-  FlaskConical,
-  LineChart,
-  Loader2,
-  Play,
-  Trash2,
-} from 'lucide-react';
+import { AlertTriangle, FlaskConical, LineChart, Loader2, Play, Trash2 } from 'lucide-react';
 import {
   Line,
   LineChart as ReLineChart,
@@ -167,7 +160,8 @@ export function Backtests() {
               </select>
             </div>
             <p className="text-xs text-slate-500">
-              Long breakout on prior 12-bar high, 2R target, 15 pip stop. Spread 1.2 / slip 0.5 pips.
+              Long breakout on prior 12-bar high, 2R target, 15 pip stop. Spread 1.2 / slip 0.5
+              pips.
             </p>
             <button
               type="button"
@@ -186,7 +180,11 @@ export function Backtests() {
               )}
             </button>
             {signedIn && (
-              <button type="button" className="btn-secondary w-full text-sm" onClick={() => void loadList()}>
+              <button
+                type="button"
+                className="btn-secondary w-full text-sm"
+                onClick={() => void loadList()}
+              >
                 Refresh list
               </button>
             )}
@@ -205,7 +203,10 @@ export function Backtests() {
                       ['Slippage', '0.5 pips (default)'],
                       ['Commission', '$3.50/lot (default)'],
                       ['Fill model', 'Next-bar breakout'],
-                      ['Trades', String(selected.trade_count ?? selected.metrics?.trade_count ?? 0)],
+                      [
+                        'Trades',
+                        String(selected.trade_count ?? selected.metrics?.trade_count ?? 0),
+                      ],
                       [
                         'Max drawdown',
                         selected.metrics?.max_drawdown_percent != null
@@ -220,8 +221,8 @@ export function Backtests() {
                     ))}
                   </dl>
                   <p className="text-[10px] text-amber-200/80 mt-3">
-                    Backtest exports do not enter your live journal unless you explicitly close a paper
-                    position or add a manual trade.
+                    Backtest exports do not enter your live journal unless you explicitly close a
+                    paper position or add a manual trade.
                   </p>
                 </div>
                 <div className="card p-5">
@@ -229,8 +230,8 @@ export function Backtests() {
                     <div>
                       <h2 className="text-lg font-bold text-white">{selected.name}</h2>
                       <p className="text-xs text-slate-500 mt-1">
-                        {selected.symbol} · {selected.data_label} · {selected.trade_count ?? selected.metrics?.trade_count ?? 0}{' '}
-                        trades
+                        {selected.symbol} · {selected.data_label} ·{' '}
+                        {selected.trade_count ?? selected.metrics?.trade_count ?? 0} trades
                       </p>
                     </div>
                     <button
@@ -243,14 +244,20 @@ export function Backtests() {
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     {[
-                      { label: 'Net P&L', value: `$${(selected.metrics?.net_pnl ?? 0).toLocaleString()}` },
+                      {
+                        label: 'Net P&L',
+                        value: `$${(selected.metrics?.net_pnl ?? 0).toLocaleString()}`,
+                      },
                       { label: 'Return', value: `${selected.metrics?.return_pct ?? 0}%` },
                       { label: 'Max DD', value: `${selected.metrics?.max_drawdown_pct ?? 0}%` },
                       { label: 'Win rate', value: `${selected.metrics?.win_rate ?? 0}%` },
                       { label: 'Profit factor', value: `${selected.metrics?.profit_factor ?? 0}` },
                       { label: 'Expectancy', value: `$${selected.metrics?.expectancy ?? 0}` },
                       { label: 'Avg win', value: `$${selected.metrics?.avg_win ?? 0}` },
-                      { label: 'Losing streak', value: `${selected.metrics?.longest_losing_streak ?? 0}` },
+                      {
+                        label: 'Losing streak',
+                        value: `${selected.metrics?.longest_losing_streak ?? 0}`,
+                      },
                     ].map((m) => (
                       <div key={m.label} className="bg-dark-300 rounded-lg p-3 text-center">
                         <div className="text-sm font-bold text-white">{m.value}</div>
@@ -276,7 +283,13 @@ export function Backtests() {
                             borderRadius: 8,
                           }}
                         />
-                        <Line type="monotone" dataKey="equity" stroke="#10b981" strokeWidth={2} dot={false} />
+                        <Line
+                          type="monotone"
+                          dataKey="equity"
+                          stroke="#10b981"
+                          strokeWidth={2}
+                          dot={false}
+                        />
                       </ReLineChart>
                     </ResponsiveContainer>
                   </div>
@@ -322,7 +335,9 @@ export function Backtests() {
                           >
                             ${(b.net_pnl ?? 0).toLocaleString()}
                           </div>
-                          <div className="text-[10px] text-slate-500">{b.trade_count ?? 0} trades</div>
+                          <div className="text-[10px] text-slate-500">
+                            {b.trade_count ?? 0} trades
+                          </div>
                         </div>
                       </button>
                     ))}

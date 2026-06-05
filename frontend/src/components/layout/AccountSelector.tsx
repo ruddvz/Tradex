@@ -20,9 +20,9 @@ export function AccountSelector({ compact = false }: { compact?: boolean }) {
         id="header-trading-account"
         className="select text-xs py-1.5 max-w-[10rem]"
         value={selectedTradingAccountId ?? ''}
-        onChange={e => setSelectedTradingAccountId(e.target.value || null)}
+        onChange={(e) => setSelectedTradingAccountId(e.target.value || null)}
       >
-        {tradingAccounts.map(a => (
+        {tradingAccounts.map((a) => (
           <option key={a.id} value={a.id}>
             {a.name}
           </option>

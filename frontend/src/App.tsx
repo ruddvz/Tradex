@@ -13,28 +13,14 @@ import { authUiEnabled, requireLogin } from './lib/featureFlags';
 import { ToastProvider } from './components/ui/Toast';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
-const Landing = lazy(() =>
-  import('./pages/Landing').then((m) => ({ default: m.Landing }))
-);
+const Landing = lazy(() => import('./pages/Landing').then((m) => ({ default: m.Landing })));
 const Auth = lazy(() => import('./pages/Auth').then((m) => ({ default: m.Auth })));
-const Dashboard = lazy(() =>
-  import('./pages/Dashboard').then((m) => ({ default: m.Dashboard }))
-);
-const Journal = lazy(() =>
-  import('./pages/Journal').then((m) => ({ default: m.Journal }))
-);
-const Playbooks = lazy(() =>
-  import('./pages/Playbooks').then((m) => ({ default: m.Playbooks }))
-);
-const PropFirm = lazy(() =>
-  import('./pages/PropFirm').then((m) => ({ default: m.PropFirm }))
-);
-const Notebook = lazy(() =>
-  import('./pages/Notebook').then((m) => ({ default: m.Notebook }))
-);
-const Reports = lazy(() =>
-  import('./pages/Reports').then((m) => ({ default: m.Reports }))
-);
+const Dashboard = lazy(() => import('./pages/Dashboard').then((m) => ({ default: m.Dashboard })));
+const Journal = lazy(() => import('./pages/Journal').then((m) => ({ default: m.Journal })));
+const Playbooks = lazy(() => import('./pages/Playbooks').then((m) => ({ default: m.Playbooks })));
+const PropFirm = lazy(() => import('./pages/PropFirm').then((m) => ({ default: m.PropFirm })));
+const Notebook = lazy(() => import('./pages/Notebook').then((m) => ({ default: m.Notebook })));
+const Reports = lazy(() => import('./pages/Reports').then((m) => ({ default: m.Reports })));
 const Calculator = lazy(() =>
   import('./pages/Calculator').then((m) => ({ default: m.Calculator }))
 );
@@ -44,13 +30,9 @@ const ActionCenter = lazy(() =>
 const PaperTrading = lazy(() =>
   import('./pages/PaperTrading').then((m) => ({ default: m.PaperTrading }))
 );
-const Settings = lazy(() =>
-  import('./pages/Settings').then((m) => ({ default: m.Settings }))
-);
+const Settings = lazy(() => import('./pages/Settings').then((m) => ({ default: m.Settings })));
 const Paper = lazy(() => import('./pages/Paper').then((m) => ({ default: m.Paper })));
-const Backtests = lazy(() =>
-  import('./pages/Backtests').then((m) => ({ default: m.Backtests }))
-);
+const Backtests = lazy(() => import('./pages/Backtests').then((m) => ({ default: m.Backtests })));
 const LiveReadiness = lazy(() =>
   import('./pages/LiveReadiness').then((m) => ({ default: m.LiveReadiness }))
 );

@@ -31,8 +31,16 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "priority": "critical",
         "checklist": [
             {"id": "1", "label": "Verify DATABASE_URL in .env", "completed": False},
-            {"id": "2", "label": "Open GET /api/v1/health and confirm API is up", "completed": False},
-            {"id": "3", "label": "Register or log in and confirm session persists", "completed": False},
+            {
+                "id": "2",
+                "label": "Open GET /api/v1/health and confirm API is up",
+                "completed": False,
+            },
+            {
+                "id": "3",
+                "label": "Register or log in and confirm session persists",
+                "completed": False,
+            },
         ],
         "action_type": "internal_route",
         "action_payload": {"route": "/settings"},
@@ -55,7 +63,11 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "category": "initial_setup",
         "priority": "high",
         "checklist": [
-            {"id": "1", "label": "Decide reporting timezone (e.g. UTC vs local)", "completed": False},
+            {
+                "id": "1",
+                "label": "Decide reporting timezone (e.g. UTC vs local)",
+                "completed": False,
+            },
             {"id": "2", "label": "Align trade entry times with your broker", "completed": False},
         ],
         "action_type": "internal_route",
@@ -156,7 +168,11 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "checklist": [
             {"id": "1", "label": "Open Paper Trading when available", "completed": False},
             {"id": "2", "label": "Submit a small test order", "completed": False},
-            {"id": "3", "label": "Confirm it does not appear as live journal without source=paper", "completed": False},
+            {
+                "id": "3",
+                "label": "Confirm it does not appear as live journal without source=paper",
+                "completed": False,
+            },
         ],
         "action_type": "internal_route",
         "action_payload": {"route": "/action-center"},
@@ -168,7 +184,11 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "priority": "critical",
         "checklist": [
             {"id": "1", "label": "Pick a max % or R per trade", "completed": False},
-            {"id": "2", "label": "Document the rule in Notebook or Risk Center when available", "completed": False},
+            {
+                "id": "2",
+                "label": "Document the rule in Notebook or Risk Center when available",
+                "completed": False,
+            },
         ],
         "action_type": "internal_route",
         "action_payload": {"route": "/calculator"},
@@ -181,7 +201,11 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "checklist": [
             {"id": "1", "label": "Define max daily loss", "completed": False},
             {"id": "2", "label": "Define max total drawdown", "completed": False},
-            {"id": "3", "label": "Plan what happens when limit is hit (stop trading)", "completed": False},
+            {
+                "id": "3",
+                "label": "Plan what happens when limit is hit (stop trading)",
+                "completed": False,
+            },
         ],
         "action_type": "internal_route",
         "action_payload": {"route": "/calculator"},
@@ -193,7 +217,11 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "priority": "critical",
         "checklist": [
             {"id": "1", "label": "Decide who can lift the stop (you only)", "completed": False},
-            {"id": "2", "label": "Wire emergency stop in Risk Center when available", "completed": False},
+            {
+                "id": "2",
+                "label": "Wire emergency stop in Risk Center when available",
+                "completed": False,
+            },
         ],
         "action_type": "manual",
         "action_payload": None,
@@ -204,8 +232,16 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "category": "risk",
         "priority": "high",
         "checklist": [
-            {"id": "1", "label": "Treat Tradex as journal-first until risk stack is complete", "completed": False},
-            {"id": "2", "label": "Keep broker live keys off this host until explicitly approved", "completed": False},
+            {
+                "id": "1",
+                "label": "Treat Tradex as journal-first until risk stack is complete",
+                "completed": False,
+            },
+            {
+                "id": "2",
+                "label": "Keep broker live keys off this host until explicitly approved",
+                "completed": False,
+            },
         ],
         "action_type": "manual",
         "action_payload": None,
@@ -264,8 +300,16 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "category": "maintenance",
         "priority": "medium",
         "checklist": [
-            {"id": "1", "label": "Pull latest images / npm audit as appropriate", "completed": False},
-            {"id": "2", "label": "Confirm Postgres backups if not ephemeral dev", "completed": False},
+            {
+                "id": "1",
+                "label": "Pull latest images / npm audit as appropriate",
+                "completed": False,
+            },
+            {
+                "id": "2",
+                "label": "Confirm Postgres backups if not ephemeral dev",
+                "completed": False,
+            },
         ],
         "action_type": "manual",
         "action_payload": None,
@@ -278,7 +322,11 @@ DEFAULT_TASK_TEMPLATES: list[dict[str, Any]] = [
         "checklist": [
             {"id": "1", "label": "Reproduce the failure once", "completed": False},
             {"id": "2", "label": "Copy API error detail from Network tab", "completed": False},
-            {"id": "3", "label": "Fix credentials, CORS, or service availability", "completed": False},
+            {
+                "id": "3",
+                "label": "Fix credentials, CORS, or service availability",
+                "completed": False,
+            },
         ],
         "action_type": "internal_route",
         "action_payload": {"route": "/settings"},
