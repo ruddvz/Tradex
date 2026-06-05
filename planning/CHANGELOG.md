@@ -18,7 +18,7 @@
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
 ## 2026-06-05 — cursor/phase-10-stabilization-a3a6 — Phase 10: stabilization after Phase 9
-- Commit: (pending)
+- Commit: b6f9eed (feat: Phase 10 stabilization — data modes, Risk Center, planning cleanup)
 - Files touched: Phase 9 merge + `DataModeBadge.tsx`, `RiskCenter.tsx`, `resolveDataViewMode.ts`, `Journal.tsx` source filters, `sync_api.py` demo_mt5_sample, `risk.py` GET /profile, planning `ROADMAP-2026-Q2.md`, `EXECUTION-PLAN.md`, `ACTIVE.md`, `README.md`, `NEXT_STEPS.md`
 - Tests added / changed: 0 (12 backend pytest pass; frontend build pass)
 - Build: pass
