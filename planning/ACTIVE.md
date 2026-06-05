@@ -1,10 +1,10 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **P1.2 — Import batches (MT5 transparency)**
+## 👉 NEXT UP: **P2 — Production security hardening**
 
 Status: [ ] pending
 
-Phases **0–15** are complete. Audit hardening (P0) is done on branch `cursor/audit-plan-complete-32fb`.
+P0 audit and P1 backlog are complete on branch `cursor/audit-plan-complete-32fb`.
 
 **Canonical state:** `planning/CURRENT-STATE-AND-NEXT-WORK.md`
 
@@ -12,20 +12,26 @@ Phases **0–15** are complete. Audit hardening (P0) is done on branch `cursor/a
 
 ## 🎯 Current Sprint
 
-**Phase:** Post-audit P1 backlog  
-**Branch:** `cursor/audit-plan-complete-32fb` (or new `cursor/<slice>-32fb`)
+**Phase:** Post-audit P2 (production readiness)  
+**Branch:** `cursor/audit-plan-complete-32fb`
 
-### Recently Done (Audit P0 — 2026-06-05)
-- [x] Safety tests — live broker disabled, MT5 fallback, AI trust expansion
-- [x] Planning reconciliation — `CURRENT-STATE-AND-NEXT-WORK.md`, `NEXT_STEPS.md`, `DEVICE-QA.md`
-- [x] CI workflows — frontend, backend, security
-- [x] Prettier + `PageDataTrustBar` on major pages
-- [x] Production `SECRET_KEY` guard on app startup
+### Recently Done (P1 — 2026-06-05)
+- [x] Import batches model + API + MT5 sync audit trail + Settings Import History
+- [x] CSV candle upload + honest backtest `data_label=csv_upload`
+- [x] Strategy versioning (immutable snapshots for backtest + paper runs)
+- [x] Walk-forward OOS warnings on backtest results
+- [x] 45 pytest + verify.sh green
+
+### Next P2 slices
+- [ ] httpOnly cookie auth + refresh rotation
+- [ ] Rate limiting + security headers
+- [ ] Upload MIME/magic-byte validation
+- [ ] Docker full-stack verification (human/local)
+- [ ] Metrics parity fixtures (Reports ↔ backend)
 
 ---
 
 ## Notes
 
-- Verification: `./scripts/verify.sh`
+- Verification: `./scripts/verify.sh` (45 pytest, lint, build, SW, e2e x3)
 - Product identity: **trading performance lab** — no live execution
-- Manual iPhone PWA: `planning/DEVICE-QA.md` (device steps for humans)

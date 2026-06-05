@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import json
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional
 
 from fastapi import APIRouter, Body, Depends, HTTPException
@@ -13,6 +14,7 @@ from sqlalchemy.orm import Session
 
 from ...core.config import settings
 from ...database import get_db
+from ...models.import_batch import ImportBatch
 from ...models.trade import Trade
 from ...models.user import User
 from ...services.trade_codec import trade_from_mt5_dict
@@ -42,10 +44,26 @@ async def sync_mt5(
 
     from ...services.mt5_sync import MT5SyncService
 
+    batch_id = str(uuid.uuid4())
+    trade_account_id = resolve_owned_account_id(db, user, body.account_id)
+    batch = ImportBatch(
+        id=batch_id,
+        user_id=user.id,
+        source="mt5",
+        source_account_id=trade_account_id,
+        status="running",
+        records_seen=0,
+        records_inserted=0,
+        records_updated=0,
+        records_skipped_duplicate=0,
+        records_failed=0,
+    )
+    db.add(batch)
+    db.flush()
+
     service = MT5SyncService(login_i, password, server)
     connected = service.connect()
     from_date = datetime.now() - timedelta(days=body.days)
-    trade_account_id = resolve_owned_account_id(db, user, body.account_id)
     try:
         if connected:
             fetched = service.fetch_trades(from_date=from_date)
@@ -60,6 +78,10 @@ async def sync_mt5(
             fetched = MT5SyncService.demo_sample_trades()
             used_demo_fallback = True
         else:
+            batch.status = "failed"
+            batch.completed_at = datetime.now(timezone.utc)
+            batch.raw_summary_json = json.dumps({"error": "MT5 terminal unavailable"})
+            db.commit()
             raise HTTPException(
                 status_code=503,
                 detail=(
@@ -71,6 +93,7 @@ async def sync_mt5(
 
     if used_demo_fallback:
         import_source = "demo_mt5_sample"
+        batch.source = "demo_mt5_sample"
     elif connected:
         import_source = "mt5"
     else:
@@ -85,37 +108,66 @@ async def sync_mt5(
     existing_tickets = {x for x in db.execute(tickets_q).scalars().all() if x}
 
     added = 0
+    skipped = 0
+    failed = 0
     for tr in fetched:
+        batch.records_seen += 1
         mt = str(tr.get("mt5_ticket") or tr.get("ticket") or "")
         if mt and mt in existing_tickets:
+            skipped += 1
             continue
-        tid = str(uuid.uuid4())
-        row = trade_from_mt5_dict(
-            uid,
-            tid,
-            tr,
-            source=import_source,
-            account_id=trade_account_id,
-        )
-        db.add(row)
-        if mt:
-            existing_tickets.add(mt)
-        added += 1
+        try:
+            tid = str(uuid.uuid4())
+            row = trade_from_mt5_dict(
+                uid,
+                tid,
+                tr,
+                source=import_source,
+                account_id=trade_account_id,
+                import_batch_id=batch_id,
+            )
+            db.add(row)
+            if mt:
+                existing_tickets.add(mt)
+            added += 1
+        except Exception:
+            failed += 1
 
+    batch.records_inserted = added
+    batch.records_skipped_duplicate = skipped
+    batch.records_failed = failed
+    batch.status = "completed"
+    batch.completed_at = datetime.now(timezone.utc)
+    warnings: list[str] = []
+    if used_demo_fallback:
+        warnings.append("Demo sample import — not live broker data.")
+    batch.warnings_json = json.dumps(warnings)
+    batch.raw_summary_json = json.dumps(
+        {
+            "import_kind": import_source,
+            "connected": connected,
+            "demo_fallback_used": used_demo_fallback,
+            "days": body.days,
+            "server": server,
+        }
+    )
     db.commit()
 
     status = "success" if connected else "demo"
     message = None
-    if connected:
-        message = None
-    elif used_demo_fallback:
-        message = "Demo sample import — not live broker data " "(ALLOW_DEMO_MT5_FALLBACK + DEBUG)."
+    if used_demo_fallback:
+        message = (
+            "Demo sample import — not live broker data "
+            "(ALLOW_DEMO_MT5_FALLBACK + DEBUG)."
+        )
     return {
         "status": status,
         "import_kind": import_source,
+        "import_batch_id": batch_id,
         "connected": connected,
         "demo_fallback_used": used_demo_fallback,
         "synced": len(fetched),
         "new": added,
+        "skipped": skipped,
         "message": message,
     }

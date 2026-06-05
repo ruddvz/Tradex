@@ -17,6 +17,15 @@
 - Next up: Plan0 manual device QA (human)
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
+## 2026-06-05 — cursor/audit-plan-complete-32fb — P1: import batches, CSV candles, strategy versions, OOS
+- Commit: (pending)
+- Files touched: `import_batch`, `strategy_version`, `candle_dataset` models, migration `b2c3d4e5f6a7`, `imports_api`, `csv_provider`, `sync_api` batch wiring, `backtests.py` CSV upload + OOS, `strategy_runner` versions, Settings Import History, Backtests CSV/OOS UI
+- Tests added / changed: 4 (`test_csv_provider`, `test_strategy_versions`, migration head update)
+- Build: pass (`./scripts/verify.sh` — 45 pytest, lint, build, e2e x3)
+- Status: done
+- Next up: **P2** — production security hardening (`planning/ACTIVE.md`)
+- Notes: Alembic uses batch_alter_table for SQLite FK columns. Backtests accept CSV with columns timestamp,open,high,low,close.
+
 ## 2026-06-05 — cursor/audit-plan-complete-32fb — Audit P0: verify, docs, CI, safety
 - Commit: 404ee6b (feat: complete audit P0 — verify, harden safety, reconcile docs, add CI)
 - Files touched: `backend/tests/{test_live_disabled,test_mt5_fallback,test_config_production}.py`, `backend/app/services/ai_trust.py`, `backend/app/core/config.py`, `backend/app/main.py`, `backend/requirements-ci.txt`, `backend/pyproject.toml`, `.github/workflows/{frontend-ci,backend-ci,security}.yml`, `scripts/verify.sh`, `frontend/.prettierrc`, `planning/{CURRENT-STATE-AND-NEXT-WORK,DEVICE-QA,ACTIVE,NEXT_STEPS,ROADMAP-2026-Q2}.md`, formatting across frontend/backend

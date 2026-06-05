@@ -16,6 +16,7 @@ class StrategyRun(Base):
     paper_account_id = Column(
         String, ForeignKey("paper_accounts.id", ondelete="CASCADE"), nullable=False, index=True
     )
+    strategy_version_id = Column(String, nullable=True, index=True)
     mode = Column(String(16), nullable=False, default="paper")
     status = Column(String(24), nullable=False, default="running")
     started_at = Column(DateTime(timezone=True), server_default=func.now())

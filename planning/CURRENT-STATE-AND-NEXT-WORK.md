@@ -31,11 +31,11 @@ TradeX is a **trading performance lab** — journal trades, import MT5 history, 
 ### Latest verification run (2026-06-05, cloud agent)
 
 ```
-Backend pytest:  37 passed (after audit hardening commits)
+Backend pytest:  45 passed (P1 import batches, CSV candles, strategy versions, OOS)
 Frontend lint:   pass
 Frontend build:  pass
 Service worker:  dist/sw.js present
-Playwright e2e:  3 passed (after chromium install)
+Playwright e2e:  3 passed
 Docker Compose:  not run in cloud VM (no docker); validate locally
 ```
 

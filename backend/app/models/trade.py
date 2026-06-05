@@ -81,6 +81,7 @@ class Trade(Base):
     )  # scoped per user in app logic; no global unique (multi-tenant)
 
     source = Column(String(32), nullable=False, default="manual", index=True)
+    import_batch_id = Column(String, index=True)
 
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())

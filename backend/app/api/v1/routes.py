@@ -58,6 +58,10 @@ from .backtests import router as backtests_router
 
 router.include_router(backtests_router)
 
+from .imports_api import router as imports_router
+
+router.include_router(imports_router)
+
 from .strategy_runs import router as strategy_runs_router
 
 router.include_router(strategy_runs_router)
