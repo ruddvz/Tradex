@@ -18,7 +18,7 @@
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
 ## 2026-06-05 — cursor/phases-11-15-a3a6 — Phases 11–15: roadmap complete
-- Commit: (pending)
+- Commit: ccf4900 (feat: complete Phases 11–15 — paper realism, trust layers, e2e QA)
 - Files touched: paper lifecycle/fill config, PaperTrading cockpit, PerformanceCompare, DashboardStatusStrip, AI trust, Backtests assumptions, e2e/, scripts/verify.sh, planning
 - Tests added / changed: 4 (`test_paper_order_lifecycle`, `test_ai_trust`, Playwright e2e x3)
 - Build: pass (`./scripts/verify.sh` — 16 pytest, lint, build, SW, e2e)
