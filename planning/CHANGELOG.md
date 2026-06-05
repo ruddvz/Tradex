@@ -9,7 +9,7 @@
 ---
 
 ## 2026-06-05 — cursor/ios-pwa-ui-ux-a3a6 — iOS PWA UI/UX redesign (Phases 1–10)
-- Commit: (pending)
+- Commit: af9eff2 (feat: iOS PWA UI/UX redesign — cockpit shell, Tx design system, 5-tab nav)
 - Files touched: `frontend/src/styles/tokens.css`, `frontend/src/components/ui/Tx*.tsx`, `frontend/src/components/layout/{ModeHeaderStrip,MoreGrid,MobileNav,Header,Layout,Sidebar}.tsx`, `frontend/src/pages/{Dashboard,More,PaperTrading,RiskCenter,LiveReadiness,Settings,Playbooks}.tsx`, `frontend/src/components/{dashboard,bot,risk,journal}/*`, `frontend/src/lib/{pwa,formatters,a11y,resolveTxMode}.ts`, `e2e/tests/demo.spec.ts`, `planning/{UI_UX_PROGRESS,ACTIVE,CHANGELOG}.md`
 - Tests added / changed: 1 e2e (mobile nav Risk/More)
 - Build: pass (`./scripts/verify.sh` — 53 pytest, lint, metrics parity, build, e2e x4)
