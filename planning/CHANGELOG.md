@@ -8,6 +8,15 @@
 
 ---
 
+## 2026-06-05 — cursor/plan-complete-final-a3a6 — Frontend metrics parity in verify gate
+- Commit: 3b6450c (feat: frontend metrics parity check in verify gate)
+- Files touched: `frontend/scripts/check-metrics-parity.ts`, `frontend/src/lib/metricsParityFixture.ts`, `scripts/verify.sh`, `planning/{ACTIVE,CURRENT-STATE-AND-NEXT-WORK,CHANGELOG}.md`
+- Tests added / changed: 0 (frontend tsx check mirrors existing `test_metrics_parity.py`)
+- Build: pass (`./scripts/verify.sh` — 53 pytest, lint, metrics parity, build, e2e x3)
+- Status: done
+- Next up: Human-only — Docker verify, iPhone PWA QA, branch protection
+- Notes: Rebased onto main (P2 already merged via PR #36). Adds cross-stack metrics parity gate aligned with backend golden fixture.
+
 ## 2026-06-04 — cursor/post-plan-completion-b0b9 — Phase 9: post-plan backlog
 - Commit: (pending)
 - Files touched: `backend/app/models/{paper_violation,playbook}.py`, `backend/app/services/{risk_engine,paper_execution,paper_equity,playbook_stats}.py`, `backend/app/api/v1/{playbooks_api,risk,paper_legacy_api,paper_accounts}.py`, `backend/alembic/versions/f7a8b9c0d1e2_*.py`, `frontend/src/lib/api/{playbooks,risk}.ts`, `frontend/src/lib/mergePlaybooks.ts`, `frontend/src/store/useStore.ts`, `frontend/src/pages/{Playbooks,Settings}.tsx`, `planning/{ACTIVE,EXECUTION-PLAN,CHANGELOG}.md`
