@@ -10,7 +10,7 @@
 
 ## 2026-06-05 — cursor/pixel-perfect-ios26-977a — Completion pass (Journal/Paper/Risk/TxCard/QA)
 
-- Commit: (this push)
+- Commit: 1ee3e51
 - Files touched: `frontend/src/components/journal/{TradeDrawer,ScreenshotUploadZone,JournalFilterBar}.tsx`, `frontend/src/components/paper/*`, `frontend/src/components/risk/{KillSwitchCard,RiskLimitsCard,RiskViolationCard,RiskEventTimeline}.tsx`, `frontend/src/components/reports/{ReportMetricGrid,ReportInsightCard}.tsx`, `frontend/src/pages/{Journal,PaperTrading,RiskCenter,Reports,Dashboard,PropFirm,Notebook}.tsx`, `e2e/tests/visual-viewports.spec.ts`, `planning/screenshots/pwa-emulated/*`, `planning/{DEVICE-QA,UI_UX_COMPONENT_PROGRESS}.md`
 - Tests added / changed: `visual-viewports.spec.ts` (15 PNGs, 375–1440px)
 - Build: pass (`./scripts/verify.sh` — 19 e2e)
