@@ -6,9 +6,13 @@ This document describes what to build next on the Tradex trading journal platfor
 
 ## Current State (Already Done)
 
-- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded shell (**1.3**); **`Mt5SyncModal`**; **`syncTrades`** → **`POST /api/v1/sync/mt5`**; **`useStore.hydrateFromApi`** loads trades, **`/analytics/metrics`**, notebook, challenges, and **`POST /ai/insights`** when a token exists; **Header** shows **Live** vs **Demo**; **Action Center** includes **`GET /api/v1/setup/health`**; **Playbooks** use **journal-derived** cards when live (slice **7.3**) and demo mocks when logged out; **PWA** uses **`navigateFallback`** + five-item **mobile nav** (Phase **5**)
-- FastAPI: JWT (**1.1**), PostgreSQL trades / notebook / challenges (**1.2**), trade screenshots (**2.1–2.2**), **`GET`/`PUT /api/v1/settings/mt5`**, **`POST /api/v1/sync/mt5`**, analytics, AI insights, **`GET /api/v1/setup/health`**, manual tasks API
-- **`Authorization: Bearer`** on `/api/v1/*` except `GET /health` and `POST /auth/register` / `POST /auth/login`
+- React SPA with **sign-in / sign-up** (`/auth`), JWT in `localStorage`, guarded shell
+- **Data mode badges** (`DataModeBadge`) distinguish demo, live journal, paper, and backtest views
+- **Risk Center** at `/risk` — profiles, violations, kill switch, audit events
+- FastAPI: JWT, PostgreSQL, trade screenshots, MT5 sync, analytics, AI insights, paper trading, backtests, playbooks API
+- Phases **0–10** complete — see `planning/ROADMAP-2026-Q2.md` for next work (Phase 11+)
+
+**Next agent slice:** `planning/ACTIVE.md` → **[11.1] Paper order lifecycle**
 
 ---
 

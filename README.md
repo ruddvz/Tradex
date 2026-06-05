@@ -177,6 +177,18 @@ npm run dev
 
 The frontend runs with 120 demo trades pre-loaded. No backend needed for the demo.
 
+### Product modes (what works where)
+
+| Mode | Backend | Auth | Notes |
+|------|---------|------|-------|
+| **Demo** | No | No | Sample trades only — clearly labelled |
+| **Live journal** | Yes | Yes | Imported/manual trades, analytics, notebook |
+| **Paper trading** | Yes | Yes | Simulated fills — no real money |
+| **Backtest** | Yes | Yes | Synthetic OHLC — trust warnings on results |
+| **MT5 sync** | Yes + MT5 terminal | Yes | Real import uses `source=mt5`; dev fallback uses `demo_mt5_sample` |
+
+**Not supported:** Live broker execution or automated real-money trading. The Risk Center (`/risk`) shows kill switch status and paper violations.
+
 ### Option B: Full Stack with Docker
 
 ```bash

@@ -1,24 +1,32 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ShieldAlert, ShieldCheck } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useStore } from '../../store/useStore';
-import { fetchRiskEvents, type AuditEventRow } from '../../lib/api/risk';
+import { fetchRiskEvents, fetchPaperViolations, type AuditEventRow } from '../../lib/api/risk';
 import { getToken } from '../../lib/auth';
 import { LoadingState } from '../common/LoadingState';
 
 export function RiskStatusCard() {
   const { dataMode, botStatus } = useStore();
   const [events, setEvents] = useState<AuditEventRow[] | null>(null);
+  const [violationCount, setViolationCount] = useState(0);
 
   useEffect(() => {
     if (dataMode !== 'live' || !getToken()) return;
     let cancelled = false;
-    void fetchRiskEvents(5)
-      .then((rows) => {
-        if (!cancelled) setEvents(rows);
+    void Promise.all([fetchRiskEvents(5), fetchPaperViolations(5)])
+      .then(([evts, vios]) => {
+        if (!cancelled) {
+          setEvents(evts);
+          setViolationCount(vios.length);
+        }
       })
       .catch(() => {
-        if (!cancelled) setEvents([]);
+        if (!cancelled) {
+          setEvents([]);
+          setViolationCount(0);
+        }
       });
     return () => {
       cancelled = true;
@@ -70,6 +78,15 @@ export function RiskStatusCard() {
                 </li>
               ))}
             </ul>
+          )}
+          {(killed || violationCount > 0) && (
+            <Link
+              to="/risk"
+              className="inline-flex mt-3 text-xs font-semibold text-analytics hover:underline"
+            >
+              Open Risk Center
+              {violationCount > 0 ? ` (${violationCount} recent violations)` : ''}
+            </Link>
           )}
         </div>
       </div>

@@ -1,4 +1,21 @@
-import type { Trade } from '../types';
+import type { Trade, TradeSource } from '../types';
+
+const TRADE_SOURCES = new Set<TradeSource>([
+  'manual',
+  'mt5',
+  'mt5_live',
+  'mt5_demo',
+  'demo_mt5_sample',
+  'paper',
+  'backtest',
+  'demo',
+  'csv',
+]);
+
+function normalizeTradeSource(raw: unknown): TradeSource {
+  const s = typeof raw === 'string' ? raw : 'manual';
+  return TRADE_SOURCES.has(s as TradeSource) ? (s as TradeSource) : 'manual';
+}
 
 /** Map FastAPI `trade_to_api_dict` snake_case JSON into frontend `Trade`. */
 export function mapApiTradeRow(row: Record<string, unknown>): Trade {
@@ -38,7 +55,7 @@ export function mapApiTradeRow(row: Record<string, unknown>): Trade {
     setup: String(row.setup ?? ''),
     broker: String(row.broker ?? ''),
     account: String(row.account_id ?? ''),
-    source: typeof row.source === 'string' ? row.source : 'manual',
+    source: normalizeTradeSource(row.source),
     screenshot:
       typeof row.screenshot_url === 'string' ? row.screenshot_url : undefined,
     screenshotBeforeUrl:

@@ -27,7 +27,13 @@ import { fetchTrades, deleteTradeApi, updateTradeApi, type UpdateTradePayload } 
 import { fetchAnalyticsBundle, fetchCalendar } from '../lib/api/analytics';
 import { fetchBotStatus, activateKillSwitch, resumePaperOnly, type BotStatus } from '../lib/api/bot';
 import type { EquityPoint, DailyPnlPoint } from '../lib/mapAnalytics';
-import { listTradingAccounts, type TradingAccountRow } from '../lib/api/accounts';
+import {
+  createTradingAccount as createTradingAccountApi,
+  listTradingAccounts,
+  type TradingAccountRow,
+} from '../lib/api/accounts';
+import { createPlaybook as createPlaybookApi, listPlaybooks } from '../lib/api/playbooks';
+import { mergePlaybooks } from '../lib/mergePlaybooks';
 import { fetchNotebook } from '../lib/api/notebook';
 import { fetchChallenges } from '../lib/api/challenges';
 import { fetchAiInsights } from '../lib/api/ai';
@@ -37,6 +43,17 @@ import {
 } from '../lib/api/paperAccounts';
 import { syncMt5Trades } from '../lib/api/sync';
 import { derivePlaybooksFromTrades } from '../lib/derivePlaybooksFromTrades';
+
+async function loadMergedPlaybooks(trades: Trade[]): Promise<Playbook[]> {
+  const token = getToken();
+  if (!token) return derivePlaybooksFromTrades(trades);
+  try {
+    const saved = await listPlaybooks();
+    return mergePlaybooks(saved, trades);
+  } catch {
+    return derivePlaybooksFromTrades(trades);
+  }
+}
 
 export type Mt5CredentialsInput = {
   server?: string;
@@ -101,7 +118,14 @@ interface AppState {
   resumePaperTrading: () => Promise<void>;
   refreshNotebookFromApi: () => Promise<void>;
   refreshChallengesFromApi: () => Promise<void>;
-  refreshAiFromApi: () => Promise<void>;
+  refreshAiFromApi: () => Promise<AIInsight[]>;
+  refreshPlaybooksFromApi: () => Promise<void>;
+  createTradingAccount: (body: {
+    name: string;
+    broker?: string;
+    account_type?: string;
+    starting_balance?: number;
+  }) => Promise<boolean>;
   refreshPaperAccountsFromApi: () => Promise<void>;
   clearPaperState: () => void;
   createPaperAccount: (opts?: { name?: string }) => Promise<boolean>;
@@ -214,7 +238,8 @@ export const useStore = create<AppState>((set, get) => ({
       });
 
       const { trades } = await fetchTrades({ accountId: firstId, limit: 500 });
-      set({ trades, playbooks: derivePlaybooksFromTrades(trades) });
+      const playbooks = await loadMergedPlaybooks(trades);
+      set({ trades, playbooks });
 
       await get().refreshAnalyticsFromApi();
 
@@ -275,7 +300,33 @@ export const useStore = create<AppState>((set, get) => ({
     if (!token) return;
     const aid = get().selectedTradingAccountId;
     const { trades } = await fetchTrades({ accountId: aid, limit: 500 });
-    set({ trades, playbooks: derivePlaybooksFromTrades(trades) });
+    const playbooks = await loadMergedPlaybooks(trades);
+    set({ trades, playbooks });
+  },
+
+  refreshPlaybooksFromApi: async () => {
+    const token = getToken();
+    if (!token) return;
+    const playbooks = await loadMergedPlaybooks(get().trades);
+    set({ playbooks });
+  },
+
+  createTradingAccount: async (body) => {
+    const token = getToken();
+    if (!token) return false;
+    try {
+      await createTradingAccountApi(body);
+      const accounts = await listTradingAccounts();
+      const firstId = accounts[accounts.length - 1]?.id ?? get().selectedTradingAccountId;
+      set({
+        tradingAccounts: accounts,
+        selectedTradingAccountId: firstId,
+        account: mapShellAccount(accounts.find((a) => a.id === firstId) ?? accounts[0]),
+      });
+      return true;
+    } catch {
+      return false;
+    }
   },
 
   refreshAnalyticsFromApi: async () => {
@@ -336,10 +387,11 @@ export const useStore = create<AppState>((set, get) => ({
 
   refreshAiFromApi: async () => {
     const token = getToken();
-    if (!token) return;
+    if (!token) return get().aiInsights;
     const aid = get().selectedTradingAccountId;
     const insights = await fetchAiInsights(aid);
     set({ aiInsights: insights });
+    return insights;
   },
 
   syncTrades: async (credentials) => {
@@ -436,7 +488,25 @@ export const useStore = create<AppState>((set, get) => ({
   dismissInsight: (id) =>
     set((state) => ({ aiInsights: state.aiInsights.filter((i) => i.id !== id) })),
 
-  addPlaybook: (pb) => set((state) => ({ playbooks: [pb, ...state.playbooks] })),
+  addPlaybook: (pb) => {
+    set((state) => ({ playbooks: [pb, ...state.playbooks] }));
+    if (!getToken() || get().dataMode !== 'live') return;
+    void (async () => {
+      try {
+        await createPlaybookApi({
+          name: pb.name,
+          type: pb.type,
+          description: pb.description,
+          rules: pb.rules,
+          strategy_tag: pb.type === 'strategy' ? pb.name : null,
+          tags: pb.tags,
+        });
+        await get().refreshPlaybooksFromApi();
+      } catch {
+        /* local card kept */
+      }
+    })();
+  },
   updatePlaybook: (id, updates) =>
     set((state) => ({
       playbooks: state.playbooks.map((p) => (p.id === id ? { ...p, ...updates } : p)),

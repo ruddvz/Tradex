@@ -1,29 +1,34 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **Maintenance** — merge audit stack PRs #23–#30; optional Plan0 device QA
+## 👉 NEXT UP: **[11.1] — Paper order lifecycle states**
 
-See `planning/PHASE0-INVENTORY.md` and `planning/Plan0-AUDIT.md` for human QA.
+Status: [ ] pending
+
+Goal: Complete paper order state machine (draft → submitted → accepted/rejected → filled/cancelled/expired).
+
+After completion: move to **[11.2]** spread/slippage/commission assumptions.
+
+See `planning/ROADMAP-2026-Q2.md` and `planning/EXECUTION-PLAN.md` Phase 11.
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **Plan complete (Phases 0–8.2, E, Action Center, Live shell)** on `cursor/audit-complete-plan-parallel-b0b9`  
-**Stack:** audit PRs #23–#30
+**Phase:** **11 — Paper trading realism**  
+**Branch:** `cursor/phase-10-stabilization-a3a6`  
+**Base:** `main` + Phase 9–10 merged
 
-### Recently Done (parallel completion)
-- [x] **6.1–6.5** — API client (`settings`, `sync`, `paperAccounts`), shell account selector, live analytics without mock bleed, trade source badges, MT5 sync via API
-- [x] **7.1–7.3** — Paper engine + UI rejection reasons + auto-load book (models/routes pre-existing)
-- [x] **8.0–8.2** — Route split + Alembic + Docker migrate
-
-### Open (post-plan / polish)
-- [ ] Merge PR stack to `main`
-- [ ] Plan0 manual device QA (optional)
-- [ ] Dedicated `PaperViolation` model (deferred — audit events cover rejections today)
+### Recently Done (Phase 10)
+- [x] **10.1** Phase 9 post-plan merged (violations, playbooks API, account UI, paper equity)
+- [x] **10.2** `ROADMAP-2026-Q2.md` + deduplicated `EXECUTION-PLAN.md`
+- [x] **10.3** `DataModeBadge` on header + backtests; demo/live/paper/backtest copy
+- [x] **10.4** `demo_mt5_sample` source + journal source filters
+- [x] **10.5** Risk Center (`/risk`) + `GET /risk/profile` + dashboard violation link
 
 ---
 
 ## Notes
 
-- `computeMetrics` lives in `frontend/src/lib/metricsFromTrades.ts` (re-exported from `mockData` for demo).
-- Long-range ideas: `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` (beyond EXECUTION-PLAN slices).
+- Product identity: **trading performance lab**, not a live money bot.
+- `DataModeBadge` lives in `frontend/src/components/ui/DataModeBadge.tsx`.
+- Risk APIs: `GET /api/v1/risk/profile`, `/risk/violations`, `/risk/events`.

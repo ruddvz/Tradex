@@ -33,9 +33,20 @@ export interface Trade {
   setup: string;
   broker: string;
   account: string;
-  /** manual | mt5_live | mt5_demo | csv | paper | backtest */
-  source?: string;
+  /** manual | mt5 | mt5_live | mt5_demo | demo_mt5_sample | csv | paper | backtest | demo */
+  source?: TradeSource;
 }
+
+export type TradeSource =
+  | 'manual'
+  | 'mt5'
+  | 'mt5_live'
+  | 'mt5_demo'
+  | 'demo_mt5_sample'
+  | 'paper'
+  | 'backtest'
+  | 'demo'
+  | 'csv';
 
 export type EmotionType = 
   | 'Confident' | 'Focused' | 'Calm' 

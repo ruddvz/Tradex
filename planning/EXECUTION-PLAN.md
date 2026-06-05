@@ -108,38 +108,83 @@
 - [x] **8.1** Initial Alembic revision (`6bcb32ddfb52`) + auth/accounts/notebook/challenges/settings/sync/ai/paper routers
 - [x] **8.2** Docker entrypoint migrations + `init_db` → Alembic-only (removed ad-hoc ALTER helpers)
 
-- [x] **5.1** VitePWA manifest + service worker + `index.html` manifest / theme-color
-- [x] **5.2** Offline UX — `navigateFallback` for SPA + offline strip copy in `Layout`
-- [x] **5.3** Mobile bottom nav — five slots per NEXT_STEPS (Home, Journal, Playbooks, Prop, Settings)
+---
+
+## Phase 9 — Post-plan completion
+
+> Follow-ups from audit after Phases 0–8.2 shipped to `main`.
+
+- [x] **9.1** `PaperViolation` model + Alembic migration + `/risk/violations` + risk-engine logging
+- [x] **9.2** Playbooks API (`GET`/`POST`/`PATCH`/`DELETE` `/playbooks`) + live merge with journal-derived cards
+- [x] **9.3** Playbooks “Run AI Analysis” → `POST /ai/insights` (no fake timeout)
+- [x] **9.4** Settings UI — create trading account via `POST /accounts`
+- [x] **9.5** Paper equity mark-to-market on open positions (balance + unrealized)
+- [x] **9.6** Legacy `/paper/*` routes — `Deprecation` + `Link` successor headers
 
 ---
 
-## Phase 6 — Action Center (manual tasks)
+## Phase 10 — Post-PR stabilization (2026 Q2)
 
-> Product spec: `planning/TRADEX-SETUP-AND-ACTION-CENTER-PLAN.md`
+> **Canonical roadmap:** `planning/ROADMAP-2026-Q2.md`
 
-- [x] **6.1** `ManualTask` model + `/api/v1/manual-tasks` CRUD + seed on register + `POST .../generate-defaults`
-- [x] **6.2** Action Center UI (tabs, filters, drawer) + sidebar + mobile Tasks entry
-- [x] **6.3** `GET /api/v1/setup/health` + setup health summary in Action Center
-
----
-
-## Phase 7 — Live dashboard data (Sprint 1 shell)
-
-> **Goal:** Logged-in shell loads trades, analytics, notebook, challenges, and AI insights from the API; demo badge when logged out.
-
-- [x] **7.1** Zustand `hydrateFromApi` + `dataSource` + Header Live/Demo badge + sign-out reset
-- [x] **7.2** Notebook create/update/delete via API when authenticated
-- [x] **7.3** Playbooks use **journal-derived** cards when `dataSource === 'live'`; demo mock + manual create when logged out / demo
+- [x] **10.1** Review and merge Phase 9 post-plan work (violations, playbooks, account UI, paper equity)
+- [x] **10.2** Clean duplicated planning docs + create `ROADMAP-2026-Q2.md`
+- [x] **10.3** Universal `DataModeBadge` + stop silent mock/live mixing on major pages
+- [x] **10.4** Normalize trade `source` tagging (`demo_mt5_sample`, journal source filters)
+- [x] **10.5** Risk Center page (`/risk`) + `GET /risk/profile` + dashboard violation link
 
 ---
 
-## Phase 8 — Paper trading (Sprint 4)
+## Phase 11 — Paper trading realism
 
-> **Goal:** Simulated accounts, PAPER badge, then orders/fills and journal `source=paper`.
+- [ ] **11.1** Complete paper order lifecycle states (draft → filled/rejected/expired)
+- [ ] **11.2** Spread/slippage/commission/fill assumptions in paper engine
+- [ ] **11.3** Paper dashboard redesign (balance, equity, orders, fills, violations)
 
-- [x] **8.1** `PaperAccount` model + `GET`/`POST /api/v1/paper-accounts` + Paper Trading page + header Paper mode badge when an active account exists
-- [x] **8.2** Orders/fills stub + journal linkage `source=paper` (audit branch)
+---
+
+## Phase 12 — Backtesting trust layer
+
+- [ ] **12.1** Backtest assumptions panel on every result
+- [ ] **12.2** Backtest vs Paper vs Journal comparison page
+- [ ] **12.3** Prevent backtest exports polluting live journal without explicit source tagging
+
+---
+
+## Phase 13 — Dashboard and mobile UX polish
+
+- [ ] **13.1** Dashboard hierarchy (status strip, performance, risk, learning, activity)
+- [ ] **13.2** Mobile PWA safe-area and card/table polish
+- [ ] **13.3** Empty states for every major page
+
+---
+
+## Phase 14 — AI coach trust layer
+
+- [ ] **14.1** Separate AI review types (daily, weekly, strategy, psychology)
+- [ ] **14.2** Limitations/confidence/data-used on AI cards
+- [ ] **14.3** Block buy/sell prediction language from AI responses
+
+---
+
+## Phase 15 — Test coverage and QA
+
+- [ ] **15.1** Backend tests for auth/trades/paper/risk/playbooks/backtests/migrations
+- [ ] **15.2** Frontend tests for modes/empty states/mobile nav/core pages
+- [ ] **15.3** Manual QA on iPhone widths, tablet, and desktop
+
+---
+
+## Legacy phase references (historical — do not use for NEXT UP)
+
+These duplicate older sprint numbering. Work is **done**; kept for CHANGELOG cross-reference only.
+
+| Legacy id | Maps to | Status |
+|-----------|---------|--------|
+| Phase 6 (Action Center) | Manual tasks + setup health | done |
+| Phase 7 (Live dashboard) | `hydrateFromApi`, notebook API, journal playbooks | done |
+| Phase 8 (Paper sprint) | Paper accounts + orders/fills | done |
+| Phase E | Backtesting MVP + risk profile editor | done |
 
 ## Phase E — Backtesting MVP (audit)
 

@@ -24,6 +24,8 @@ from app.models import (  # noqa: F401
     paper_fill,
     paper_order,
     paper_position,
+    paper_violation,
+    playbook,
     risk_profile,
     strategy,
     strategy_run,

@@ -30,10 +30,23 @@ const brokers = [
 
 export function Settings() {
   const navigate = useNavigate();
-  const { account, syncTrades, isSyncing, openMt5SyncModal, hydrateLiveSession } = useStore();
+  const {
+    account,
+    syncTrades,
+    isSyncing,
+    openMt5SyncModal,
+    hydrateLiveSession,
+    tradingAccounts,
+    createTradingAccount,
+    dataMode,
+  } = useStore();
   const { showToast } = useToast();
   const [notifications, setNotifications] = useState({ email: true, push: true, drawdownAlerts: true, dailyReport: false });
   const [connectedBrokers, setConnectedBrokers] = useState(['Exness']);
+  const [newAccountName, setNewAccountName] = useState('');
+  const [newAccountType, setNewAccountType] = useState('demo');
+  const [newAccountBalance, setNewAccountBalance] = useState('10000');
+  const [creatingAccount, setCreatingAccount] = useState(false);
 
   const [mt5Server, setMt5Server] = useState('');
   const [mt5Login, setMt5Login] = useState('');
@@ -208,6 +221,95 @@ export function Settings() {
               </button>
             )}
           </div>
+
+          {/* Trading accounts */}
+          {getToken() && (
+            <div className="card p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Database className="w-4 h-4 text-brand-400" />
+                <h3 className="font-semibold text-white">Trading Accounts</h3>
+                <Badge variant="info" size="xs">
+                  {tradingAccounts.length} linked
+                </Badge>
+              </div>
+              {dataMode === 'live' && tradingAccounts.length > 0 && (
+                <ul className="mb-4 space-y-2 text-sm text-slate-300">
+                  {tradingAccounts.map((a) => (
+                    <li
+                      key={a.id}
+                      className="flex justify-between gap-2 rounded-lg border border-surface-border px-3 py-2"
+                    >
+                      <span className="font-medium text-white">{a.name}</span>
+                      <span className="text-slate-400 capitalize">
+                        {a.account_type} · ${a.current_balance.toLocaleString()}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="sm:col-span-2">
+                  <label className="label">Account name</label>
+                  <input
+                    className="input"
+                    value={newAccountName}
+                    onChange={(e) => setNewAccountName(e.target.value)}
+                    placeholder="FTMO 100K"
+                  />
+                </div>
+                <div>
+                  <label className="label">Type</label>
+                  <select
+                    className="select"
+                    value={newAccountType}
+                    onChange={(e) => setNewAccountType(e.target.value)}
+                  >
+                    <option value="demo">Demo</option>
+                    <option value="live">Live</option>
+                    <option value="prop">Prop</option>
+                    <option value="paper">Paper</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="label">Starting balance</label>
+                  <input
+                    className="input"
+                    type="number"
+                    min={100}
+                    value={newAccountBalance}
+                    onChange={(e) => setNewAccountBalance(e.target.value)}
+                  />
+                </div>
+              </div>
+              <button
+                type="button"
+                className="btn-primary mt-4"
+                disabled={creatingAccount || !newAccountName.trim()}
+                onClick={async () => {
+                  const bal = parseFloat(newAccountBalance);
+                  if (!newAccountName.trim() || Number.isNaN(bal) || bal <= 0) {
+                    showToast('Enter a valid name and balance', 'warning');
+                    return;
+                  }
+                  setCreatingAccount(true);
+                  const ok = await createTradingAccount({
+                    name: newAccountName.trim(),
+                    account_type: newAccountType,
+                    starting_balance: bal,
+                  });
+                  setCreatingAccount(false);
+                  if (ok) {
+                    setNewAccountName('');
+                    showToast('Trading account created');
+                  } else {
+                    showToast('Could not create account', 'warning');
+                  }
+                }}
+              >
+                {creatingAccount ? 'Creating…' : 'Create trading account'}
+              </button>
+            </div>
+          )}
 
           {/* MT5 Connection */}
           <div className="card p-6">

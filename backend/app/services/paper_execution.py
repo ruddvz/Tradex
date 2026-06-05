@@ -21,7 +21,9 @@ from ..models.paper_position import PaperPosition, PaperPositionStatus
 from ..models.trade import Trade, TradeDirection, TradeStatus
 from .fill_simulator import simulate_market_fill
 from .trade_codec import compute_grade_and_rr, status_from_str, grade_from_str
+from .paper_equity import refresh_paper_account_equity, unrealized_pnl_for_position
 from .risk_engine import evaluate_paper_order as evaluate_risk_engine
+from .risk_engine import log_paper_violation
 
 # Coarse $ / (price point × lot) — matches paper_service MVP scaling
 _PNL_UNIT = 100.0
@@ -105,7 +107,16 @@ def evaluate_paper_order_risk(
 
     today_pnl = _today_realized_pnl(db, account.id)
     if today_pnl <= -account.max_daily_loss:
-        return "Order blocked: daily loss limit already reached."
+        msg = "Order blocked: daily loss limit already reached."
+        log_paper_violation(
+            db,
+            user_id=user_id,
+            violation_type="ORDER_BLOCKED_DAILY_LOSS_LIMIT",
+            reason=msg,
+            severity="critical",
+            paper_account_id=account.id,
+        )
+        return msg
 
     approved, reason = evaluate_risk_engine(
         db,
@@ -119,6 +130,7 @@ def evaluate_paper_order_risk(
         open_positions_count=open_count,
         open_positions_same_symbol=same_sym,
         risk_at_stop_dollars=risk,
+        paper_account_id=account.id,
     )
     if not approved:
         return reason
@@ -164,6 +176,15 @@ def submit_paper_market_order(
             submitted_at=datetime.utcnow(),
         )
         db.add(order)
+        log_paper_violation(
+            db,
+            user_id=user_id,
+            violation_type="ORDER_REJECTED",
+            reason=err,
+            severity="danger",
+            paper_account_id=account.id,
+            paper_order_id=order.id,
+        )
         db.commit()
         db.refresh(order)
         return order, None, err
@@ -226,9 +247,11 @@ def submit_paper_market_order(
         filled_at=now,
     )
 
+    position.unrealized_pnl = unrealized_pnl_for_position(position)
     db.add(order)
     db.add(position)
     db.add(fill)
+    refresh_paper_account_equity(db, account)
     db.commit()
     db.refresh(order)
     db.refresh(position)
@@ -263,7 +286,7 @@ def close_paper_position(
     position.closed_at = now
 
     account.balance = round(account.balance + net, 2)
-    account.equity = account.balance
+    refresh_paper_account_equity(db, account)
 
     status_str = "WIN" if net > 0 else "LOSS" if net < 0 else "BREAKEVEN"
     grade_s, r_mult = compute_grade_and_rr(net, status_str)
