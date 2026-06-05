@@ -17,6 +17,15 @@
 - Next up: Plan0 manual device QA (human)
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
+## 2026-06-05 — cursor/phase-10-stabilization-a3a6 — Phase 10: stabilization after Phase 9
+- Commit: (pending)
+- Files touched: Phase 9 merge + `DataModeBadge.tsx`, `RiskCenter.tsx`, `resolveDataViewMode.ts`, `Journal.tsx` source filters, `sync_api.py` demo_mt5_sample, `risk.py` GET /profile, planning `ROADMAP-2026-Q2.md`, `EXECUTION-PLAN.md`, `ACTIVE.md`, `README.md`, `NEXT_STEPS.md`
+- Tests added / changed: 0 (12 backend pytest pass; frontend build pass)
+- Build: pass
+- Status: done
+- Next up: **11.1** — Paper order lifecycle states
+- Notes: Merged `cursor/post-plan-completion-b0b9` (PR #32 equivalent). Fixed migration bootstrap test for revision `f7a8b9c0d1e2`.
+
 ## 2026-06-04 — cursor/audit-complete-plan-parallel-b0b9 — Phase 6 + 7 completion (parallel)
 - Commit: (pending)
 - Files touched: `frontend/src/lib/api/{client,settings,sync,paperAccounts,trades,accounts}.ts`, `useStore.ts`, `Header.tsx`, `AccountSelector.tsx`, `TradeSourceBadge.tsx`, `Journal.tsx`, `PaperTrading.tsx`, `Settings.tsx`, `Dashboard.tsx`, `Playbooks.tsx`, `Layout.tsx`, `planning/{ACTIVE,EXECUTION-PLAN}.md`

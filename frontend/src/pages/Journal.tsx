@@ -367,6 +367,9 @@ export function Journal() {
   const [dirFilter, setDirFilter] = useState<'all' | 'BUY' | 'SELL'>('all');
   const [outFilter, setOutFilter] = useState<'all' | 'WIN' | 'LOSS' | 'BREAKEVEN'>('all');
   const [gradeFilter, setGradeFilter] = useState<'all' | 'A'>('all');
+  const [sourceFilter, setSourceFilter] = useState<
+    'all' | 'manual' | 'mt5' | 'paper' | 'backtest' | 'demo'
+  >('all');
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [selectedTrade, setSelectedTrade] = useState<Trade | null>(null);
   const [addTradeOpen, setAddTradeOpen] = useState(false);
@@ -393,9 +396,17 @@ export function Journal() {
         if (dirFilter !== 'all' && t.direction !== dirFilter) return false;
         if (outFilter !== 'all' && t.status !== outFilter) return false;
         if (gradeFilter === 'A' && t.grade !== 'A') return false;
+        if (sourceFilter !== 'all') {
+          const src = (t.source ?? 'manual').toLowerCase();
+          if (sourceFilter === 'mt5' && !src.includes('mt5')) return false;
+          if (sourceFilter === 'demo' && src !== 'demo' && src !== 'demo_mt5_sample') return false;
+          if (sourceFilter === 'manual' && src !== 'manual') return false;
+          if (sourceFilter === 'paper' && src !== 'paper') return false;
+          if (sourceFilter === 'backtest' && !src.includes('backtest')) return false;
+        }
         return true;
       }),
-    [trades, search, symbolFilter, dirFilter, outFilter, gradeFilter]
+    [trades, search, symbolFilter, dirFilter, outFilter, gradeFilter, sourceFilter]
   );
 
   const grouped = useMemo(() => {
@@ -416,6 +427,7 @@ export function Journal() {
     setDirFilter('all');
     setOutFilter('all');
     setGradeFilter('all');
+    setSourceFilter('all');
   };
 
   return (
@@ -582,6 +594,29 @@ export function Journal() {
             >
               A grade
             </button>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            <span className="text-xs text-text-muted self-center mr-1">Source:</span>
+            {(
+              [
+                ['all', 'All sources'],
+                ['manual', 'Manual'],
+                ['mt5', 'MT5'],
+                ['paper', 'Paper'],
+                ['backtest', 'Backtest'],
+                ['demo', 'Demo'],
+              ] as const
+            ).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                className={clsx('chip', sourceFilter === key && 'chip-active')}
+                onClick={() => setSourceFilter(key)}
+              >
+                {label}
+              </button>
+            ))}
           </div>
 
           <div className="flex flex-wrap gap-2 justify-end">

@@ -71,6 +71,15 @@ def list_risk_profiles(user: User = Depends(get_current_user), db: Session = Dep
     ]
 
 
+@router.get("/profile", response_model=RiskProfileOut)
+def get_default_risk_profile(user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Return the user's primary (first) risk profile."""
+    profiles = list_risk_profiles(user=user, db=db)
+    if not profiles:
+        raise HTTPException(status_code=404, detail="Risk profile not found")
+    return profiles[0]
+
+
 @router.get("/violations", response_model=list[PaperViolationOut])
 def list_paper_violations(
     limit: int = Query(50, ge=1, le=200),

@@ -16,6 +16,7 @@ import {
   YAxis,
 } from 'recharts';
 import { Header } from '../components/layout/Header';
+import { DataModeBadge } from '../components/ui/DataModeBadge';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { useToast } from '../components/ui/Toast';
 import { Badge } from '../components/ui/Badge';
@@ -113,6 +114,7 @@ export function Backtests() {
 
       <div className="page-shell p-6 space-y-6">
         <div className="flex flex-wrap items-center gap-2">
+          <DataModeBadge mode="backtest" showDescription />
           <DataSourceBadge source="backtest" />
           <Badge variant="warn" size="xs">
             Synthetic candles — not live market data

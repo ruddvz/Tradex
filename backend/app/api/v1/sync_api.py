@@ -69,7 +69,12 @@ async def sync_mt5(
                 ),
             )
 
-    import_source = "mt5_live" if connected else "mt5_demo"
+    if used_demo_fallback:
+        import_source = "demo_mt5_sample"
+    elif connected:
+        import_source = "mt5"
+    else:
+        import_source = "mt5_demo"
 
     uid = user.id
     tickets_q = select(Trade.mt5_ticket).where(

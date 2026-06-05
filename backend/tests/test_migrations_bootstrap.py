@@ -35,4 +35,4 @@ def test_auto_stamp_legacy_database(monkeypatch):
         assert inspect(engine).has_table("alembic_version")
         with engine.connect() as conn:
             version = conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
-        assert version == "6bcb32ddfb52"
+        assert version == "f7a8b9c0d1e2"

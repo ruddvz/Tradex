@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 import { ModeBadge } from '../status/ModeBadge';
+import { DataModeBadge } from '../ui/DataModeBadge';
 import { resolveAppMode } from '../../lib/resolveAppMode';
+import { resolveDataViewMode } from '../../lib/resolveDataViewMode';
 import { AccountSelector } from './AccountSelector';
 import { DataSourceBadge } from '../status/DataSourceBadge';
 
@@ -60,7 +62,11 @@ export function Header({
           <h1 className="text-xl font-bold text-text-primary tracking-tight truncate">{title}</h1>
           {subtitle && <p className="text-xs text-text-muted truncate mt-0.5">{subtitle}</p>}
         </div>
-        <ModeBadge mode={resolveAppMode({ dataMode, paperModeActive })} className="mt-0.5" />
+        <DataModeBadge
+          mode={resolveDataViewMode({ dataMode, paperModeActive })}
+          className="mt-0.5 hidden sm:inline-flex"
+        />
+        <ModeBadge mode={resolveAppMode({ dataMode, paperModeActive })} className="mt-0.5 sm:hidden" />
         {dataMode === 'live' && <DataSourceBadge source="live" />}
         {lastMt5Sync?.demo_fallback_used && (
           <DataSourceBadge source="demo" className="!text-amber-200" />

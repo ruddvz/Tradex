@@ -1,27 +1,34 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **Plan0 manual device QA** (optional human checklist)
+## 👉 NEXT UP: **[11.1] — Paper order lifecycle states**
 
-See `planning/Plan0-AUDIT.md` for browser/Lighthouse checks. Automated build/lint already pass in CI.
+Status: [ ] pending
+
+Goal: Complete paper order state machine (draft → submitted → accepted/rejected → filled/cancelled/expired).
+
+After completion: move to **[11.2]** spread/slippage/commission assumptions.
+
+See `planning/ROADMAP-2026-Q2.md` and `planning/EXECUTION-PLAN.md` Phase 11.
 
 ---
 
 ## 🎯 Current Sprint
 
-**Phase:** **Post-plan (Phase 9)** on `cursor/post-plan-completion-b0b9`  
-**Base:** `main` (audit stack merged)
+**Phase:** **11 — Paper trading realism**  
+**Branch:** `cursor/phase-10-stabilization-a3a6`  
+**Base:** `main` + Phase 9–10 merged
 
-### Recently Done
-- [x] **9.1–9.6** — Violations model/API, playbooks CRUD, AI generate, account UI, paper equity, legacy deprecation headers
-- [x] Merge audit stack to `main`
-
-### Open (optional / long-range)
-- [ ] Plan0 manual device QA
-- [ ] Long-range: `planning/FULL-REPOSITORY-AUDIT-AND-IMPROVEMENT-PLAN.md` (live broker execution, deeper strategy lab)
+### Recently Done (Phase 10)
+- [x] **10.1** Phase 9 post-plan merged (violations, playbooks API, account UI, paper equity)
+- [x] **10.2** `ROADMAP-2026-Q2.md` + deduplicated `EXECUTION-PLAN.md`
+- [x] **10.3** `DataModeBadge` on header + backtests; demo/live/paper/backtest copy
+- [x] **10.4** `demo_mt5_sample` source + journal source filters
+- [x] **10.5** Risk Center (`/risk`) + `GET /risk/profile` + dashboard violation link
 
 ---
 
 ## Notes
 
-- `computeMetrics` lives in `frontend/src/lib/metricsFromTrades.ts` (re-exported from `mockData` for demo).
-- Playbooks: saved via API + journal-derived merge (`frontend/src/lib/mergePlaybooks.ts`).
+- Product identity: **trading performance lab**, not a live money bot.
+- `DataModeBadge` lives in `frontend/src/components/ui/DataModeBadge.tsx`.
+- Risk APIs: `GET /api/v1/risk/profile`, `/risk/violations`, `/risk/events`.

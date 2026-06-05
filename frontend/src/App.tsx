@@ -54,6 +54,9 @@ const Backtests = lazy(() =>
 const LiveReadiness = lazy(() =>
   import('./pages/LiveReadiness').then((m) => ({ default: m.LiveReadiness }))
 );
+const RiskCenter = lazy(() =>
+  import('./pages/RiskCenter').then((m) => ({ default: m.RiskCenter }))
+);
 
 const AppShell = requireLogin ? ProtectedLayout : Layout;
 
@@ -149,6 +152,14 @@ const router = createBrowserRouter(
               element: (
                 <Suspense fallback={<RouteFallback />}>
                   <LiveReadiness />
+                </Suspense>
+              ),
+            },
+            {
+              path: 'risk',
+              element: (
+                <Suspense fallback={<RouteFallback />}>
+                  <RiskCenter />
                 </Suspense>
               ),
             },
