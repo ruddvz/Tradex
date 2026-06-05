@@ -1,5 +1,13 @@
 import { useCallback, useRef, useState } from 'react';
-import { AlertTriangle, FlaskConical, LineChart, Loader2, Play, Trash2, Upload } from 'lucide-react';
+import {
+  AlertTriangle,
+  FlaskConical,
+  LineChart,
+  Loader2,
+  Play,
+  Trash2,
+  Upload,
+} from 'lucide-react';
 import {
   Line,
   LineChart as ReLineChart,
@@ -147,7 +155,9 @@ export function Backtests() {
           <DataModeBadge mode="backtest" showDescription />
           <DataSourceBadge source="backtest" />
           <Badge variant="warn" size="xs">
-            {candleDatasetId ? 'CSV historical candles' : 'Synthetic candles — not live market data'}
+            {candleDatasetId
+              ? 'CSV historical candles'
+              : 'Synthetic candles — not live market data'}
           </Badge>
         </div>
 
@@ -156,7 +166,9 @@ export function Backtests() {
             <div className="flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-purple-300 mt-0.5 shrink-0" />
               <div>
-                <p className="text-xs font-semibold text-purple-200 mb-1">Walk-forward / overfit warnings</p>
+                <p className="text-xs font-semibold text-purple-200 mb-1">
+                  Walk-forward / overfit warnings
+                </p>
                 <ul className="text-xs text-purple-100/90 space-y-1 list-disc list-inside">
                   {selected!.oos_warnings!.map((w) => (
                     <li key={w}>{w}</li>

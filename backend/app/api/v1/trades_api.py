@@ -14,6 +14,7 @@ from sqlalchemy import func as sql_func
 from sqlalchemy.orm import Session
 
 from ...core.config import settings
+from ...core.upload_validation import validate_image_upload
 from ...database import get_db
 from ...models.trade import Trade, TradeStatus
 from ...models.user import User

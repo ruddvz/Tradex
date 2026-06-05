@@ -1,4 +1,14 @@
-import { Link, Shield, Bell, Database, User, CheckCircle2, RefreshCw, Trash2, History } from 'lucide-react';
+import {
+  Link,
+  Shield,
+  Bell,
+  Database,
+  User,
+  CheckCircle2,
+  RefreshCw,
+  Trash2,
+  History,
+} from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
