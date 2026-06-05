@@ -18,7 +18,7 @@
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
 ## 2026-06-05 — cursor/p2-plan-complete-32fb — P2: httpOnly auth, EXIF strip, metrics parity
-- Commit: (pending)
+- Commit: 296ad76 (feat: complete P2 — httpOnly cookie auth, EXIF strip, metrics parity)
 - Files touched: `backend/app/core/{auth_cookies,security,config,upload_validation}.py`, `backend/app/api/{deps,v1/auth_api,v1/trades_api}.py`, `backend/tests/{test_auth_refresh,test_metrics_parity}.py`, `frontend/src/lib/{auth,api/client}.ts`, `frontend/src/components/auth/{ProtectedLayout,AuthBootstrap}.tsx`, `frontend/src/pages/{Auth,Settings}.tsx`, `scripts/docker-verify.sh`, `planning/{ACTIVE,CURRENT-STATE-AND-NEXT-WORK,CHANGELOG}.md`
 - Tests added / changed: 5 (`test_auth_refresh`, `test_metrics_parity`)
 - Build: pass (`./scripts/verify.sh`)
