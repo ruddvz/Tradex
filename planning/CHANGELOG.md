@@ -10,7 +10,7 @@
 
 ## 2026-06-05 — cursor/pixel-perfect-ios26-977a — iOS 26 component system (Phases 0–10)
 
-- Commit: (pending)
+- Commit: dada8e8 + 259fe68
 - Files touched: `frontend/src/styles/*`, `frontend/src/components/ui/Tx*.tsx`, `frontend/src/components/layout/{PageToolbar,ModeHeaderStrip,MobileNav}.tsx`, `frontend/src/components/{dashboard,paper,risk}/*`, `frontend/src/pages/*`, `planning/UI_UX_COMPONENT_PROGRESS.md`
 - Tests added / changed: 0 (e2e x4 still green)
 - Build: pass (`./scripts/verify.sh`)
