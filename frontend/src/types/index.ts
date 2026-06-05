@@ -142,6 +142,10 @@ export interface AIInsight {
   description: string;
   impact: 'high' | 'medium' | 'low';
   action: string;
+  reviewType?: 'daily' | 'weekly' | 'strategy' | 'psychology' | 'behavior_review';
+  dataUsed?: string;
+  confidence?: 'high' | 'medium' | 'low';
+  limitations?: string;
   data?: Record<string, unknown>;
   createdAt: string;
 }
@@ -169,6 +173,9 @@ export interface PaperAccount {
   equity?: number;
   maxDailyLoss?: number;
   maxRiskPerTradePercent?: number;
+  fillSpreadMultiplier?: number;
+  fillSlippageFactor?: number;
+  fillCommissionPerLot?: number;
   isActive: boolean;
   createdAt: string;
 }

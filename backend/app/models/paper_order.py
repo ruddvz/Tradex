@@ -17,14 +17,22 @@ class PaperOrderSide(str, enum.Enum):
 class PaperOrderType(str, enum.Enum):
     MARKET = "market"
     LIMIT = "limit"
+    STOP = "stop"
+    STOP_LOSS = "stop_loss"
+    TAKE_PROFIT = "take_profit"
 
 
 class PaperOrderStatus(str, enum.Enum):
-    PENDING = "pending"
+    DRAFT = "draft"
+    SUBMITTED = "submitted"
     ACCEPTED = "accepted"
-    REJECTED = "rejected"
+    PARTIALLY_FILLED = "partially_filled"
     FILLED = "filled"
+    REJECTED = "rejected"
     CANCELLED = "cancelled"
+    EXPIRED = "expired"
+    # Legacy alias kept for existing rows
+    PENDING = "pending"
 
 
 class PaperOrder(Base):
@@ -47,3 +55,4 @@ class PaperOrder(Base):
     submitted_at = Column(DateTime(timezone=True))
     filled_at = Column(DateTime(timezone=True))
     cancelled_at = Column(DateTime(timezone=True))
+    expired_at = Column(DateTime(timezone=True))

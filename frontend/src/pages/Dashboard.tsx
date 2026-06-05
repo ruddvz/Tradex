@@ -21,12 +21,14 @@ import { SessionHeatmap } from '../components/charts/SessionHeatmap';
 import { PnLBarChart } from '../components/charts/PnLBarChart';
 import { WeeklyPerformanceStrip } from '../components/dashboard/WeeklyPerformanceStrip';
 import { TradingConsistencyCard } from '../components/dashboard/TradingConsistencyCard';
+import { DashboardStatusStrip } from '../components/dashboard/DashboardStatusStrip';
 import { PnlBadge, DirectionBadge, Badge, GradeBadge } from '../components/ui/Badge';
 import { useStore } from '../store/useStore';
 import { format, parseISO } from 'date-fns';
 import { clsx } from 'clsx';
 import { useIsMobile } from '../hooks/useBreakpoint';
 import type { AIInsight } from '../types';
+import { AIInsightTrustMeta } from '../components/ai/AIInsightTrustMeta';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
 
 export function Dashboard() {
@@ -109,6 +111,7 @@ export function Dashboard() {
       )}
 
       <div className="page-shell px-5 py-6 space-y-7 md:space-y-8">
+        <DashboardStatusStrip />
         <RiskStatusCard />
 
         <HeroMetricCard
@@ -152,6 +155,7 @@ export function Dashboard() {
               </div>
               <p className="text-sm font-semibold text-text-primary mb-0.5">{topInsight.title}</p>
               <p className="text-xs text-text-secondary line-clamp-2">{topInsight.description}</p>
+              <AIInsightTrustMeta insight={topInsight} />
             </div>
             <div className="flex items-center gap-2 flex-shrink-0">
               <button

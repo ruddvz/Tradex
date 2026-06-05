@@ -54,6 +54,9 @@ const Backtests = lazy(() =>
 const LiveReadiness = lazy(() =>
   import('./pages/LiveReadiness').then((m) => ({ default: m.LiveReadiness }))
 );
+const PerformanceCompare = lazy(() =>
+  import('./pages/PerformanceCompare').then((m) => ({ default: m.PerformanceCompare }))
+);
 const RiskCenter = lazy(() =>
   import('./pages/RiskCenter').then((m) => ({ default: m.RiskCenter }))
 );
@@ -152,6 +155,14 @@ const router = createBrowserRouter(
               element: (
                 <Suspense fallback={<RouteFallback />}>
                   <LiveReadiness />
+                </Suspense>
+              ),
+            },
+            {
+              path: 'reports/compare',
+              element: (
+                <Suspense fallback={<RouteFallback />}>
+                  <PerformanceCompare />
                 </Suspense>
               ),
             },

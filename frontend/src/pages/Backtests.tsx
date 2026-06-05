@@ -196,6 +196,35 @@ export function Backtests() {
             {selected ? (
               <>
                 <div className="card p-5">
+                  <h3 className="text-sm font-semibold text-white mb-3">Simulation assumptions</h3>
+                  <dl className="grid grid-cols-2 gap-2 text-xs">
+                    {[
+                      ['Data source', selected.data_label ?? 'Synthetic OHLC'],
+                      ['Symbol', selected.symbol],
+                      ['Spread', '1.2 pips (default)'],
+                      ['Slippage', '0.5 pips (default)'],
+                      ['Commission', '$3.50/lot (default)'],
+                      ['Fill model', 'Next-bar breakout'],
+                      ['Trades', String(selected.trade_count ?? selected.metrics?.trade_count ?? 0)],
+                      [
+                        'Max drawdown',
+                        selected.metrics?.max_drawdown_percent != null
+                          ? `${selected.metrics.max_drawdown_percent.toFixed(1)}%`
+                          : '—',
+                      ],
+                    ].map(([k, v]) => (
+                      <div key={k} className="rounded-lg bg-surface/40 px-2 py-1.5">
+                        <dt className="text-slate-500">{k}</dt>
+                        <dd className="text-slate-200 font-medium">{v}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="text-[10px] text-amber-200/80 mt-3">
+                    Backtest exports do not enter your live journal unless you explicitly close a paper
+                    position or add a manual trade.
+                  </p>
+                </div>
+                <div className="card p-5">
                   <div className="flex items-start justify-between gap-3 mb-4">
                     <div>
                       <h2 className="text-lg font-bold text-white">{selected.name}</h2>

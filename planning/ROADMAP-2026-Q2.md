@@ -21,14 +21,14 @@
 
 ---
 
-## Completed phases (0–10)
+## Completed phases (0–15)
 
-- **0–4:** Setup, auth, DB, screenshots, MT5 sync, email reports
-- **5:** PWA + mobile nav
-- **6–7:** Live data trust + paper trading MVP
-- **8:** Route split + Alembic migrations
-- **9:** Violations, playbooks API, account UI, paper equity
-- **10:** Data mode badges, source tagging, Risk Center, planning cleanup
+- **0–10:** See prior roadmap entries
+- **11:** Paper lifecycle, fill config, paper dashboard
+- **12:** Backtest trust + performance compare
+- **13:** Dashboard status strip + mobile polish
+- **14:** AI coach trust layer
+- **15:** verify script + Playwright e2e + pytest expansion
 
 ---
 

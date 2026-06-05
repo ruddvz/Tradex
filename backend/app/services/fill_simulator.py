@@ -37,17 +37,22 @@ def simulate_market_fill(
     side: str,
     reference_price: float,
     lot_size: float,
+    spread_multiplier: float = 1.0,
+    slippage_factor: float | None = None,
+    commission_per_lot: float | None = None,
 ) -> FillQuote:
     """Return fill price and cost components for a market order."""
-    spread = spread_for_symbol(symbol)
-    slippage = spread * _SLIPPAGE_FACTOR
+    spread = spread_for_symbol(symbol) * max(spread_multiplier, 0.0)
+    slip_factor = _SLIPPAGE_FACTOR if slippage_factor is None else slippage_factor
+    slippage = spread * slip_factor
     half = spread / 2.0
     side_l = side.lower()
     if side_l == "buy":
         fill_price = reference_price + half + slippage
     else:
         fill_price = reference_price - half - slippage
-    commission = round(_COMMISSION_PER_LOT * max(lot_size, 0.01), 2)
+    comm_rate = _COMMISSION_PER_LOT if commission_per_lot is None else commission_per_lot
+    commission = round(comm_rate * max(lot_size, 0.01), 2)
     return FillQuote(
         fill_price=round(fill_price, 5),
         spread=round(spread, 6),

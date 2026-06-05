@@ -17,6 +17,15 @@
 - Next up: Plan0 manual device QA (human)
 - Notes: Phase 9.1–9.6. Legacy `/paper/*` returns Deprecation headers. Playbooks merge API + journal-derived.
 
+## 2026-06-05 — cursor/phases-11-15-a3a6 — Phases 11–15: roadmap complete
+- Commit: ccf4900 (feat: complete Phases 11–15 — paper realism, trust layers, e2e QA)
+- Files touched: paper lifecycle/fill config, PaperTrading cockpit, PerformanceCompare, DashboardStatusStrip, AI trust, Backtests assumptions, e2e/, scripts/verify.sh, planning
+- Tests added / changed: 4 (`test_paper_order_lifecycle`, `test_ai_trust`, Playwright e2e x3)
+- Build: pass (`./scripts/verify.sh` — 16 pytest, lint, build, SW, e2e)
+- Status: done
+- Next up: optional Plan0 manual device QA
+- Notes: Paper orders: submitted → accepted → filled/rejected. Per-account fill assumptions migration `a1b2c3d4e5f6`.
+
 ## 2026-06-05 — cursor/phase-10-stabilization-a3a6 — Phase 10: stabilization after Phase 9
 - Commit: b6f9eed (feat: Phase 10 stabilization — data modes, Risk Center, planning cleanup)
 - Files touched: Phase 9 merge + `DataModeBadge.tsx`, `RiskCenter.tsx`, `resolveDataViewMode.ts`, `Journal.tsx` source filters, `sync_api.py` demo_mt5_sample, `risk.py` GET /profile, planning `ROADMAP-2026-Q2.md`, `EXECUTION-PLAN.md`, `ACTIVE.md`, `README.md`, `NEXT_STEPS.md`
