@@ -11,7 +11,8 @@ from .config import settings
 
 
 def _fernet() -> Fernet:
-    digest = hashlib.sha256(settings.SECRET_KEY.encode("utf-8")).digest()
+    secret = settings.BROKER_SECRET_KEY or settings.SECRET_KEY
+    digest = hashlib.sha256(secret.encode("utf-8")).digest()
     key = base64.urlsafe_b64encode(digest)
     return Fernet(key)
 

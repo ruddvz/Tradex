@@ -1,10 +1,8 @@
 # Active Task Queue
 
-## 👉 NEXT UP: **P2 — Production security hardening**
+## 👉 NEXT UP: **Human validation only**
 
-Status: [ ] pending
-
-P0 audit and P1 backlog are complete on branch `cursor/audit-plan-complete-32fb`.
+Status: [x] P2 engineering complete (2026-06-05)
 
 **Canonical state:** `planning/CURRENT-STATE-AND-NEXT-WORK.md`
 
@@ -12,29 +10,25 @@ P0 audit and P1 backlog are complete on branch `cursor/audit-plan-complete-32fb`
 
 ## 🎯 Current Sprint
 
-**Phase:** Post-audit P2 (production readiness)  
-**Branch:** `cursor/audit-plan-complete-32fb`
+**Phase:** Post-audit — plan complete  
+**Branch:** `main` (merge via PR after P2)
 
-### Recently Done (P1 — 2026-06-05)
-- [x] Import batches model + API + MT5 sync audit trail + Settings Import History
-- [x] CSV candle upload + honest backtest `data_label=csv_upload`
-- [x] Strategy versioning (immutable snapshots for backtest + paper runs)
-- [x] Walk-forward OOS warnings on backtest results
-- [x] 45 pytest + verify.sh green
+### Recently Done (P2 — 2026-06-05)
+- [x] httpOnly cookie auth + refresh rotation + logout
+- [x] Frontend session bootstrap (`AuthBootstrap`, `ProtectedLayout` refresh)
+- [x] EXIF strip on screenshot uploads (Pillow)
+- [x] Metrics parity golden fixture test
+- [x] `scripts/docker-verify.sh` for local full-stack check
+- [x] Auth token/cookie unit tests
 
-### Recently Done (P2 partial — 2026-06-05)
-- [x] Security headers + request ID middleware
-- [x] Auth rate limiting (login/register)
-- [x] Screenshot upload magic-byte validation + randomized filenames
-
-### Next P2 slices
-- [ ] httpOnly cookie auth + refresh rotation
-- [ ] Docker full-stack verification (human/local)
-- [ ] Metrics parity fixtures (Reports ↔ backend)
+### Human-only follow-ups
+- [ ] Docker full-stack verification (`./scripts/docker-verify.sh`)
+- [ ] Physical iPhone PWA install QA (`planning/DEVICE-QA.md`)
+- [ ] GitHub branch protection requiring CI green
 
 ---
 
 ## Notes
 
-- Verification: `./scripts/verify.sh` (45 pytest, lint, build, SW, e2e x3)
+- Verification: `./scripts/verify.sh` (53 pytest, lint, build, SW, e2e x3)
 - Product identity: **trading performance lab** — no live execution

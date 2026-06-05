@@ -1,4 +1,4 @@
-import { clearToken, getToken } from '../auth';
+import { clearToken, getToken, refreshAccessToken } from '../auth';
 
 const API_PREFIX = '/api/v1';
 
@@ -47,9 +47,21 @@ export function detailMessage(data: unknown): string {
   return 'Request failed';
 }
 
+let refreshPromise: Promise<boolean> | null = null;
+
+async function ensureRefreshed(): Promise<boolean> {
+  if (!refreshPromise) {
+    refreshPromise = refreshAccessToken().finally(() => {
+      refreshPromise = null;
+    });
+  }
+  return refreshPromise;
+}
+
 export async function apiFetch<T = unknown>(
   path: string,
-  init: RequestInit = {}
+  init: RequestInit = {},
+  retried = false
 ): Promise<ApiResult<T>> {
   const headers = new Headers(init.headers);
   const token = getToken();
@@ -59,8 +71,12 @@ export async function apiFetch<T = unknown>(
   if (init.body !== undefined && typeof init.body === 'string' && !headers.has('Content-Type')) {
     headers.set('Content-Type', 'application/json');
   }
-  const res = await fetch(apiUrl(path), { ...init, headers });
-  if (res.status === 401) {
+  const res = await fetch(apiUrl(path), { ...init, headers, credentials: 'include' });
+  if (res.status === 401 && !retried) {
+    const refreshed = await ensureRefreshed();
+    if (refreshed) {
+      return apiFetch<T>(path, init, true);
+    }
     clearToken();
   }
   const data = (await res.json().catch(() => ({}))) as T;

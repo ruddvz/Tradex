@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { ProtectedLayout } from './components/auth/ProtectedLayout';
+import { AuthBootstrap } from './components/auth/AuthBootstrap';
 import { RouteFallback } from './components/layout/RouteFallback';
 import { authUiEnabled, requireLogin } from './lib/featureFlags';
 import { ToastProvider } from './components/ui/Toast';
@@ -172,6 +173,7 @@ export default function App() {
   return (
     <ErrorBoundary>
       <ToastProvider>
+        <AuthBootstrap />
         <RouterProvider router={router} />
       </ToastProvider>
     </ErrorBoundary>

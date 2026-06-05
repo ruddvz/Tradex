@@ -31,12 +31,12 @@ TradeX is a **trading performance lab** — journal trades, import MT5 history, 
 ### Latest verification run (2026-06-05, cloud agent)
 
 ```
-Backend pytest:  45 passed (P1 import batches, CSV candles, strategy versions, OOS)
+Backend pytest:  53 passed (P2 auth cookies, metrics parity)
 Frontend lint:   pass
 Frontend build:  pass
 Service worker:  dist/sw.js present
 Playwright e2e:  3 passed
-Docker Compose:  not run in cloud VM (no docker); validate locally
+Docker Compose:  `./scripts/docker-verify.sh` (local; skipped in cloud VM)
 ```
 
 ---
@@ -56,6 +56,8 @@ Docker Compose:  not run in cloud VM (no docker); validate locally
 - CSV candle upload + `csv_upload` backtest data label
 - Strategy version snapshots on create/backtest/paper run
 - Walk-forward OOS warnings on backtest results
+- Auth cookie refresh + logout endpoints
+- Metrics parity golden fixture (backend analytics)
 
 ---
 
@@ -73,7 +75,7 @@ Docker Compose:  not run in cloud VM (no docker); validate locally
 
 - **Live broker order execution** — blocked in code and UI
 - **Real-money bot mode** — not a product goal
-- **Production-grade auth** — JWT in localStorage; httpOnly cookies deferred (P2)
+- **Production-grade auth** — httpOnly cookies + refresh rotation (P2 complete); password reset / email verification deferred
 - **Real historical candle feeds by default** — backtests default to synthetic OHLC; CSV upload available
 - ~~**Import batch audit UI**~~ — done (Settings → Import History)
 - ~~**Walk-forward / OOS optimization**~~ — OOS warnings shipped; full optimization UI deferred
@@ -109,15 +111,17 @@ Docker Compose:  not run in cloud VM (no docker); validate locally
 1. ~~**Import batches**~~ — done (`import_batches` + Settings Import History + MT5 sync wiring)
 2. ~~**CSV candle provider**~~ — done (upload + backtest integration)
 3. ~~**Strategy versioning**~~ — done (`strategy_versions` + backtest/paper run FKs)
-4. **Metrics single source of truth** — backend fixtures mirrored in frontend (partial — journal analytics exist)
+4. ~~**Metrics single source of truth**~~ — golden fixture test + backend `compute_metrics` canonical for live API
 5. ~~**Walk-forward / OOS warnings**~~ — done on backtest results
 
-### P2 — before public production (next)
+### P2 — before public production
 
-- httpOnly cookie auth + refresh rotation
-- Rate limiting + security headers
-- Upload MIME/magic-byte validation + EXIF strip
-- Branch protection requiring CI green
+- ~~httpOnly cookie auth + refresh rotation~~
+- ~~Rate limiting + security headers~~
+- ~~Upload MIME/magic-byte validation + EXIF strip~~
+- Branch protection requiring CI green (GitHub settings — human)
+- Docker full-stack verify (`./scripts/docker-verify.sh` — human/local)
+- iPhone PWA install QA (`planning/DEVICE-QA.md` — human)
 
 ---
 

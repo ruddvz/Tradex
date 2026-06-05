@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { clsx } from 'clsx';
 import { LogIn, UserPlus } from 'lucide-react';
-import { setToken, getToken } from '../lib/auth';
+import { getToken, migrateLegacyToken, refreshAccessToken, setToken } from '../lib/auth';
 import { useStore } from '../store/useStore';
 
 type Tab = 'signin' | 'signup';
@@ -15,6 +15,28 @@ export function Auth() {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      migrateLegacyToken();
+      if (getToken()) {
+        if (!cancelled) setCheckingSession(false);
+        return;
+      }
+      const ok = await refreshAccessToken();
+      if (ok && !cancelled) navigate('/', { replace: true });
+      if (!cancelled) setCheckingSession(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [navigate]);
+
+  if (checkingSession) {
+    return null;
+  }
 
   if (getToken()) {
     return <Navigate to="/" replace />;
@@ -30,6 +52,7 @@ export function Auth() {
       const res = await fetch(path, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(body),
       });
       const data = await res.json().catch(() => ({}));

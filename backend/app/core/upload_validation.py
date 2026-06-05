@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import io
+
 # PNG, JPEG, GIF, WebP magic signatures
 _IMAGE_SIGNATURES: list[tuple[bytes, str]] = [
     (b"\x89PNG\r\n\x1a\n", "image/png"),
@@ -34,3 +36,31 @@ def validate_image_upload(data: bytes, declared_type: str) -> None:
     declared = (declared_type or "").split(";")[0].strip().lower()
     if declared and declared != detected:
         raise ValueError(f"Declared type {declared} does not match file content ({detected})")
+
+
+def strip_image_exif(data: bytes, content_type: str) -> bytes:
+    """Re-encode image without EXIF metadata. Falls back to original bytes on failure."""
+    try:
+        from PIL import Image
+    except ImportError:
+        return data
+
+    fmt_map = {
+        "image/png": "PNG",
+        "image/jpeg": "JPEG",
+        "image/webp": "WEBP",
+        "image/gif": "GIF",
+    }
+    fmt = fmt_map.get(content_type.split(";")[0].strip().lower())
+    if not fmt:
+        return data
+    try:
+        img = Image.open(io.BytesIO(data))
+        buf = io.BytesIO()
+        save_kwargs = {"format": fmt}
+        if fmt == "JPEG":
+            save_kwargs["quality"] = 90
+        img.save(buf, **save_kwargs)
+        return buf.getvalue()
+    except Exception:
+        return data

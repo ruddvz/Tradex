@@ -14,7 +14,7 @@ from sqlalchemy import func as sql_func
 from sqlalchemy.orm import Session
 
 from ...core.config import settings
-from ...core.upload_validation import validate_image_upload
+from ...core.upload_validation import strip_image_exif, validate_image_upload
 from ...database import get_db
 from ...models.trade import Trade, TradeStatus
 from ...models.user import User
@@ -254,6 +254,8 @@ async def upload_trade_screenshot(
         validate_image_upload(raw, ct)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
+    raw = strip_image_exif(raw, ct)
 
     base_dir = Path(settings.UPLOAD_ROOT) / "screenshots" / user.id
     base_dir.mkdir(parents=True, exist_ok=True)
