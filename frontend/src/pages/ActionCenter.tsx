@@ -3,7 +3,7 @@ import { subDays, parseISO, isAfter } from 'date-fns';
 import { ClipboardList, RefreshCw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
-import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { TaskCard } from '../components/tasks/TaskCard';
 import { TaskDrawer } from '../components/tasks/TaskDrawer';
@@ -164,7 +164,7 @@ export function ActionCenter() {
         showDateRange={false}
       />
 
-      <PageDataTrustBar />
+      <ModeHeaderStrip />
 
       <div className="p-4 md:p-6 lg:p-8 max-w-6xl mx-auto space-y-6 pb-28 md:pb-8">
         {!token && (

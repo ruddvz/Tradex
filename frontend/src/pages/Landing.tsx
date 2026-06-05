@@ -109,7 +109,7 @@ export function Landing() {
               Sign In
             </button>
             <button onClick={() => navigate('/')} className="btn-primary text-sm">
-              Start Free Trial
+              Open demo
             </button>
           </div>
         </div>
@@ -127,25 +127,28 @@ export function Landing() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6 leading-tight">
-            Your Trades, Journaled.
+            Trader&apos;s Performance Lab
             <br />
-            <span className="text-gradient">Your Edge, Revealed.</span>
+            <span className="text-gradient">Journal. Simulate. Review.</span>
           </h1>
 
           <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto leading-relaxed">
-            The AI-powered trading journal that auto-syncs your MT5 trades, tracks every metric, and
-            helps you build real consistency in Forex, Gold, Indices & more.
+            Journal real trades, simulate paper trading, backtest strategies, monitor risk, and
+            review behavior before risking more capital. Live broker execution stays disabled.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
             <button
               onClick={() => navigate('/')}
-              className="btn-primary text-base px-6 py-3 shadow-glow"
+              className="btn-primary text-base px-6 py-3 shadow-glow min-h-[52px]"
             >
-              Start Free Trial <ArrowRight className="w-4 h-4" />
+              Open demo <ArrowRight className="w-4 h-4" />
             </button>
-            <button onClick={() => navigate('/')} className="btn-secondary text-base px-6 py-3">
-              View Demo Dashboard
+            <button
+              onClick={() => navigate('/auth')}
+              className="btn-secondary text-base px-6 py-3 min-h-[52px]"
+            >
+              Sign in
             </button>
           </div>
 

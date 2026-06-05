@@ -27,7 +27,7 @@ import {
 } from 'recharts';
 import { clsx } from 'clsx';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
-import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 
 const CustomTooltip = ({
   active,
@@ -370,7 +370,7 @@ export function Reports() {
         }
       />
 
-      <PageDataTrustBar />
+      <ModeHeaderStrip />
 
       <div className="page-shell px-6 pt-4 pb-8 space-y-5">
         <div className="flex flex-wrap items-center gap-2">

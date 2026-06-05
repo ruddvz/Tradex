@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
-import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 import { useToast } from '../components/ui/Toast';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
@@ -195,7 +195,7 @@ export function Settings() {
     <div className="min-h-screen">
       <Header title="Settings" subtitle="Configure your trading environment" />
 
-      <PageDataTrustBar />
+      <ModeHeaderStrip />
 
       <div className="page-shell p-6">
         <div className="max-w-3xl mx-auto space-y-5">

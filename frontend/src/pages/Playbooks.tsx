@@ -11,7 +11,7 @@ import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
 import { clsx } from 'clsx';
 import type { Playbook } from '../types';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
-import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 
 function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
   return (
@@ -237,7 +237,14 @@ export function Playbooks() {
     <div className="min-h-screen">
       <Header title="AI Playbooks" subtitle="Pattern detection & performance intelligence" />
 
-      <PageDataTrustBar />
+      <ModeHeaderStrip />
+
+      <div className="px-[var(--tx-page-x)] pt-3 md:px-[var(--tx-page-x-desktop)]">
+        <p className="rounded-[var(--tx-r-20)] border border-[var(--tx-ai)]/30 bg-[var(--tx-ai-soft)] px-4 py-3 text-sm text-[var(--tx-text-2)]">
+          AI reviews your trade history and behavior. It does not give buy/sell signals or profit
+          guarantees.
+        </p>
+      </div>
 
       <div className="page-shell p-6 space-y-6">
         {dataMode === 'live' ? (

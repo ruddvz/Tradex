@@ -131,8 +131,8 @@ export function Dashboard() {
 
       <TxPage className="page-shell !px-0">
         <div className="space-y-5 md:space-y-7">
-          <DailyRiskCard />
           <TodayHeroCard />
+          <DailyRiskCard />
           <ActionGrid onAddTrade={() => navigate('/journal')} />
           <BotStatusCard />
           {!isMobile && <DashboardStatusStrip />}

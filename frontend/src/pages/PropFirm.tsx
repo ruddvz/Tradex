@@ -13,7 +13,7 @@ import { ProgressRing } from '../components/ui/ProgressRing';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
-import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 import { PnLBarChart } from '../components/charts/PnLBarChart';
 import { clsx } from 'clsx';
 import { format, differenceInDays } from 'date-fns';
@@ -105,7 +105,7 @@ export function PropFirm() {
   return (
     <div className="min-h-screen">
       <Header title="Prop Firm Mode" subtitle="Track your funded challenge progress" />
-      <PageDataTrustBar />
+      <ModeHeaderStrip />
       {propChallenge.id === '__empty__' && (
         <div className="px-4 md:px-6 lg:px-8 max-w-6xl mx-auto pt-2">
           <div className="rounded-xl border border-surface-border bg-dark-300/40 px-4 py-3 text-sm text-slate-400">

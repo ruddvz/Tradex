@@ -56,8 +56,8 @@ export function TxBottomSheet({
         aria-modal="true"
         aria-labelledby="tx-sheet-title"
         className={clsx(
-          'relative w-full max-w-lg max-h-[90dvh] overflow-hidden',
-          'rounded-t-[var(--tx-radius-xl)] md:rounded-[var(--tx-radius-lg)]',
+          'relative w-full max-w-lg max-h-[min(86dvh,760px)] overflow-hidden',
+          'rounded-t-[var(--tx-r-32)] md:rounded-[var(--tx-r-24)]',
           'border border-[var(--tx-line-2)] bg-[var(--tx-bg-1)] shadow-[var(--tx-shadow-float)]',
           'flex flex-col animate-slide-up',
           className

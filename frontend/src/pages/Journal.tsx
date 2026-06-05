@@ -12,7 +12,7 @@ import { clsx } from 'clsx';
 import type { Trade } from '../types';
 import { EmptyState } from '../components/common/EmptyState';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
-import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 import { JournalTradeCard } from '../components/journal/JournalTradeCard';
 
 const emotionEmojis: Record<string, string> = {
@@ -444,7 +444,7 @@ export function Journal() {
         onAddTrade={() => setAddTradeOpen(true)}
       />
 
-      <PageDataTrustBar />
+      <ModeHeaderStrip />
 
       <div className="page-shell p-6 space-y-5 pb-28 md:pb-6">
         {dataMode === 'live' && (

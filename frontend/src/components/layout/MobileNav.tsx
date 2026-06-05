@@ -1,12 +1,12 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, Activity, ShieldAlert, Grid3X3 } from 'lucide-react';
+import { LayoutDashboard, BookOpen, Wallet, ShieldAlert, Grid3X3 } from 'lucide-react';
 import { clsx } from 'clsx';
 
 /** Five-tab iPhone-first navigation — Today, Journal, Bot, Risk, More */
 const mobileNavItems = [
   { path: '/', label: 'Today', icon: LayoutDashboard },
   { path: '/journal', label: 'Journal', icon: BookOpen },
-  { path: '/paper-trading', label: 'Bot', icon: Activity },
+  { path: '/paper-trading', label: 'Bot', icon: Wallet },
   { path: '/risk', label: 'Risk', icon: ShieldAlert },
   { path: '/more', label: 'More', icon: Grid3X3 },
 ] as const;
@@ -22,7 +22,7 @@ export function MobileNav() {
         'fixed z-50 md:hidden',
         'left-3 right-3',
         'bottom-[max(10px,env(safe-area-inset-bottom))]',
-        'min-h-[64px] rounded-[var(--tx-radius-lg)]',
+        'min-h-[64px] rounded-[var(--tx-r-32)]',
         'flex items-stretch justify-between gap-0.5 px-1.5 pt-2',
         'bg-[var(--tx-surface-1)] backdrop-blur-[24px]',
         'border border-[var(--tx-line-2)] shadow-[var(--tx-shadow-float)]'
@@ -46,7 +46,10 @@ export function MobileNav() {
                   '/live-readiness',
                   '/action-center',
                 ].some((p) => location.pathname.startsWith(p))
-              : location.pathname.startsWith(path);
+              : path === '/paper-trading'
+                ? location.pathname.startsWith('/paper') ||
+                  location.pathname.startsWith('/paper-trading')
+                : location.pathname.startsWith(path);
         const isRisk = path === '/risk';
         return (
           <NavLink

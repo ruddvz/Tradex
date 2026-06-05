@@ -17,6 +17,7 @@ import {
   YAxis,
 } from 'recharts';
 import { Header } from '../components/layout/Header';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 import { DataModeBadge } from '../components/ui/DataModeBadge';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { useToast } from '../components/ui/Toast';
@@ -150,7 +151,13 @@ export function Backtests() {
         showDateRange={false}
       />
 
+      <ModeHeaderStrip />
+
       <div className="page-shell p-6 space-y-6">
+        <p className="rounded-[var(--tx-r-20)] border border-[var(--tx-ai)]/30 bg-[var(--tx-ai-soft)] px-4 py-3 text-sm text-[var(--tx-text-2)]">
+          Backtest result — historical simulation. Real fills, spreads, latency, and broker rules
+          may change outcomes.
+        </p>
         <div className="flex flex-wrap items-center gap-2">
           <DataModeBadge mode="backtest" showDescription />
           <DataSourceBadge source="backtest" />
