@@ -289,13 +289,9 @@ def run_backtest(
 ) -> dict[str, Any]:
     assumptions = assumptions or BacktestAssumptions()
     candle_list = candles if candles is not None else generate_demo_candles(symbol)
-    resolved_label = data_label or (
-        "csv_upload" if candles is not None else "synthetic_demo"
-    )
+    resolved_label = data_label or ("csv_upload" if candles is not None else "synthetic_demo")
 
-    trades, curve, metrics = run_simple_breakout_backtest(
-        candle_list, symbol, rules, assumptions
-    )
+    trades, curve, metrics = run_simple_breakout_backtest(candle_list, symbol, rules, assumptions)
 
     in_sample_metrics: dict[str, Any] | None = None
     out_of_sample_metrics: dict[str, Any] | None = None
@@ -312,9 +308,7 @@ def run_backtest(
             _, _, out_of_sample_metrics = run_simple_breakout_backtest(
                 test, symbol, rules, assumptions
             )
-            oos_warnings = compute_oos_warnings(
-                in_sample_metrics, out_of_sample_metrics, trades
-            )
+            oos_warnings = compute_oos_warnings(in_sample_metrics, out_of_sample_metrics, trades)
 
     if resolved_label == "synthetic_demo":
         oos_warnings = [

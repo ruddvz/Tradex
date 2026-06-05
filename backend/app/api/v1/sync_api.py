@@ -156,10 +156,7 @@ async def sync_mt5(
     status = "success" if connected else "demo"
     message = None
     if used_demo_fallback:
-        message = (
-            "Demo sample import — not live broker data "
-            "(ALLOW_DEMO_MT5_FALLBACK + DEBUG)."
-        )
+        message = "Demo sample import — not live broker data " "(ALLOW_DEMO_MT5_FALLBACK + DEBUG)."
     return {
         "status": status,
         "import_kind": import_source,

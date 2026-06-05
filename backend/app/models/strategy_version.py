@@ -7,7 +7,9 @@ from .base import Base
 
 class StrategyVersion(Base):
     __tablename__ = "strategy_versions"
-    __table_args__ = (UniqueConstraint("strategy_id", "version_number", name="uq_strategy_version"),)
+    __table_args__ = (
+        UniqueConstraint("strategy_id", "version_number", name="uq_strategy_version"),
+    )
 
     id = Column(String, primary_key=True)
     strategy_id = Column(

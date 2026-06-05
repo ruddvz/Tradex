@@ -73,7 +73,9 @@ def start_strategy_run(
         raise ValueError("A strategy is already running on this paper account.")
 
     rules = _parse_json(strat.rules_json, {})
-    ver = create_strategy_version(db, strategy=strat, change_note="Paper run snapshot", status="paper_running")
+    ver = create_strategy_version(
+        db, strategy=strat, change_note="Paper run snapshot", status="paper_running"
+    )
     run = StrategyRun(
         id=str(uuid.uuid4()),
         user_id=user_id,

@@ -11,7 +11,9 @@ class ImportBatch(Base):
     id = Column(String, primary_key=True)
     user_id = Column(String, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     source = Column(String(32), nullable=False, index=True)
-    source_account_id = Column(String, ForeignKey("trading_accounts.id", ondelete="SET NULL"), nullable=True)
+    source_account_id = Column(
+        String, ForeignKey("trading_accounts.id", ondelete="SET NULL"), nullable=True
+    )
     status = Column(String(24), nullable=False, default="running")
     records_seen = Column(Integer, nullable=False, default=0)
     records_inserted = Column(Integer, nullable=False, default=0)
