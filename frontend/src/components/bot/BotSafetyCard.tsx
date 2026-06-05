@@ -8,7 +8,11 @@ export function BotSafetyCard() {
   const killed = botStatus?.kill_switch_active;
 
   return (
-    <TxCard title="Safety controls" subtitle="Always visible on bot and risk screens" variant="warning">
+    <TxCard
+      title="Safety controls"
+      subtitle="Always visible on bot and risk screens"
+      variant="warning"
+    >
       <ul className="space-y-2 text-sm text-[var(--tx-text-2)]">
         <li className="flex justify-between gap-2">
           <span>Kill switch</span>

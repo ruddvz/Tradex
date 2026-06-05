@@ -71,9 +71,7 @@ export function TxBottomSheet({
             <h2 id="tx-sheet-title" className="text-lg font-bold text-[var(--tx-text-1)]">
               {title}
             </h2>
-            {description && (
-              <p className="mt-0.5 text-sm text-[var(--tx-text-3)]">{description}</p>
-            )}
+            {description && <p className="mt-0.5 text-sm text-[var(--tx-text-3)]">{description}</p>}
           </div>
           <button
             type="button"

@@ -78,9 +78,7 @@ export function TxMetricCard({
               {delta.toFixed(1)}%
             </span>
           )}
-          {supportingText && (
-            <span className="text-[var(--tx-text-3)]">{supportingText}</span>
-          )}
+          {supportingText && <span className="text-[var(--tx-text-3)]">{supportingText}</span>}
         </div>
       )}
     </div>

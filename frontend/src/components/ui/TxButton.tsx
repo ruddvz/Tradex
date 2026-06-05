@@ -23,7 +23,8 @@ const VARIANT: Record<TxButtonVariant, string> = {
     'bg-[var(--tx-surface-2)] text-[var(--tx-text-1)] border border-[var(--tx-line-2)] hover:bg-[var(--tx-surface-3)]',
   ghost: 'bg-transparent text-[var(--tx-text-2)] hover:bg-[var(--tx-surface-1)]',
   danger: 'bg-[var(--tx-loss)]/15 text-[var(--tx-loss)] border border-[var(--tx-loss)]/35',
-  warning: 'bg-[var(--tx-warning-soft)] text-[var(--tx-warning)] border border-[var(--tx-warning)]/35',
+  warning:
+    'bg-[var(--tx-warning-soft)] text-[var(--tx-warning)] border border-[var(--tx-warning)]/35',
   success: 'bg-[var(--tx-profit-soft)] text-[var(--tx-profit)] border border-[var(--tx-profit)]/35',
   disabledLive:
     'bg-[var(--tx-surface-2)] text-[var(--tx-text-4)] border border-[var(--tx-line-1)] cursor-not-allowed opacity-70',

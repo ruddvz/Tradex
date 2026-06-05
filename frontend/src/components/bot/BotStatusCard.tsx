@@ -8,7 +8,9 @@ import { formatPnl } from '../../lib/formatters';
 export function BotStatusCard() {
   const { botStatus, paperAccounts, triggerKillSwitch, resumePaperTrading, dataMode } = useStore();
   const account = paperAccounts[0];
-  const running = Boolean(botStatus && !botStatus.kill_switch_active && !botStatus.paper_orders_paused);
+  const running = Boolean(
+    botStatus && !botStatus.kill_switch_active && !botStatus.paper_orders_paused
+  );
   const paused = Boolean(botStatus?.kill_switch_active || botStatus?.paper_orders_paused);
 
   return (

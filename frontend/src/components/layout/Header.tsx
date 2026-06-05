@@ -119,7 +119,10 @@ export function Header({
             aria-label="Sync MT5"
           >
             <RefreshCw
-              className={clsx('w-[21px] h-[21px]', isSyncing && 'animate-spin text-[var(--tx-profit)]')}
+              className={clsx(
+                'w-[21px] h-[21px]',
+                isSyncing && 'animate-spin text-[var(--tx-profit)]'
+              )}
             />
           </button>
 

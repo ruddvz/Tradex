@@ -6,7 +6,12 @@ type RiskHeroState = 'safe' | 'slow' | 'stop' | 'locked' | 'blocked';
 
 const CONFIG: Record<
   RiskHeroState,
-  { label: string; description: string; icon: typeof Shield; variant: 'success' | 'warning' | 'danger' | 'default' }
+  {
+    label: string;
+    description: string;
+    icon: typeof Shield;
+    variant: 'success' | 'warning' | 'danger' | 'default';
+  }
 > = {
   safe: {
     label: 'Safe to continue',
@@ -56,13 +61,7 @@ export function RiskStatusHero({ state }: { state: RiskHeroState }) {
   );
 }
 
-export function DailyLossProgress({
-  usedPct,
-  limitPct,
-}: {
-  usedPct: number;
-  limitPct: number;
-}) {
+export function DailyLossProgress({ usedPct, limitPct }: { usedPct: number; limitPct: number }) {
   const ratio = Math.min(100, (usedPct / limitPct) * 100);
   return (
     <TxCard title="Daily loss limit" subtitle={`${limitPct}% configured max`}>
@@ -83,7 +82,13 @@ export function DailyLossProgress({
   );
 }
 
-export function OpenExposureCard({ exposure, openTrades }: { exposure: number; openTrades: number }) {
+export function OpenExposureCard({
+  exposure,
+  openTrades,
+}: {
+  exposure: number;
+  openTrades: number;
+}) {
   return (
     <TxCard title="Open exposure" subtitle="Simulated + journal risk snapshot">
       <div className="grid grid-cols-2 gap-3">

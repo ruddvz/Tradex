@@ -30,9 +30,7 @@ export function TxPage({
           {title && (
             <h1 className="text-2xl font-bold tracking-tight text-[var(--tx-text-1)]">{title}</h1>
           )}
-          {subtitle && (
-            <p className="mt-1 text-sm text-[var(--tx-text-3)]">{subtitle}</p>
-          )}
+          {subtitle && <p className="mt-1 text-sm text-[var(--tx-text-3)]">{subtitle}</p>}
         </header>
       )}
       {children}

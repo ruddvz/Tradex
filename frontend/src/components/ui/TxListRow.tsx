@@ -44,12 +44,13 @@ export function TxListRow({
       {leading}
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-[var(--tx-text-1)]">{title}</p>
-        {subtitle && (
-          <p className="truncate text-xs text-[var(--tx-text-3)]">{subtitle}</p>
-        )}
+        {subtitle && <p className="truncate text-xs text-[var(--tx-text-3)]">{subtitle}</p>}
       </div>
-      {meta && <span className={clsx('text-sm font-bold tabular-nums', META[metaTone])}>{meta}</span>}
-      {trailing ?? (onClick ? <ChevronRight className="h-4 w-4 shrink-0 text-[var(--tx-text-4)]" /> : null)}
+      {meta && (
+        <span className={clsx('text-sm font-bold tabular-nums', META[metaTone])}>{meta}</span>
+      )}
+      {trailing ??
+        (onClick ? <ChevronRight className="h-4 w-4 shrink-0 text-[var(--tx-text-4)]" /> : null)}
     </Comp>
   );
 }

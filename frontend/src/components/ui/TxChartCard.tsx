@@ -40,12 +40,7 @@ export function TxChartCard({
         <div className="flex items-center gap-2">
           {legend}
           {onExpand && (
-            <TxButton
-              variant="ghost"
-              size="sm"
-              aria-label={`Expand ${title}`}
-              onClick={onExpand}
-            >
+            <TxButton variant="ghost" size="sm" aria-label={`Expand ${title}`} onClick={onExpand}>
               <Maximize2 className="h-4 w-4" />
             </TxButton>
           )}

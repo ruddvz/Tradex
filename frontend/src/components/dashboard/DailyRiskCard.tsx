@@ -45,7 +45,13 @@ export function DailyRiskCard({ className }: { className?: string }) {
 
   return (
     <TxCard
-      variant={state === 'safe' ? 'success' : state === 'locked' || state === 'breached' ? 'danger' : 'warning'}
+      variant={
+        state === 'safe'
+          ? 'success'
+          : state === 'locked' || state === 'breached'
+            ? 'danger'
+            : 'warning'
+      }
       title="Daily risk status"
       subtitle="Risk before deep analytics"
       className={className}
@@ -61,7 +67,11 @@ export function DailyRiskCard({ className }: { className?: string }) {
             <div
               className={clsx(
                 'h-full rounded-full transition-all',
-                state === 'safe' ? 'bg-[var(--tx-profit)]' : state === 'breached' || state === 'locked' ? 'bg-[var(--tx-loss)]' : 'bg-[var(--tx-warning)]'
+                state === 'safe'
+                  ? 'bg-[var(--tx-profit)]'
+                  : state === 'breached' || state === 'locked'
+                    ? 'bg-[var(--tx-loss)]'
+                    : 'bg-[var(--tx-warning)]'
               )}
               style={{ width: `${progress}%` }}
               role="progressbar"

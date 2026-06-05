@@ -35,9 +35,17 @@ export function MobileNav() {
             ? location.pathname === '/'
             : path === '/more'
               ? location.pathname === '/more' ||
-                ['/playbooks', '/reports', '/settings', '/backtests', '/propfirm', '/notebook', '/calculator', '/live-readiness', '/action-center'].some(
-                  (p) => location.pathname.startsWith(p)
-                )
+                [
+                  '/playbooks',
+                  '/reports',
+                  '/settings',
+                  '/backtests',
+                  '/propfirm',
+                  '/notebook',
+                  '/calculator',
+                  '/live-readiness',
+                  '/action-center',
+                ].some((p) => location.pathname.startsWith(p))
               : location.pathname.startsWith(path);
         const isRisk = path === '/risk';
         return (

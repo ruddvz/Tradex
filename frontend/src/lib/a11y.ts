@@ -1,8 +1,7 @@
 /** Accessibility helpers for sheets and focus management. */
 
 export function trapFocus(container: HTMLElement): () => void {
-  const focusable =
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+  const focusable = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
   const nodes = () =>
     Array.from(container.querySelectorAll<HTMLElement>(focusable)).filter(
       (el) => !el.hasAttribute('disabled') && el.offsetParent !== null

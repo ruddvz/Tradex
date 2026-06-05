@@ -1,12 +1,6 @@
 import { clsx } from 'clsx';
 
-export type TxMode =
-  | 'demo'
-  | 'paper'
-  | 'mt5'
-  | 'liveLocked'
-  | 'liveReady'
-  | 'liveBlocked';
+export type TxMode = 'demo' | 'paper' | 'mt5' | 'liveLocked' | 'liveReady' | 'liveBlocked';
 
 const MODE_CONFIG: Record<TxMode, { label: string; className: string }> = {
   demo: {

@@ -181,7 +181,9 @@ export function Sidebar() {
                     {isActive && sidebarOpen && (
                       <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 bg-brand-400 rounded-r-full" />
                     )}
-                    <Icon className={clsx('flex-shrink-0 w-5 h-5', isActive ? 'text-brand-400' : '')} />
+                    <Icon
+                      className={clsx('flex-shrink-0 w-5 h-5', isActive ? 'text-brand-400' : '')}
+                    />
                     {sidebarOpen && (
                       <span className="text-sm font-medium animate-fade-in">{label}</span>
                     )}

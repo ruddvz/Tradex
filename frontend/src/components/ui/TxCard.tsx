@@ -52,9 +52,7 @@ export function TxCard({
             {title && (
               <h2 className="text-[15px] font-bold leading-5 text-[var(--tx-text-1)]">{title}</h2>
             )}
-            {subtitle && (
-              <p className="mt-0.5 text-xs text-[var(--tx-text-3)]">{subtitle}</p>
-            )}
+            {subtitle && <p className="mt-0.5 text-xs text-[var(--tx-text-3)]">{subtitle}</p>}
           </div>
           {action}
         </div>
