@@ -1,15 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Landmark, Plus, RefreshCw } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { Header } from '../components/layout/Header';
 import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
-import { BotStatusCard } from '../components/bot/BotStatusCard';
 import { BotSafetyCard } from '../components/bot/BotSafetyCard';
-import { PaperAssumptionsCard, ExecutionLogCard } from '../components/bot/ExecutionLogCard';
 import { TxPage } from '../components/ui/TxPage';
-import { EmptyState } from '../components/common/EmptyState';
-import { LoadingState } from '../components/common/LoadingState';
-import { ErrorState } from '../components/common/ErrorState';
+import { TxCard } from '../components/ui/TxCard';
+import { TxButton } from '../components/ui/TxButton';
+import { TxTabs } from '../components/ui/TxTabs';
+import { TxEmptyState } from '../components/ui/TxEmptyState';
+import { TxErrorState } from '../components/ui/TxErrorState';
+import { TxLoadingState } from '../components/ui/TxLoadingState';
 import { useStore } from '../store/useStore';
 import { useToast } from '../components/ui/Toast';
 import { getToken } from '../lib/auth';
@@ -24,21 +25,18 @@ import {
   type PaperOrderRow,
   type PaperPositionRow,
 } from '../lib/api/paper';
-import { clsx } from 'clsx';
 import { StrategyRunsPanel } from '../components/paper/StrategyRunsPanel';
-import { PaperAccountStats } from '../components/paper/PaperAccountStats';
+import { PaperAccountSwitcher } from '../components/paper/PaperAccountSwitcher';
+import { PaperHeroCard } from '../components/paper/PaperHeroCard';
+import { PaperOrderTicket } from '../components/paper/PaperOrderTicket';
+import { PaperOrdersCard } from '../components/paper/PaperOrdersCard';
+import { PaperPositionsCard } from '../components/paper/PaperPositionsCard';
+import { PaperRejectedCard } from '../components/paper/PaperRejectedCard';
+import { PaperAssumptionsCard } from '../components/paper/PaperAssumptionsCard';
+import { ExecutionLogCard } from '../components/paper/ExecutionLogCard';
 import { DataModeBadge } from '../components/ui/DataModeBadge';
 
 type Tab = 'overview' | 'orders' | 'positions' | 'rejected';
-
-const ORDER_STATUS_CLASS: Record<string, string> = {
-  filled: 'text-success',
-  rejected: 'text-loss',
-  submitted: 'text-warn',
-  accepted: 'text-analytics',
-  cancelled: 'text-text-muted',
-  expired: 'text-text-muted',
-};
 
 const PAPER_WARNING =
   'Paper mode — orders are simulated. Real spreads, fills, slippage, liquidity, and broker rules can change outcomes.';
@@ -73,6 +71,15 @@ export function PaperTrading() {
   const token = getToken();
   const selected = paperAccounts.find((a) => a.id === activeAccountId) ?? null;
 
+  const estimatedRisk = useMemo(() => {
+    const lots = parseFloat(lotSize);
+    const ref = parseFloat(refPrice);
+    const sl = parseFloat(stopLoss);
+    if (!Number.isFinite(lots) || !Number.isFinite(ref) || !Number.isFinite(sl)) return undefined;
+    const pts = Math.abs(ref - sl) * 10000;
+    return `~$${(pts * lots * 10).toFixed(0)} at reference price (estimate)`;
+  }, [lotSize, refPrice, stopLoss]);
+
   const loadBook = useCallback(async () => {
     if (!token || !selected) return;
     setLoadingBook(true);
@@ -95,24 +102,18 @@ export function PaperTrading() {
 
   useEffect(() => {
     if (!activeAccountId || !token) return;
-    const id = window.setTimeout(() => {
-      void loadBook();
-    }, 0);
+    const id = window.setTimeout(() => void loadBook(), 0);
     return () => window.clearTimeout(id);
   }, [activeAccountId, token, loadBook]);
 
   const onCreate = async () => {
     if (!token) {
-      showToast(
-        authUiEnabled ? 'Sign in to create a paper account.' : 'Save an API session token first.'
-      );
+      showToast(authUiEnabled ? 'Sign in to create a paper account.' : 'Save an API session token first.');
       return;
     }
     setBusy(true);
     try {
-      const ok = await createPaperAccount({
-        name: `Practice ${paperAccounts.length + 1}`,
-      });
+      const ok = await createPaperAccount({ name: `Practice ${paperAccounts.length + 1}` });
       if (ok) {
         showToast('Paper account created');
         await refreshPaperAccountsFromApi();
@@ -164,33 +165,25 @@ export function PaperTrading() {
 
   return (
     <div className="min-h-screen">
-      <Header
-        title="Paper Bot"
-        subtitle="Simulated orders — no live execution"
-        showDateRange={false}
-        compact
-      />
+      <Header title="Paper Bot" subtitle="Simulated orders — no live execution" showDateRange={false} compact />
       <ModeHeaderStrip />
 
-      <TxPage className="page-shell !px-0 space-y-6">
-        <BotStatusCard />
+      <TxPage density="dashboard" className="space-y-6">
         <BotSafetyCard />
-        <div className="flex flex-wrap items-center gap-2">
-          <DataModeBadge mode="paper" showDescription />
-        </div>
+        <DataModeBadge mode="paper" showDescription />
 
-        <div className="rounded-xl border border-analytics/25 bg-analytics/5 px-4 py-3 text-xs text-text-secondary">
+        <p className="rounded-[var(--tx-r-20)] border border-[var(--tx-info)]/25 bg-[var(--tx-info-soft)] px-4 py-3 text-xs text-[var(--tx-text-2)]">
           {PAPER_WARNING}
-        </div>
+        </p>
 
         {!token && (
-          <div className="card p-5 border border-amber-500/25 bg-amber-500/5">
-            <p className="text-sm text-text-secondary">
+          <TxCard variant="warning">
+            <p className="text-sm text-[var(--tx-text-2)]">
               {authUiEnabled ? (
                 <>
                   <button
                     type="button"
-                    className="text-analytics font-semibold hover:underline"
+                    className="font-semibold text-[var(--tx-info)]"
                     onClick={() => navigate('/auth')}
                   >
                     Sign in
@@ -201,304 +194,87 @@ export function PaperTrading() {
                 'Enable auth UI or set a Bearer token session to use paper accounts with the API.'
               )}
             </p>
-          </div>
+          </TxCard>
         )}
 
-        <div className="card p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-            <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-analytics/15 border border-analytics/25">
-                <Landmark className="w-6 h-6 text-analytics" />
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold text-text-primary">Accounts</h2>
-                <p className="text-sm text-text-muted mt-0.5">
-                  Market orders with spread, slippage, and commission simulation.
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              disabled={busy || !token}
-              onClick={() => void onCreate()}
-              className="btn-primary self-start sm:self-center inline-flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
+        <TxCard
+          title="Paper accounts"
+          action={
+            <TxButton variant="primary" size="md" disabled={busy || !token} onClick={() => void onCreate()}>
+              <Plus className="h-4 w-4" />
               New account
-            </button>
-          </div>
-
+            </TxButton>
+          }
+        >
           {paperAccounts.length === 0 ? (
-            <EmptyState
+            <TxEmptyState
               title="Paper mode not configured"
-              body="Create a paper account to test strategies without risking real money."
-              actions={
-                token ? (
-                  <button
-                    type="button"
-                    className="btn-primary text-sm"
-                    disabled={busy}
-                    onClick={() => void onCreate()}
-                  >
-                    Create paper account
-                  </button>
-                ) : undefined
-              }
+              description="Create a paper account to test strategies without risking real money."
+              actionLabel={token ? 'Create paper account' : undefined}
+              onAction={token ? () => void onCreate() : undefined}
             />
           ) : (
             <>
-              <div className="flex flex-wrap gap-2 mb-4">
-                {paperAccounts.map((a) => (
-                  <button
-                    key={a.id}
-                    type="button"
-                    onClick={() => setSelectedId(a.id)}
-                    className={clsx(
-                      'rounded-xl border px-3 py-2 text-left text-sm transition-colors',
-                      selected?.id === a.id
-                        ? 'border-analytics/40 bg-analytics/10'
-                        : 'border-surface-border bg-surface/40 hover:border-analytics/20'
-                    )}
-                  >
-                    <span className="font-medium text-text-primary">{a.name}</span>
-                    <span className="block text-xs text-text-muted mt-0.5">
-                      {(a.balance ?? a.startingBalance).toLocaleString()} {a.currency}
-                    </span>
-                  </button>
-                ))}
-              </div>
-
-              <div className="flex gap-1 border-b border-surface-border mb-4 overflow-x-auto no-scrollbar">
-                {(['overview', 'orders', 'positions', 'rejected'] as Tab[]).map((t) => (
-                  <button
-                    key={t}
-                    type="button"
-                    onClick={() => setTab(t)}
-                    className={clsx(
-                      'px-3 py-2 text-xs font-semibold capitalize border-b-2 -mb-px',
-                      tab === t
-                        ? 'border-analytics text-analytics'
-                        : 'border-transparent text-text-muted'
-                    )}
-                  >
-                    {t}
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  className="ml-auto text-xs text-analytics hover:underline self-center"
-                  onClick={() => void loadBook()}
-                  disabled={loadingBook}
-                >
-                  <RefreshCw
-                    className={clsx('inline w-3 h-3 mr-1', loadingBook && 'animate-spin')}
-                  />
+              <PaperAccountSwitcher
+                accounts={paperAccounts}
+                selectedId={selected?.id ?? null}
+                onSelect={setSelectedId}
+              />
+              <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+                <TxTabs
+                  items={[
+                    { id: 'overview', label: 'Overview' },
+                    { id: 'orders', label: 'Orders' },
+                    { id: 'positions', label: 'Positions' },
+                    { id: 'rejected', label: 'Rejected' },
+                  ]}
+                  value={tab}
+                  onChange={(id) => setTab(id as Tab)}
+                />
+                <TxButton variant="ghost" size="sm" disabled={loadingBook} onClick={() => void loadBook()}>
                   Refresh
-                </button>
+                </TxButton>
               </div>
-
-              {loadError && (
-                <ErrorState message={loadError} onRetry={() => void loadBook()} className="mb-4" />
-              )}
-              {loadingBook && !loadError && <LoadingState label="Loading orders and positions…" />}
-
-              {!loadingBook && tab === 'overview' && selected && (
-                <div className="space-y-6">
-                  <PaperAccountStats
-                    account={selected}
-                    openPositions={positions.length}
-                    recentFills={fills.length}
-                  />
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-3">
-                      <h3 className="text-sm font-semibold text-text-primary">New market order</h3>
-                      <div className="grid grid-cols-2 gap-2">
-                        <label className="text-xs text-text-muted col-span-2">
-                          Symbol
-                          <input
-                            className="input mt-1 w-full"
-                            value={symbol}
-                            onChange={(e) => setSymbol(e.target.value)}
-                          />
-                        </label>
-                        <label className="text-xs text-text-muted">
-                          Side
-                          <select
-                            className="select mt-1 w-full"
-                            value={side}
-                            onChange={(e) => setSide(e.target.value as 'buy' | 'sell')}
-                          >
-                            <option value="buy">Buy</option>
-                            <option value="sell">Sell</option>
-                          </select>
-                        </label>
-                        <label className="text-xs text-text-muted">
-                          Lots
-                          <input
-                            className="input mt-1 w-full"
-                            value={lotSize}
-                            onChange={(e) => setLotSize(e.target.value)}
-                          />
-                        </label>
-                        <label className="text-xs text-text-muted">
-                          Reference price
-                          <input
-                            className="input mt-1 w-full"
-                            value={refPrice}
-                            onChange={(e) => setRefPrice(e.target.value)}
-                          />
-                        </label>
-                        <label className="text-xs text-text-muted">
-                          Stop loss (required)
-                          <input
-                            className="input mt-1 w-full"
-                            value={stopLoss}
-                            onChange={(e) => setStopLoss(e.target.value)}
-                          />
-                        </label>
-                      </div>
-                      <button
-                        type="button"
-                        className="btn-primary w-full"
-                        disabled={busy}
-                        onClick={() => void onSubmitOrder()}
-                      >
-                        Submit paper order
-                      </button>
-                    </div>
-                    <div className="space-y-2 text-sm">
-                      <p className="text-text-muted">
-                        Open positions:{' '}
-                        <span className="text-text-primary font-medium">{positions.length}</span>
-                      </p>
-                      <p className="text-text-muted">
-                        Recent fills:{' '}
-                        <span className="text-text-primary font-medium">{fills.length}</span>
-                      </p>
-                      <p className="text-xs text-text-muted">
-                        Closing a position creates a journal trade with{' '}
-                        <code className="text-analytics">source=paper</code>.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {!loadingBook && tab === 'rejected' && (
-                <ul className="space-y-2">
-                  {orders.filter((o) => o.status === 'rejected').length === 0 ? (
-                    <EmptyState
-                      title="No rejected orders"
-                      body="Risk violations and blocked orders appear here with the exact reason."
-                    />
-                  ) : (
-                    orders
-                      .filter((o) => o.status === 'rejected')
-                      .map((o) => (
-                        <li
-                          key={o.id}
-                          className="rounded-lg border border-loss/30 bg-loss/5 px-3 py-2 text-sm"
-                        >
-                          <div className="flex justify-between gap-2">
-                            <span>
-                              {o.symbol} {o.side.toUpperCase()} · {o.lot_size} lot
-                            </span>
-                            <span className="text-xs font-semibold uppercase text-loss">
-                              rejected
-                            </span>
-                          </div>
-                          {o.rejection_reason && (
-                            <p className="text-xs text-loss mt-1 leading-relaxed">
-                              {o.rejection_reason}
-                            </p>
-                          )}
-                        </li>
-                      ))
-                  )}
-                </ul>
-              )}
-
-              {!loadingBook && tab === 'orders' && (
-                <ul className="space-y-2">
-                  {orders.length === 0 ? (
-                    <p className="text-sm text-text-muted">No orders yet.</p>
-                  ) : (
-                    orders.map((o) => (
-                      <li
-                        key={o.id}
-                        className={clsx(
-                          'rounded-lg border px-3 py-2 text-sm',
-                          o.status === 'rejected'
-                            ? 'border-loss/30 bg-loss/5'
-                            : 'border-surface-border'
-                        )}
-                      >
-                        <div className="flex justify-between gap-2">
-                          <span>
-                            {o.symbol} {o.side.toUpperCase()} · {o.lot_size} lot
-                          </span>
-                          <span
-                            className={clsx(
-                              'text-xs font-semibold uppercase shrink-0',
-                              ORDER_STATUS_CLASS[o.status] ?? 'text-text-muted'
-                            )}
-                          >
-                            {o.status.replace(/_/g, ' ')}
-                          </span>
-                        </div>
-                        {o.rejection_reason && (
-                          <p className="text-xs text-loss mt-1 leading-relaxed">
-                            {o.rejection_reason}
-                          </p>
-                        )}
-                      </li>
-                    ))
-                  )}
-                </ul>
-              )}
-
-              {!loadingBook && tab === 'positions' && (
-                <div className="space-y-3">
-                  <label className="text-xs text-text-muted block max-w-xs">
-                    Exit price for close
-                    <input
-                      className="input mt-1 w-full"
-                      value={exitPrice}
-                      onChange={(e) => setExitPrice(e.target.value)}
-                    />
-                  </label>
-                  <ul className="space-y-2">
-                    {positions.length === 0 ? (
-                      <p className="text-sm text-text-muted">No open positions.</p>
-                    ) : (
-                      positions.map((p) => (
-                        <li
-                          key={p.id}
-                          className="rounded-lg border border-analytics/25 bg-analytics/5 px-3 py-3 text-sm"
-                        >
-                          <div className="flex justify-between gap-2">
-                            <span className="font-medium">
-                              {p.symbol} {p.side.toUpperCase()} @ {p.avg_entry_price}
-                            </span>
-                            <span className="text-text-muted">{p.lot_size} lot</span>
-                          </div>
-                          <button
-                            type="button"
-                            className="btn-secondary text-xs mt-2"
-                            disabled={busy}
-                            onClick={() => void onClosePosition(p.id)}
-                          >
-                            Close position
-                          </button>
-                        </li>
-                      ))
-                    )}
-                  </ul>
-                </div>
-              )}
             </>
           )}
-        </div>
+        </TxCard>
+
+        {loadError && <TxErrorState description={loadError} onRetry={() => void loadBook()} />}
+        {loadingBook && !loadError && <TxLoadingState label="Loading orders and positions…" />}
+
+        {!loadingBook && selected && tab === 'overview' && (
+          <div className="space-y-6">
+            <PaperHeroCard account={selected} openPositions={positions.length} recentFills={fills.length} />
+            <PaperOrderTicket
+              symbol={symbol}
+              side={side}
+              lotSize={lotSize}
+              refPrice={refPrice}
+              stopLoss={stopLoss}
+              busy={busy}
+              estimatedRisk={estimatedRisk}
+              onSymbolChange={setSymbol}
+              onSideChange={setSide}
+              onLotSizeChange={setLotSize}
+              onRefPriceChange={setRefPrice}
+              onStopLossChange={setStopLoss}
+              onSubmit={() => void onSubmitOrder()}
+            />
+          </div>
+        )}
+
+        {!loadingBook && selected && tab === 'orders' && <PaperOrdersCard orders={orders} />}
+        {!loadingBook && selected && tab === 'positions' && (
+          <PaperPositionsCard
+            positions={positions}
+            exitPrice={exitPrice}
+            busy={busy}
+            onExitPriceChange={setExitPrice}
+            onClose={(id) => void onClosePosition(id)}
+          />
+        )}
+        {!loadingBook && selected && tab === 'rejected' && <PaperRejectedCard orders={orders} />}
+
         <ExecutionLogCard
           rows={orders.slice(0, 12).map((o) => ({
             time: o.created_at ? new Date(o.created_at).toLocaleString() : '—',

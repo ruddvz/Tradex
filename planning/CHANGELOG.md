@@ -8,6 +8,16 @@
 
 ---
 
+## 2026-06-05 — cursor/pixel-perfect-ios26-977a — Completion pass (Journal/Paper/Risk/TxCard/QA)
+
+- Commit: (this push)
+- Files touched: `frontend/src/components/journal/{TradeDrawer,ScreenshotUploadZone,JournalFilterBar}.tsx`, `frontend/src/components/paper/*`, `frontend/src/components/risk/{KillSwitchCard,RiskLimitsCard,RiskViolationCard,RiskEventTimeline}.tsx`, `frontend/src/components/reports/{ReportMetricGrid,ReportInsightCard}.tsx`, `frontend/src/pages/{Journal,PaperTrading,RiskCenter,Reports,Dashboard,PropFirm,Notebook}.tsx`, `e2e/tests/visual-viewports.spec.ts`, `planning/screenshots/pwa-emulated/*`, `planning/{DEVICE-QA,UI_UX_COMPONENT_PROGRESS}.md`
+- Tests added / changed: `visual-viewports.spec.ts` (15 PNGs, 375–1440px)
+- Build: pass (`./scripts/verify.sh` — 19 e2e)
+- Status: done
+- Next up: Human iPhone PWA install + keyboard/splash (`DEVICE-QA.md`)
+- Notes: TradeDrawer extracted; Paper/Risk split into §5 cards; Reports/PropFirm/Notebook/Dashboard on TxCard; emulated screenshots automated.
+
 ## 2026-06-05 — cursor/pixel-perfect-ios26-977a — iOS 26 component system (Phases 0–10)
 
 - Commit: dada8e8 + 259fe68

@@ -30,7 +30,10 @@ import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 import { DateRangeToolbar } from '../components/layout/DateRangeToolbar';
 import { TxPage } from '../components/ui/TxPage';
+import { TxCard } from '../components/ui/TxCard';
 import { ReportHero } from '../components/reports/ReportHero';
+import { ReportMetricGrid } from '../components/reports/ReportMetricGrid';
+import { ReportInsightCard } from '../components/reports/ReportInsightCard';
 import { ExportReportButton } from '../components/reports/ExportReportButton';
 import { resolveDataViewMode } from '../lib/resolveDataViewMode';
 
@@ -146,8 +149,8 @@ export function Reports() {
   ];
 
   const kpiRow = (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 motion-tab">
-      {[
+    <ReportMetricGrid
+      items={[
         {
           label: 'Total P&L',
           value: `$${m.totalPnl.toLocaleString()}`,
@@ -164,45 +167,27 @@ export function Reports() {
         { label: 'Avg R:R', value: `1:${m.avgRR}`, up: m.avgRR >= 1.5, icon: Zap },
         { label: 'Max DD', value: `${m.maxDrawdown}%`, up: m.maxDrawdown < 10, icon: TrendingDown },
         { label: 'Expectancy', value: `$${m.expectancy}`, up: m.expectancy > 0, icon: Clock },
-      ].map((row) => (
-        <div key={row.label} className="card p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs text-slate-500">{row.label}</span>
-            <row.icon className="w-3.5 h-3.5 text-slate-600" />
-          </div>
-          <div className={clsx('text-xl font-bold', row.up ? 'text-brand-400' : 'text-red-400')}>
-            {row.value}
-          </div>
-        </div>
-      ))}
-    </div>
+      ]}
+    />
   );
 
   const equityWinRow = (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <div className="card p-5 lg:col-span-2 min-h-[280px]">
-        <h3 className="section-title text-base mb-1">Equity curve</h3>
-        <p className="section-subtitle mb-4">
-          Selected range — live equity from API when signed in
-        </p>
+      <ReportInsightCard
+        title="Equity curve"
+        subtitle="Selected range — live equity from API when signed in"
+        className="lg:col-span-2 min-h-[280px]"
+      >
         <EquityCurve height={220} />
-      </div>
-      <div className="card p-5">
-        <h3 className="section-title text-base mb-1">Win / loss</h3>
-        <p className="section-subtitle mb-4">Distribution in range</p>
+      </ReportInsightCard>
+      <ReportInsightCard title="Win / loss" subtitle="Distribution in range">
         <WinRateDonut />
-      </div>
+      </ReportInsightCard>
     </div>
   );
 
   const strategyBlock = (
-    <div className="card p-5">
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="section-title text-base">Strategy performance</h3>
-          <p className="section-subtitle">P&amp;L by strategy</p>
-        </div>
-      </div>
+    <ReportInsightCard title="Strategy performance" subtitle="P&amp;L by strategy">
       <ResponsiveContainer width="100%" height={200}>
         <BarChart
           data={strategyData}
@@ -248,14 +233,12 @@ export function Reports() {
           </div>
         ))}
       </div>
-    </div>
+    </ReportInsightCard>
   );
 
   const psychologyRow = (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <div className="card p-5">
-        <h3 className="section-title text-base mb-1">Psychology analysis</h3>
-        <p className="section-subtitle mb-4">Win rate by emotion</p>
+      <ReportInsightCard title="Psychology analysis" subtitle="Win rate by emotion">
         <ResponsiveContainer width="100%" height={180}>
           <BarChart
             data={emotionData}
@@ -302,10 +285,8 @@ export function Reports() {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-      </div>
-      <div className="card p-5">
-        <h3 className="section-title text-base mb-1">Trader profile</h3>
-        <p className="section-subtitle mb-4">Radar for selected range</p>
+      </ReportInsightCard>
+      <ReportInsightCard title="Trader profile" subtitle="Radar for selected range">
         <ResponsiveContainer width="100%" height={200}>
           <RadarChart data={radarData}>
             <PolarGrid stroke="rgba(42,53,80,0.8)" />
@@ -313,28 +294,27 @@ export function Reports() {
             <Radar dataKey="A" stroke="#10b981" fill="#10b981" fillOpacity={0.15} strokeWidth={2} />
           </RadarChart>
         </ResponsiveContainer>
-      </div>
+      </ReportInsightCard>
     </div>
   );
 
   const sessionDailyRow = (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <div className="card p-5 lg:col-span-2">
-        <h3 className="section-title text-base mb-1">Daily P&amp;L distribution</h3>
-        <p className="section-subtitle mb-4">Recent sessions</p>
+      <ReportInsightCard
+        title="Daily P&amp;L distribution"
+        subtitle="Recent sessions"
+        className="lg:col-span-2"
+      >
         <PnLBarChart height={180} />
-      </div>
-      <div className="card p-5">
-        <h3 className="section-title text-base mb-1">Session heatmap</h3>
-        <p className="section-subtitle mb-4">By session &amp; weekday</p>
+      </ReportInsightCard>
+      <ReportInsightCard title="Session heatmap" subtitle="By session &amp; weekday">
         <SessionHeatmap />
-      </div>
+      </ReportInsightCard>
     </div>
   );
 
   const fullStats = (
-    <div className="card p-5">
-      <h3 className="section-title text-base mb-4">Full statistics</h3>
+    <ReportInsightCard title="Full statistics">
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {[
           { label: 'Total Trades', value: m.totalTrades },
@@ -360,7 +340,7 @@ export function Reports() {
           </div>
         ))}
       </div>
-    </div>
+    </ReportInsightCard>
   );
 
   const emptyRange = tradesInRange.length === 0;
@@ -408,10 +388,10 @@ export function Reports() {
         </div>
 
         {emptyRange ? (
-          <div className="card p-12 text-center text-slate-500">
+          <TxCard className="py-12 text-center text-slate-500">
             <p className="font-medium text-slate-300">No trades in this range.</p>
             <p className="text-sm mt-2">Widen the timeframe or log more trades.</p>
-          </div>
+          </TxCard>
         ) : (
           <>
             {tab === 'overview' && (
@@ -426,11 +406,9 @@ export function Reports() {
             {tab === 'performance' && (
               <div className="space-y-6 animate-fade-in">
                 {kpiRow}
-                <div className="card p-5">
-                  <h3 className="section-title text-base mb-1">Drawdown view</h3>
-                  <p className="section-subtitle mb-4">% off equity peak</p>
+                <ReportInsightCard title="Drawdown view" subtitle="% off equity peak">
                   <EquityCurve showDrawdown height={200} />
-                </div>
+                </ReportInsightCard>
                 {equityWinRow}
                 {fullStats}
               </div>

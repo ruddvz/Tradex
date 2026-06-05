@@ -17,6 +17,7 @@ import { Header } from '../components/layout/Header';
 import { NoteEditor } from '../components/notebook/NoteEditor';
 import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
+import { TxCard } from '../components/ui/TxCard';
 import { format } from 'date-fns';
 import { clsx } from 'clsx';
 import type { NotebookEntry } from '../types';
@@ -76,13 +77,18 @@ function NoteCard({
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   return (
-    <div
-      className={clsx(
-        'card-hover p-5 cursor-pointer border relative',
-        note.pinned && 'border-brand-500/30'
-      )}
+    <TxCard
+      interactive
+      className={clsx('relative', note.pinned && 'border-[var(--tx-profit)]/30')}
       onClick={onOpen}
-      role="presentation"
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onOpen();
+        }
+      }}
     >
       {note.pinned && (
         <div className="absolute top-3 right-10 w-2 h-2 rounded-full bg-brand-400 shadow-glow-sm" />
@@ -174,7 +180,7 @@ function NoteCard({
           )}
         </div>
       )}
-    </div>
+    </TxCard>
   );
 }
 

@@ -14,6 +14,7 @@ import { useStore } from '../store/useStore';
 import { Badge } from '../components/ui/Badge';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
+import { TxCard } from '../components/ui/TxCard';
 import { PnLBarChart } from '../components/charts/PnLBarChart';
 import { clsx } from 'clsx';
 import { format, differenceInDays } from 'date-fns';
@@ -150,7 +151,7 @@ export function PropFirm() {
           </Badge>
         </div>
 
-        <div className="card p-6 lg:p-8 overflow-hidden">
+        <TxCard className="lg:p-8 overflow-hidden">
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
             <div className="relative shrink-0">
               <ProgressRing value={challengeProgressPct} size={220} stroke={16} tone={ringTone} />
@@ -203,7 +204,7 @@ export function PropFirm() {
               </div>
             </div>
           </div>
-        </div>
+        </TxCard>
 
         {/* Key Stats Row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -238,7 +239,7 @@ export function PropFirm() {
               color: 'text-white',
             },
           ].map((s) => (
-            <div key={s.label} className="card p-5">
+            <TxCard key={s.label}>
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-slate-500">{s.label}</span>
                 <s.icon className="w-4 h-4 text-slate-600" />
@@ -253,14 +254,14 @@ export function PropFirm() {
                 {s.value}
               </div>
               <div className="text-xs text-slate-500 mt-1">{s.sub}</div>
-            </div>
+            </TxCard>
           ))}
         </div>
 
         {/* Progress Bars */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Profit Progress */}
-          <div className="card p-6 space-y-6">
+          <TxCard className="space-y-6">
             <div className="flex items-center gap-2 mb-4">
               <Target className="w-5 h-5 text-brand-400" />
               <h3 className="font-semibold text-white">Profit Target</h3>
@@ -279,10 +280,10 @@ export function PropFirm() {
               label="Profit Progress (8% Target)"
               sublabel={`Started: ${format(new Date(propChallenge.startDate), 'MMM d')}`}
             />
-          </div>
+          </TxCard>
 
           {/* Drawdown */}
-          <div className="card p-6 space-y-4">
+          <TxCard className="space-y-4">
             <div className="flex items-center gap-2 mb-4">
               <AlertTriangle className="w-5 h-5 text-amber-400" />
               <h3 className="font-semibold text-white">Drawdown Usage</h3>
@@ -336,11 +337,11 @@ export function PropFirm() {
               label="Daily Loss Limit (5% Max)"
               sublabel="Today"
             />
-          </div>
+          </TxCard>
         </div>
 
         {/* Status indicators */}
-        <div className="card p-5">
+        <TxCard>
           <h3 className="font-semibold text-white mb-4">Challenge Rules Status</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
@@ -401,10 +402,10 @@ export function PropFirm() {
               </div>
             ))}
           </div>
-        </div>
+        </TxCard>
 
         {/* Challenge P&L Chart */}
-        <div className="card p-5">
+        <TxCard>
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="section-title text-base">Challenge P&L Progress</h3>
@@ -416,10 +417,10 @@ export function PropFirm() {
             </div>
           </div>
           <PnLBarChart height={180} />
-        </div>
+        </TxCard>
 
         {/* Tips */}
-        <div className="card p-5 bg-gradient-to-r from-brand-500/5 to-blue-500/5">
+        <TxCard className="bg-gradient-to-r from-brand-500/5 to-blue-500/5">
           <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
             <Target className="w-4 h-4 text-brand-400" /> AI Challenge Tips
           </h3>
@@ -436,7 +437,7 @@ export function PropFirm() {
               </div>
             ))}
           </div>
-        </div>
+        </TxCard>
       </div>
     </div>
   );

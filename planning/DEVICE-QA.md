@@ -1,8 +1,8 @@
 # Device QA — Tradex PWA
 
 **Date:** 2026-06-05  
-**Agent:** cursor/audit-plan-complete-32fb  
-**Method:** Playwright viewport emulation + frontend build/CSS audit (no physical iPhone in cloud VM)
+**Agent:** cursor/pixel-perfect-ios26-977a  
+**Method:** Playwright viewport emulation (`e2e/tests/visual-viewports.spec.ts`) + frontend build/CSS audit. Physical iPhone remains a human step.
 
 ---
 
@@ -35,6 +35,19 @@
 | Installed iOS PWA on device | **Manual** | Requires Safari “Add to Home Screen” on real hardware |
 | Keyboard not covering forms | **Manual** | Test Auth + Journal drawer on device |
 | Splash screen | **Manual** | Verify `apple-mobile-web-app-status-bar-style` on device |
+| Emulated PWA screenshots | Pass | `planning/screenshots/pwa-emulated/*` from `visual-viewports.spec.ts` (375–1440px) |
+
+---
+
+## Automated screenshot capture
+
+Run after a production frontend build (Playwright starts `vite preview`):
+
+```bash
+cd e2e && npx playwright test tests/visual-viewports.spec.ts
+```
+
+Outputs PNGs under `planning/screenshots/pwa-emulated/` for home, journal, and risk at iPhone SE / 15 / Pro Max, iPad portrait, and desktop widths.
 
 ---
 

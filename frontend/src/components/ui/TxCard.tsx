@@ -10,7 +10,7 @@ type TxCardVariant =
   | 'info'
   | 'ai';
 
-interface TxCardProps {
+interface TxCardProps extends React.HTMLAttributes<HTMLElement> {
   title?: string;
   subtitle?: string;
   action?: React.ReactNode;
@@ -42,6 +42,7 @@ export function TxCard({
   padded = true,
   interactive = false,
   className,
+  ...rest
 }: TxCardProps) {
   return (
     <section
@@ -51,6 +52,7 @@ export function TxCard({
         interactive && 'transition-transform active:scale-[0.99] cursor-pointer',
         className
       )}
+      {...rest}
     >
       {(title || action) && (
         <div
