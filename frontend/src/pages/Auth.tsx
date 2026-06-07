@@ -4,6 +4,10 @@ import { clsx } from 'clsx';
 import { LogIn, UserPlus } from 'lucide-react';
 import { getToken, migrateLegacyToken, refreshAccessToken, setToken } from '../lib/auth';
 import { useStore } from '../store/useStore';
+import { TxCard } from '../components/ui/TxCard';
+import { TxInput } from '../components/ui/TxInput';
+import { TxButton } from '../components/ui/TxButton';
+import { TxSegmentedControl } from '../components/ui/TxSegmentedControl';
 
 type Tab = 'signin' | 'signup';
 
@@ -75,105 +79,89 @@ export function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-dark-400">
-      <div className="w-full max-w-md card p-8 shadow-card-hover border border-surface-border">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-white mb-1">Tradex</h1>
-          <p className="text-sm text-slate-500">Trader&apos;s Performance Lab</p>
+    <div className="flex min-h-screen items-center justify-center bg-[var(--tx-bg-0)] p-6">
+      <TxCard className="w-full max-w-md" padded>
+        <div className="mb-8 text-center">
+          <h1 className="mb-1 text-2xl font-bold text-[var(--tx-text-1)]">Tradex</h1>
+          <p className="text-sm text-[var(--tx-text-3)]">Trader&apos;s Performance Lab</p>
         </div>
 
-        <div className="flex rounded-xl bg-dark-300 p-1 mb-6">
-          <button
-            type="button"
-            className={clsx(
-              'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all',
-              tab === 'signin'
-                ? 'bg-brand-500 text-white shadow-glow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            )}
-            onClick={() => {
-              setTab('signin');
-              setError(null);
-            }}
-          >
-            <LogIn className="w-4 h-4" />
-            Sign In
-          </button>
-          <button
-            type="button"
-            className={clsx(
-              'flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-semibold transition-all',
-              tab === 'signup'
-                ? 'bg-brand-500 text-white shadow-glow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            )}
-            onClick={() => {
-              setTab('signup');
-              setError(null);
-            }}
-          >
-            <UserPlus className="w-4 h-4" />
-            Sign Up
-          </button>
-        </div>
+        <TxSegmentedControl
+          items={[
+            { id: 'signin', label: 'Sign in' },
+            { id: 'signup', label: 'Sign up' },
+          ]}
+          value={tab}
+          onChange={(id) => {
+            setTab(id as Tab);
+            setError(null);
+          }}
+          className="mb-6"
+        />
 
         <form onSubmit={submit} className="space-y-4">
           {tab === 'signup' && (
-            <div>
-              <label className="label">Name</label>
-              <input
-                className="input"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Trader"
-                autoComplete="name"
-              />
-            </div>
+            <TxInput
+              label="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Trader"
+              autoComplete="name"
+            />
           )}
-          <div>
-            <label className="label">Email</label>
-            <input
-              className="input"
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              autoComplete="email"
-            />
-          </div>
-          <div>
-            <label className="label">Password</label>
-            <input
-              className="input"
-              type="password"
-              required
-              minLength={8}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
-            />
-            {tab === 'signup' && (
-              <p className="text-xs text-slate-500 mt-1">Minimum 8 characters</p>
-            )}
-          </div>
+          <TxInput
+            label="Email"
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            autoComplete="email"
+          />
+          <TxInput
+            label="Password"
+            type="password"
+            required
+            minLength={8}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            autoComplete={tab === 'signin' ? 'current-password' : 'new-password'}
+            helper={tab === 'signup' ? 'Minimum 8 characters' : undefined}
+          />
 
           {error && (
-            <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+            <div className="rounded-[var(--tx-r-16)] border border-[var(--tx-loss)]/40 bg-[var(--tx-loss-soft)] px-3 py-2 text-sm text-[var(--tx-loss)]">
               {error}
             </div>
           )}
 
-          <button type="submit" className="btn-primary w-full justify-center" disabled={loading}>
-            {loading ? 'Please wait…' : tab === 'signin' ? 'Sign In' : 'Create account'}
-          </button>
+          <TxButton
+            type="submit"
+            variant="primary"
+            size="lg"
+            fullWidth
+            disabled={loading}
+            className={clsx('justify-center')}
+          >
+            {loading ? (
+              'Please wait…'
+            ) : tab === 'signin' ? (
+              <>
+                <LogIn className="h-4 w-4" /> Sign in
+              </>
+            ) : (
+              <>
+                <UserPlus className="h-4 w-4" /> Create account
+              </>
+            )}
+          </TxButton>
         </form>
 
-        <p className="text-center text-xs text-slate-500 mt-6">
-          Demo UI still uses local journal data until trades are wired from the API.
+        <p className="mt-6 text-center text-xs text-[var(--tx-text-3)]">
+          Your data stays separated by source: manual, MT5, paper, and backtest.
         </p>
-      </div>
+      </TxCard>
     </div>
   );
 }

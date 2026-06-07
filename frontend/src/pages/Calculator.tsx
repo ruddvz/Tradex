@@ -14,7 +14,7 @@ import { useStore } from '../store/useStore';
 import { getToken } from '../lib/auth';
 import { fetchRiskProfiles } from '../lib/api/risk';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
-import { PageDataTrustBar } from '../components/ui/PageDataTrustBar';
+import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 
 const instruments = [
   { name: 'XAUUSD', pip: 0.01, pipValue: 1.0 },
@@ -94,7 +94,7 @@ export function Calculator() {
     <div className="min-h-screen">
       <Header title="Risk Calculator" subtitle="Position sizing & risk engine (Ui.md §10.6)" />
 
-      <PageDataTrustBar />
+      <ModeHeaderStrip />
 
       <div className="page-shell p-6 pb-28">
         <div className="flex flex-wrap items-center gap-2 mb-4 max-w-3xl mx-auto">

@@ -1,0 +1,1 @@
+export { TxSearchField } from './TxField';

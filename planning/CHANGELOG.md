@@ -8,6 +8,26 @@
 
 ---
 
+## 2026-06-05 — cursor/pixel-perfect-ios26-977a — Completion pass (Journal/Paper/Risk/TxCard/QA)
+
+- Commit: 1ee3e51
+- Files touched: `frontend/src/components/journal/{TradeDrawer,ScreenshotUploadZone,JournalFilterBar}.tsx`, `frontend/src/components/paper/*`, `frontend/src/components/risk/{KillSwitchCard,RiskLimitsCard,RiskViolationCard,RiskEventTimeline}.tsx`, `frontend/src/components/reports/{ReportMetricGrid,ReportInsightCard}.tsx`, `frontend/src/pages/{Journal,PaperTrading,RiskCenter,Reports,Dashboard,PropFirm,Notebook}.tsx`, `e2e/tests/visual-viewports.spec.ts`, `planning/screenshots/pwa-emulated/*`, `planning/{DEVICE-QA,UI_UX_COMPONENT_PROGRESS}.md`
+- Tests added / changed: `visual-viewports.spec.ts` (15 PNGs, 375–1440px)
+- Build: pass (`./scripts/verify.sh` — 19 e2e)
+- Status: done
+- Next up: Human iPhone PWA install + keyboard/splash (`DEVICE-QA.md`)
+- Notes: TradeDrawer extracted; Paper/Risk split into §5 cards; Reports/PropFirm/Notebook/Dashboard on TxCard; emulated screenshots automated.
+
+## 2026-06-05 — cursor/pixel-perfect-ios26-977a — iOS 26 component system (Phases 0–10)
+
+- Commit: dada8e8 + 259fe68
+- Files touched: `frontend/src/styles/*`, `frontend/src/components/ui/Tx*.tsx`, `frontend/src/components/layout/{PageToolbar,ModeHeaderStrip,MobileNav}.tsx`, `frontend/src/components/{dashboard,paper,risk}/*`, `frontend/src/pages/*`, `planning/UI_UX_COMPONENT_PROGRESS.md`
+- Tests added / changed: 0 (e2e x4 still green)
+- Build: pass (`./scripts/verify.sh`)
+- Status: done
+- Next up: Human iPhone PWA QA (`DEVICE-QA.md`)
+- Notes: Full token spec, Tx* primitive library, ModeHeaderStrip on all routes, safety copy on Landing/Playbooks/Backtests.
+
 ## 2026-06-05 — cursor/ios-pwa-ui-ux-a3a6 — iOS PWA UI/UX redesign (Phases 1–10)
 - Commit: af9eff2 (feat: iOS PWA UI/UX redesign — cockpit shell, Tx design system, 5-tab nav)
 - Files touched: `frontend/src/styles/tokens.css`, `frontend/src/components/ui/Tx*.tsx`, `frontend/src/components/layout/{ModeHeaderStrip,MoreGrid,MobileNav,Header,Layout,Sidebar}.tsx`, `frontend/src/pages/{Dashboard,More,PaperTrading,RiskCenter,LiveReadiness,Settings,Playbooks}.tsx`, `frontend/src/components/{dashboard,bot,risk,journal}/*`, `frontend/src/lib/{pwa,formatters,a11y,resolveTxMode}.ts`, `e2e/tests/demo.spec.ts`, `planning/{UI_UX_PROGRESS,ACTIVE,CHANGELOG}.md`

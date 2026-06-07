@@ -1,78 +1,79 @@
+@import './styles/tokens.css';
+@import './styles/ios-pwa.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import './styles/tokens.css';
-
-:root {
-  --bg-primary: #050812;
-  --bg-secondary: #080d18;
-  --border-subtle: rgba(126, 146, 185, 0.16);
-  --success: #2dd4a3;
-  --analytics: #4a9dff;
-  --ai: #8b5cf6;
-  --danger: #ef5f5f;
-  --motion-fast: 120ms;
-  --motion-base: 220ms;
-  --motion-slow: 360ms;
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --header-height: var(--tx-header-h, calc(92px + env(safe-area-inset-top)));
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
-.app-bg {
-  background:
-    radial-gradient(circle at top left, rgba(45, 212, 163, 0.08), transparent 28%),
-    radial-gradient(circle at bottom right, rgba(74, 157, 255, 0.08), transparent 34%),
-    linear-gradient(180deg, #050812 0%, #070b15 100%);
-}
+@import './styles/components.css';
+@import './styles/charts.css';
 
 @layer base {
   * {
+    box-sizing: border-box;
     scrollbar-width: thin;
     scrollbar-color: theme('colors.surface.border') transparent;
     @apply border-surface-border;
   }
 
-  :focus-visible {
-    outline: 2px solid theme('colors.brand.500');
-    outline-offset: 2px;
-    border-radius: 6px;
-  }
-
   html {
-    @apply scroll-smooth;
+    min-height: 100%;
+    background: var(--tx-bg-0);
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--tx-bg-0);
+    color: var(--tx-text-1);
+    font-family: var(--tx-font-sans);
+    font-feature-settings:
+      'tnum' 1,
+      'cv02' 1,
+      'cv03' 1,
+      'cv04' 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
     touch-action: manipulation;
     -webkit-tap-highlight-color: transparent;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
-    @apply text-text-primary font-sans antialiased;
-    background-color: var(--bg-primary);
-    min-height: 100vh;
-    min-height: 100dvh;
+    overflow-x: hidden;
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   #root {
     min-height: 100vh;
-    @apply app-bg;
+    min-height: 100dvh;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(45, 212, 163, 0.1), transparent 28%),
+      radial-gradient(circle at 100% 10%, rgba(74, 157, 255, 0.1), transparent 30%),
+      radial-gradient(circle at 50% 100%, rgba(167, 139, 250, 0.07), transparent 36%),
+      linear-gradient(180deg, var(--tx-bg-1) 0%, var(--tx-bg-0) 100%);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--tx-line-focus);
+    outline-offset: 3px;
+    border-radius: var(--tx-r-12);
   }
 
   ::-webkit-scrollbar {
@@ -90,6 +91,17 @@
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @media print {
   .no-print {
     display: none !important;
@@ -102,253 +114,4 @@
     border: 1px solid #e2e8f0 !important;
     box-shadow: none !important;
   }
-}
-
-.page-shell {
-  padding-top: var(--header-height);
-}
-
-/* Sidebar bottom safe area (home indicator) */
-.sidebar-safe {
-  padding-bottom: max(1rem, env(safe-area-inset-bottom));
-}
-
-/* Header clears status bar in standalone mode */
-.header-safe {
-  padding-top: max(12px, env(safe-area-inset-top));
-  padding-left: max(20px, env(safe-area-inset-left));
-  padding-right: max(20px, env(safe-area-inset-right));
-  padding-bottom: 14px;
-  min-height: calc(92px + env(safe-area-inset-top));
-}
-
-/* iPhone standalone — prevent rubber-band under fixed chrome */
-@media (display-mode: standalone) {
-  html,
-  body {
-    background-color: var(--bg-primary);
-  }
-}
-
-@layer components {
-  .card {
-    background: linear-gradient(180deg, rgba(24, 34, 58, 0.94), rgba(15, 23, 42, 0.96));
-    @apply rounded-[22px] border border-[rgba(126,146,185,0.2)] shadow-card;
-  }
-
-  .card-hover {
-    @apply card transition-all duration-200 hover:shadow-card-hover hover:border-brand-700/40 hover:-translate-y-0.5;
-  }
-
-  .btn-primary {
-    @apply px-4 py-2.5 rounded-[14px] font-bold text-[#04110d] transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px];
-    background: linear-gradient(135deg, #18c991, #2dd4a3);
-    box-shadow: 0 8px 24px rgba(45, 212, 163, 0.18);
-  }
-  .btn-primary:hover {
-    filter: brightness(1.06);
-  }
-
-  .btn-secondary {
-    @apply px-4 py-2.5 rounded-[14px] font-semibold text-text-primary transition-all duration-200 flex items-center justify-center gap-2 min-h-[46px];
-    background: rgba(30, 41, 70, 0.9);
-    border: 1px solid rgba(126, 146, 185, 0.2);
-  }
-  .btn-secondary:hover {
-    @apply bg-surface-light;
-  }
-
-  .btn-danger {
-    @apply px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-medium rounded-lg border border-red-500/30 transition-all duration-200 flex items-center gap-2;
-  }
-
-  .stat-card {
-    @apply card p-5 flex flex-col gap-2;
-  }
-
-  .badge-profit {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 bg-brand-500/15 text-brand-400 rounded-full text-xs font-semibold;
-  }
-
-  .badge-loss {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 bg-red-500/15 text-red-400 rounded-full text-xs font-semibold;
-  }
-
-  .badge-neutral {
-    @apply inline-flex items-center gap-1 px-2 py-0.5 bg-slate-500/20 text-slate-400 rounded-full text-xs font-semibold;
-  }
-
-  .input {
-    /* text-base (16px) prevents iOS Safari from zooming inputs on focus */
-    @apply w-full bg-dark-300 border border-surface-border rounded-lg px-3 py-2 text-base text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500/50 transition-all duration-200;
-  }
-
-  .select {
-    @apply input appearance-none cursor-pointer;
-  }
-
-  .label {
-    @apply text-sm font-medium text-slate-400 mb-1 block;
-  }
-
-  .section-title {
-    @apply text-xl font-bold text-white mb-1;
-  }
-
-  .section-subtitle {
-    @apply text-sm text-slate-400;
-  }
-
-  .nav-item {
-    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-surface-light transition-all duration-200 cursor-pointer;
-  }
-
-  .nav-item-active {
-    @apply nav-item text-brand-400 bg-brand-500/10 border border-brand-500/20 hover:bg-brand-500/15 hover:text-brand-300;
-  }
-
-  .table-row {
-    @apply border-b border-surface-border hover:bg-surface-light/50 transition-colors duration-150;
-  }
-
-  .table-header {
-    @apply text-xs font-semibold text-slate-500 uppercase tracking-wider py-3 px-4;
-  }
-
-  .table-cell {
-    @apply py-3 px-4 text-sm;
-  }
-
-  .profit-text {
-    @apply text-success font-semibold;
-  }
-
-  .loss-text {
-    @apply text-danger font-semibold;
-  }
-
-  .glow-border {
-    @apply border border-brand-500/30 shadow-glow-sm;
-  }
-
-  .glass {
-    @apply bg-white/5 backdrop-blur-sm border border-white/10;
-  }
-
-  .progress-bar {
-    @apply h-2.5 rounded-full overflow-hidden;
-    background: rgba(126, 146, 185, 0.16);
-  }
-
-  .progress-fill {
-    @apply h-full rounded-full transition-all duration-500;
-    background: linear-gradient(90deg, #10b981, #2dd4a3);
-  }
-
-  /* Toggle switch */
-  .toggle-track {
-    @apply relative w-10 h-5 rounded-full transition-colors duration-200;
-  }
-  .toggle-thumb {
-    @apply absolute top-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200 shadow-sm;
-  }
-
-  /* Drag handle */
-  .drag-handle {
-    @apply w-8 h-1 bg-surface-border rounded-full mx-auto mb-4 cursor-grab;
-  }
-
-  /* Sheet overlay */
-  .sheet-overlay {
-    @apply fixed inset-0 z-40 bg-black/60 backdrop-blur-sm;
-  }
-
-  /* Empty state */
-  .empty-state {
-    @apply text-center py-16 text-slate-500;
-  }
-
-  /* Divider */
-  .divider {
-    @apply border-t border-surface-border my-4;
-  }
-
-  /* Chip/tag — Ui.md filter chips */
-  .chip {
-    @apply inline-flex items-center justify-center gap-1 shrink-0 rounded-full text-xs font-semibold cursor-pointer transition-colors duration-base ease-out;
-    min-height: 32px;
-    padding: 0 12px;
-    background: rgba(16, 24, 42, 0.72);
-    border: 1px solid rgba(126, 146, 185, 0.2);
-    color: #b6c2d9;
-  }
-
-  .chip-active {
-    background: rgba(45, 212, 163, 0.15);
-    border-color: rgba(45, 212, 163, 0.36);
-    @apply text-success;
-  }
-
-  .chip-ai-active {
-    @apply bg-ai/15 border-ai/40 text-ai;
-  }
-
-  .motion-tab {
-    @apply transition-all duration-base ease-out;
-  }
-
-  .header-icon-button {
-    @apply flex items-center justify-center shrink-0 transition-colors duration-200;
-    width: 42px;
-    height: 42px;
-    border-radius: 14px;
-    background: rgba(16, 24, 42, 0.72);
-    border: 1px solid rgba(126, 146, 185, 0.22);
-    color: #b6c2d9;
-  }
-  .header-icon-button:hover {
-    @apply text-text-primary border-[rgba(126,146,185,0.35)];
-    background: rgba(24, 34, 58, 0.85);
-  }
-
-  /* Modal backdrop */
-  .modal-backdrop {
-    @apply fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4;
-  }
-
-  /* Code block */
-  .code {
-    @apply font-mono text-xs bg-dark-300 border border-surface-border rounded px-1.5 py-0.5 text-brand-300;
-  }
-}
-
-@layer utilities {
-  .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-brand;
-  }
-
-  .no-scrollbar::-webkit-scrollbar {
-    display: none;
-  }
-
-  .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-}
-
-/* Recharts customization */
-.recharts-cartesian-grid-horizontal line,
-.recharts-cartesian-grid-vertical line {
-  stroke: rgba(42, 53, 80, 0.6) !important;
-}
-
-.recharts-tooltip-wrapper .recharts-default-tooltip {
-  background: #1a2035 !important;
-  border: 1px solid #2a3550 !important;
-  border-radius: 8px !important;
-}
-
-.recharts-legend-item-text {
-  color: #94a3b8 !important;
 }

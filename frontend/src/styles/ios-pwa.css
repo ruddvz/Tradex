@@ -1,0 +1,59 @@
+.tx-safe-top {
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+
+.tx-safe-bottom {
+  padding-bottom: max(12px, env(safe-area-inset-bottom));
+}
+
+.tx-page-clear-top {
+  padding-top: 0;
+}
+
+.tx-page-clear-bottom {
+  padding-bottom: calc(var(--tx-tabbar-h) + 20px);
+}
+
+.tx-fixed-header {
+  top: 0;
+  padding-top: env(safe-area-inset-top);
+}
+
+.tx-fixed-tabbar {
+  bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@supports (height: 100dvh) {
+  .tx-min-screen {
+    min-height: 100dvh;
+  }
+}
+
+.sidebar-safe {
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+.header-safe {
+  padding-top: max(12px, env(safe-area-inset-top));
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+  padding-bottom: 14px;
+  min-height: calc(76px + env(safe-area-inset-top));
+}
+
+.page-shell {
+  padding-top: 0;
+}
+
+.page-shell--with-header-only {
+  padding-top: var(--tx-header-h);
+}
+
+@media (display-mode: standalone) {
+  html,
+  body,
+  #root {
+    background: var(--tx-bg-0);
+  }
+}

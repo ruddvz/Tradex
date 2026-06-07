@@ -62,7 +62,7 @@ export function Layout() {
       <div
         className={clsx(
           'tx-main-shell relative flex-1 min-h-screen transition-all duration-300',
-          sidebarOpen ? 'md:ml-64' : 'md:ml-16'
+          sidebarOpen ? 'md:ml-[var(--tx-sidebar-w)]' : 'md:ml-[var(--tx-sidebar-w-collapsed)]'
         )}
       >
         {!online && (

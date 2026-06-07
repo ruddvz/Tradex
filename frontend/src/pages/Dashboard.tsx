@@ -13,11 +13,13 @@ import {
 import { Header } from '../components/layout/Header';
 import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 import { TxPage } from '../components/ui/TxPage';
+import { TxCard } from '../components/ui/TxCard';
 import { TxChartCard } from '../components/ui/TxChartCard';
 import { TxSegmentedControl } from '../components/ui/TxSegmentedControl';
-import { TodayHeroCard } from '../components/dashboard/TodayHeroCard';
-import { DailyRiskCard } from '../components/dashboard/DailyRiskCard';
-import { ActionGrid } from '../components/dashboard/ActionGrid';
+import { TodayHero } from '../components/dashboard/TodayHero';
+import { RiskPulseCard } from '../components/dashboard/RiskPulseCard';
+import { NextActionCard } from '../components/dashboard/NextActionCard';
+import { DateRangeToolbar } from '../components/layout/DateRangeToolbar';
 import { BotStatusCard } from '../components/bot/BotStatusCard';
 import { RiskStatusCard } from '../components/status/RiskStatusCard';
 import { StatCard } from '../components/ui/StatCard';
@@ -90,6 +92,7 @@ export function Dashboard() {
     <div className="min-h-screen">
       <Header title="Today" subtitle="Daily trading cockpit" showDateRange={false} compact />
       <ModeHeaderStrip />
+      <DateRangeToolbar className="md:hidden py-2" />
 
       {(bootstrapError ||
         dataMode === 'demo' ||
@@ -129,16 +132,16 @@ export function Dashboard() {
         </div>
       )}
 
-      <TxPage className="page-shell !px-0">
+      <TxPage density="dashboard" className="!px-0">
         <div className="space-y-5 md:space-y-7">
-          <DailyRiskCard />
-          <TodayHeroCard />
-          <ActionGrid onAddTrade={() => navigate('/journal')} />
-          <BotStatusCard />
+          <TodayHero />
+          <RiskPulseCard />
+          <NextActionCard onAddTrade={() => navigate('/journal')} />
+          {!isMobile && <BotStatusCard />}
           {!isMobile && <DashboardStatusStrip />}
           {!isMobile && <RiskStatusCard />}
 
-          {topInsight && (
+          {!isMobile && topInsight && (
             <div
               className={clsx(
                 'p-4 rounded-[18px] border flex items-start gap-4 transition-all duration-300',
@@ -193,6 +196,8 @@ export function Dashboard() {
             </div>
           )}
 
+          {!isMobile && (
+            <>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <StatCard
               title="Win Rate"
@@ -259,6 +264,8 @@ export function Dashboard() {
               size="sm"
             />
           </div>
+            </>
+          )}
 
           {isMobile ? (
             <div className="space-y-3">
@@ -286,7 +293,7 @@ export function Dashboard() {
             </div>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="card p-5 lg:col-span-2 min-h-[280px]">
+              <TxCard className="lg:col-span-2 min-h-[280px]">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h3 className="section-title text-base">Equity curve</h3>
@@ -304,9 +311,9 @@ export function Dashboard() {
                   </div>
                 </div>
                 <EquityCurve height={isMobile ? 180 : 240} />
-              </div>
+              </TxCard>
 
-              <div className="card p-5">
+              <TxCard>
                 <div className="mb-4">
                   <h3 className="section-title text-base">Win rate</h3>
                   <p className="section-subtitle">Outcome distribution</p>
@@ -330,21 +337,21 @@ export function Dashboard() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </TxCard>
             </div>
           )}
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="card p-5">
+            <TxCard>
               <TradingConsistencyCard score={consistencyScore} subtitle={consistencyCopy} />
-            </div>
-            <div className="card p-5">
+            </TxCard>
+            <TxCard>
               <WeeklyPerformanceStrip />
-            </div>
+            </TxCard>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="card p-5 lg:col-span-2">
+            <TxCard className="lg:col-span-2">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h3 className="section-title text-base">Daily P&L</h3>
@@ -363,15 +370,15 @@ export function Dashboard() {
                 </div>
               </div>
               <PnLBarChart height={isMobile ? 140 : 180} />
-            </div>
+            </TxCard>
 
-            <div className="card p-5">
+            <TxCard>
               <PnLCalendar />
-            </div>
+            </TxCard>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <div className="card lg:col-span-2 overflow-hidden">
+            <TxCard padded={false} className="lg:col-span-2 overflow-hidden">
               <div className="flex items-center justify-between px-5 py-4 border-b border-[rgba(126,146,185,0.14)]">
                 <div>
                   <h3 className="section-title text-base">Recent activity</h3>
@@ -430,9 +437,9 @@ export function Dashboard() {
                   </button>
                 ))}
               </div>
-            </div>
+            </TxCard>
 
-            <div className="card p-5">
+            <TxCard>
               <div className="mb-4">
                 <h3 className="section-title text-base">Session heatmap</h3>
                 <p className="section-subtitle">P&L by session & day</p>
@@ -450,33 +457,33 @@ export function Dashboard() {
                   </div>
                 </div>
               </div>
-            </div>
+            </TxCard>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            <div className="card p-5 min-h-[100px]">
+            <TxCard className="min-h-[100px]">
               <div className="text-xs text-text-muted mb-2">Max win streak</div>
               <div className="text-2xl font-bold text-success">{metrics.maxConsecutiveWins}</div>
               <div className="text-xs text-text-muted mt-1">Consecutive wins</div>
-            </div>
-            <div className="card p-5 min-h-[100px]">
+            </TxCard>
+            <TxCard className="min-h-[100px]">
               <div className="text-xs text-text-muted mb-2">Max loss streak</div>
               <div className="text-2xl font-bold text-danger">{metrics.maxConsecutiveLosses}</div>
               <div className="text-xs text-text-muted mt-1">Consecutive losses</div>
-            </div>
-            <div className="card p-5 min-h-[100px]">
+            </TxCard>
+            <TxCard className="min-h-[100px]">
               <div className="text-xs text-text-muted mb-2">Trading days</div>
               <div className="text-2xl font-bold text-text-primary">{metrics.tradingDays}</div>
               <div className="text-xs text-text-muted mt-1">Days active</div>
-            </div>
-            <div className="card p-5 min-h-[100px]">
+            </TxCard>
+            <TxCard className="min-h-[100px]">
               <div className="text-xs text-text-muted mb-2">Worst trade</div>
               <div className="text-2xl font-bold text-danger">${metrics.worstTrade.toFixed(0)}</div>
               <div className="text-xs text-text-muted mt-1">Single trade loss</div>
-            </div>
+            </TxCard>
           </div>
 
-          <div className="card p-5">
+          <TxCard>
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="section-title text-base">Drawdown analysis</h3>
@@ -487,7 +494,7 @@ export function Dashboard() {
               </Badge>
             </div>
             <EquityCurve showDrawdown height={isMobile ? 140 : 160} />
-          </div>
+          </TxCard>
         </div>
       </TxPage>
     </div>

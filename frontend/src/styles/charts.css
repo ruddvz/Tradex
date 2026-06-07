@@ -1,0 +1,30 @@
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(42, 53, 80, 0.6) !important;
+}
+
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: var(--tx-surface-solid) !important;
+  border: 1px solid var(--tx-line-2) !important;
+  border-radius: var(--tx-r-12) !important;
+  color: var(--tx-text-2) !important;
+}
+
+.recharts-legend-item-text {
+  color: var(--tx-text-3) !important;
+}
+
+.tx-chart-profit {
+  stroke: var(--tx-profit);
+  fill: var(--tx-profit);
+}
+
+.tx-chart-loss {
+  stroke: var(--tx-loss);
+  fill: var(--tx-loss);
+}
+
+.tx-chart-info {
+  stroke: var(--tx-info);
+  fill: var(--tx-info);
+}

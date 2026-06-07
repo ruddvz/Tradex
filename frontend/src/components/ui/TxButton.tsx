@@ -7,6 +7,7 @@ type TxButtonVariant =
   | 'danger'
   | 'warning'
   | 'success'
+  | 'ai'
   | 'disabledLive';
 
 type TxButtonSize = 'sm' | 'md' | 'lg';
@@ -26,6 +27,7 @@ const VARIANT: Record<TxButtonVariant, string> = {
   warning:
     'bg-[var(--tx-warning-soft)] text-[var(--tx-warning)] border border-[var(--tx-warning)]/35',
   success: 'bg-[var(--tx-profit-soft)] text-[var(--tx-profit)] border border-[var(--tx-profit)]/35',
+  ai: 'bg-[var(--tx-ai-soft)] text-[var(--tx-ai)] border border-[var(--tx-ai)]/35',
   disabledLive:
     'bg-[var(--tx-surface-2)] text-[var(--tx-text-4)] border border-[var(--tx-line-1)] cursor-not-allowed opacity-70',
 };

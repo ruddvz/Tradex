@@ -32,7 +32,7 @@ export function TodayHeroCard({ className }: TodayHeroCardProps) {
           items={RANGES}
           value={selectedDateRange}
           onChange={(id) => setDateRange(id as '7d' | '30d' | '90d' | 'all')}
-          className="max-w-full overflow-x-auto"
+          className="hidden md:flex max-w-full overflow-x-auto"
         />
       </div>
       <TxMetricCard
