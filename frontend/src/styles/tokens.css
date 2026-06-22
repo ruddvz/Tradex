@@ -1,6 +1,24 @@
 :root {
   color-scheme: dark;
 
+  /*
+   * Canonical color channels — the single source of truth for semantic + text
+   * colors. Stored as space-separated RGB so both the --tx-* tokens below and
+   * tailwind.config.js (via `rgb(var(--c-*) / <alpha-value>)`) derive from the
+   * exact same values, and Tailwind opacity modifiers keep working.
+   */
+  --c-profit: 45 212 163; /* #2dd4a3 */
+  --c-profit-strong: 24 201 145; /* #18c991 */
+  --c-loss: 255 107 107; /* #ff6b6b */
+  --c-loss-strong: 239 68 68; /* #ef4444 */
+  --c-warning: 246 183 60; /* #f6b73c */
+  --c-info: 74 157 255; /* #4a9dff */
+  --c-ai: 167 139 250; /* #a78bfa */
+  --c-text-1: 248 250 252; /* #f8fafc */
+  --c-text-2: 219 230 243; /* #dbe6f3 */
+  --c-text-3: 170 184 206; /* #aab8ce */
+  --c-text-4: 137 152 176; /* #8998b0 — nudged lighter for AA on small text */
+
   /* Background */
   --tx-bg-0: #030611;
   --tx-bg-1: #050812;
@@ -22,26 +40,26 @@
   --tx-line-focus: rgba(45, 212, 163, 0.64);
   --tx-line-strong: var(--tx-line-3);
 
-  /* Text */
-  --tx-text-1: #f8fafc;
-  --tx-text-2: #dbe6f3;
-  --tx-text-3: #aab8ce;
-  --tx-text-4: #7b8aa3;
+  /* Text (derived from canonical channels) */
+  --tx-text-1: rgb(var(--c-text-1));
+  --tx-text-2: rgb(var(--c-text-2));
+  --tx-text-3: rgb(var(--c-text-3));
+  --tx-text-4: rgb(var(--c-text-4));
   --tx-text-disabled: #526077;
 
-  /* Semantic */
-  --tx-profit: #2dd4a3;
-  --tx-profit-strong: #18c991;
-  --tx-profit-soft: rgba(45, 212, 163, 0.14);
-  --tx-loss: #ff6b6b;
-  --tx-loss-strong: #ef4444;
-  --tx-loss-soft: rgba(255, 107, 107, 0.14);
-  --tx-warning: #f6b73c;
-  --tx-warning-soft: rgba(246, 183, 60, 0.14);
-  --tx-info: #4a9dff;
-  --tx-info-soft: rgba(74, 157, 255, 0.14);
-  --tx-ai: #a78bfa;
-  --tx-ai-soft: rgba(167, 139, 250, 0.14);
+  /* Semantic (derived from canonical channels) */
+  --tx-profit: rgb(var(--c-profit));
+  --tx-profit-strong: rgb(var(--c-profit-strong));
+  --tx-profit-soft: rgb(var(--c-profit) / 0.14);
+  --tx-loss: rgb(var(--c-loss));
+  --tx-loss-strong: rgb(var(--c-loss-strong));
+  --tx-loss-soft: rgb(var(--c-loss) / 0.14);
+  --tx-warning: rgb(var(--c-warning));
+  --tx-warning-soft: rgb(var(--c-warning) / 0.14);
+  --tx-info: rgb(var(--c-info));
+  --tx-info-soft: rgb(var(--c-info) / 0.14);
+  --tx-ai: rgb(var(--c-ai));
+  --tx-ai-soft: rgb(var(--c-ai) / 0.14);
   --tx-muted-soft: rgba(148, 163, 184, 0.12);
 
   /* Mode colors */
