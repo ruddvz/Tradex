@@ -24,8 +24,14 @@ const CalendarDayCell = ({ day, data }: { day: Date; data: CalDay | undefined })
         'aspect-square rounded-md flex flex-col items-center justify-center p-0.5 cursor-pointer transition-all duration-200 hover:scale-110 relative group'
       )}
       style={{
-        background: isProfit ? `rgba(16, 185, 129, ${opacity})` : `rgba(239, 68, 68, ${opacity})`,
-        border: `1px solid ${isProfit ? `rgba(16,185,129,${opacity * 0.6})` : `rgba(239,68,68,${opacity * 0.6})`}`,
+        background: isProfit
+          ? `rgb(var(--c-profit) / ${opacity})`
+          : `rgb(var(--c-loss) / ${opacity})`,
+        border: `1px solid ${
+          isProfit
+            ? `rgb(var(--c-profit) / ${opacity * 0.6})`
+            : `rgb(var(--c-loss) / ${opacity * 0.6})`
+        }`,
       }}
     >
       <span className="text-[9px] font-medium text-white/80">{format(day, 'd')}</span>
@@ -37,7 +43,7 @@ const CalendarDayCell = ({ day, data }: { day: Date; data: CalDay | undefined })
       <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-50 pointer-events-none">
         <div className="bg-surface border border-surface-border rounded-lg p-2 text-xs whitespace-nowrap shadow-card">
           <div className="text-slate-400">{format(day, 'MMM dd, yyyy')}</div>
-          <div className={clsx('font-semibold', isProfit ? 'text-brand-400' : 'text-red-400')}>
+          <div className={clsx('font-semibold', isProfit ? 'text-profit' : 'text-loss')}>
             {isProfit ? '+' : ''}${data.pnl.toFixed(2)}
           </div>
           <div className="text-slate-500">{data.trades} trades</div>
@@ -68,11 +74,11 @@ export function PnLCalendar() {
         <h3 className="text-sm font-semibold text-white">{format(today, 'MMMM yyyy')}</h3>
         <div className="flex items-center gap-3 text-xs">
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-brand-500/60" />
+            <div className="w-3 h-3 rounded-sm bg-profit/60" />
             <span className="text-slate-500">Profit</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="w-3 h-3 rounded-sm bg-red-500/60" />
+            <div className="w-3 h-3 rounded-sm bg-loss/60" />
             <span className="text-slate-500">Loss</span>
           </div>
         </div>
