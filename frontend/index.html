@@ -17,6 +17,18 @@
     <meta name="apple-mobile-web-app-title" content="Tradex" />
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no" />
 
+    <!--
+      Web fonts — Apple devices fall back to SF Pro via the native font stacks;
+      everyone else gets Inter (instead of Roboto/Segoe) so typography is
+      consistent cross-platform. The service worker already caches these.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    />
+
     <!-- SEO + Share -->
     <meta
       name="description"
