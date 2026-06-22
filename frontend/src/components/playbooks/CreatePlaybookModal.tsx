@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { useStore } from '../../store/useStore';
+import { trapFocus } from '../../lib/a11y';
 import type { Playbook } from '../../types';
 
 interface Props {
@@ -12,6 +13,21 @@ const types: Playbook['type'][] = ['strategy', 'symbol', 'session', 'timeframe',
 
 export function CreatePlaybookModal({ onClose }: Props) {
   const { addPlaybook } = useStore();
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    const release = panelRef.current ? trapFocus(panelRef.current) : undefined;
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      release?.();
+    };
+  }, [onClose]);
   const [name, setName] = useState('');
   const [type, setType] = useState<Playbook['type']>('strategy');
   const [description, setDescription] = useState('');
@@ -53,19 +69,25 @@ export function CreatePlaybookModal({ onClose }: Props) {
   return (
     <div className="modal-backdrop z-[60]" onClick={onClose} role="presentation">
       <div
+        ref={panelRef}
         className="bg-surface border border-surface-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[90vh] overflow-y-auto shadow-card-hover animate-slide-up"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="create-playbook-title"
       >
         <div className="flex items-center justify-between p-5 border-b border-surface-border sticky top-0 bg-surface z-10">
-          <h2 className="font-bold text-white text-lg flex items-center gap-2">
+          <h2
+            id="create-playbook-title"
+            className="font-bold text-white text-lg flex items-center gap-2"
+          >
             <Plus className="w-5 h-5 text-brand-400" />
             New Playbook
           </h2>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close"
             className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white"
           >
             <X className="w-5 h-5" />

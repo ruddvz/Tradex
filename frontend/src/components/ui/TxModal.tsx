@@ -44,6 +44,7 @@ export function TxModal({ open, onClose, title, children, footer, className }: T
         ref={panelRef}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="tx-modal-title"
         className={clsx(
           'relative w-full max-w-md rounded-[var(--tx-r-24)] border border-[var(--tx-line-2)]',
           'bg-[var(--tx-bg-1)] shadow-[var(--tx-shadow-float)]',
@@ -51,7 +52,9 @@ export function TxModal({ open, onClose, title, children, footer, className }: T
         )}
       >
         <div className="flex items-center justify-between gap-3 border-b border-[var(--tx-line-1)] px-5 py-4">
-          <h2 className="text-lg font-bold text-[var(--tx-text-1)]">{title}</h2>
+          <h2 id="tx-modal-title" className="text-lg font-bold text-[var(--tx-text-1)]">
+            {title}
+          </h2>
           <button
             type="button"
             aria-label="Close"
