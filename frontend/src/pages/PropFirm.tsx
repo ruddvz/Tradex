@@ -277,7 +277,7 @@ export function PropFirm() {
             <ProgressBar
               value={propChallenge.currentPnl}
               max={propChallenge.profitTarget}
-              color="linear-gradient(90deg, #059669, #10b981)"
+              color="linear-gradient(90deg, #4f46e5, #6366f1)"
               label="Profit Progress (8% Target)"
               sublabel={`Started: ${format(new Date(propChallenge.startDate), 'MMM d')}`}
             />
