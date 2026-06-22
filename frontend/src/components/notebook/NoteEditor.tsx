@@ -78,8 +78,11 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
 
         <div className="p-5 space-y-4">
           <div>
-            <label className="label">Title</label>
+            <label className="label" htmlFor="note-title">
+              Title
+            </label>
             <input
+              id="note-title"
               className="input"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -87,8 +90,11 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
             />
           </div>
           <div>
-            <label className="label">Type</label>
+            <label className="label" htmlFor="note-type">
+              Type
+            </label>
             <select
+              id="note-type"
               className="select"
               value={type}
               onChange={(e) => setType(e.target.value as NotebookEntry['type'])}
@@ -101,11 +107,14 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
             </select>
           </div>
           <div>
-            <label className="label">Content</label>
+            <label className="label" htmlFor="note-content">
+              Content
+            </label>
             <p className="text-[10px] text-slate-600 mb-1">
               Supports lines starting with #, ##, - for lists
             </p>
             <textarea
+              id="note-content"
               className="input min-h-[120px] resize-y font-mono text-sm"
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -113,9 +122,12 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
             />
           </div>
           <div>
-            <label className="label">Tags</label>
+            <label className="label" htmlFor="note-tags">
+              Tags
+            </label>
             <div className="flex gap-2">
               <input
+                id="note-tags"
                 className="input flex-1"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}

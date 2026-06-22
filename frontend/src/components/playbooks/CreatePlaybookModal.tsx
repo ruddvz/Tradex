@@ -74,8 +74,11 @@ export function CreatePlaybookModal({ onClose }: Props) {
 
         <div className="p-5 space-y-4">
           <div>
-            <label className="label">Name</label>
+            <label className="label" htmlFor="pb-name">
+              Name
+            </label>
             <input
+              id="pb-name"
               className="input"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -83,8 +86,11 @@ export function CreatePlaybookModal({ onClose }: Props) {
             />
           </div>
           <div>
-            <label className="label">Type</label>
+            <label className="label" htmlFor="pb-type">
+              Type
+            </label>
             <select
+              id="pb-type"
               className="select"
               value={type}
               onChange={(e) => setType(e.target.value as Playbook['type'])}
@@ -97,8 +103,11 @@ export function CreatePlaybookModal({ onClose }: Props) {
             </select>
           </div>
           <div>
-            <label className="label">Description</label>
+            <label className="label" htmlFor="pb-description">
+              Description
+            </label>
             <textarea
+              id="pb-description"
               className="input min-h-[72px] resize-y"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -106,8 +115,8 @@ export function CreatePlaybookModal({ onClose }: Props) {
             />
           </div>
           <div>
-            <label className="label">Rules</label>
-            <div className="space-y-2">
+            <span className="label">Rules</span>
+            <div className="space-y-2" role="group" aria-label="Playbook rules">
               {rules.map((rule, i) => (
                 <div key={i} className="flex gap-2">
                   <input

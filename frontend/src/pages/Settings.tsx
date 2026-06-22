@@ -256,12 +256,16 @@ export function Settings() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="label">Display Name</label>
-                <input className="input" defaultValue="Trader Pro" />
+                <label className="label" htmlFor="settings-display-name">
+                  Display Name
+                </label>
+                <input id="settings-display-name" className="input" defaultValue="Trader Pro" />
               </div>
               <div>
-                <label className="label">Base Currency</label>
-                <select className="select">
+                <label className="label" htmlFor="settings-base-currency">
+                  Base Currency
+                </label>
+                <select id="settings-base-currency" className="select">
                   <option>USD</option>
                   <option>EUR</option>
                   <option>GBP</option>
@@ -322,8 +326,11 @@ export function Settings() {
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="sm:col-span-2">
-                  <label className="label">Account name</label>
+                  <label className="label" htmlFor="settings-account-name">
+                    Account name
+                  </label>
                   <input
+                    id="settings-account-name"
                     className="input"
                     value={newAccountName}
                     onChange={(e) => setNewAccountName(e.target.value)}
@@ -331,8 +338,11 @@ export function Settings() {
                   />
                 </div>
                 <div>
-                  <label className="label">Type</label>
+                  <label className="label" htmlFor="settings-account-type">
+                    Type
+                  </label>
                   <select
+                    id="settings-account-type"
                     className="select"
                     value={newAccountType}
                     onChange={(e) => setNewAccountType(e.target.value)}
@@ -344,8 +354,11 @@ export function Settings() {
                   </select>
                 </div>
                 <div>
-                  <label className="label">Starting balance</label>
+                  <label className="label" htmlFor="settings-account-balance">
+                    Starting balance
+                  </label>
                   <input
+                    id="settings-account-balance"
                     className="input"
                     type="number"
                     min={100}
@@ -793,8 +806,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
         <>
           {profiles.length > 1 && (
             <div className="mb-4">
-              <label className="label">Profile</label>
+              <label className="label" htmlFor="settings-risk-profile">
+                Profile
+              </label>
               <select
+                id="settings-risk-profile"
                 className="input w-full"
                 value={activeId ?? ''}
                 onChange={(e) => {
@@ -822,8 +838,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
           )}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label">Max risk per trade %</label>
+              <label className="label" htmlFor="settings-max-risk">
+                Max risk per trade %
+              </label>
               <input
+                id="settings-max-risk"
                 type="number"
                 step="0.1"
                 className="input w-full"
@@ -834,8 +853,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
               />
             </div>
             <div>
-              <label className="label">Max daily loss %</label>
+              <label className="label" htmlFor="settings-max-daily-loss">
+                Max daily loss %
+              </label>
               <input
+                id="settings-max-daily-loss"
                 type="number"
                 step="0.1"
                 className="input w-full"
@@ -846,8 +868,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
               />
             </div>
             <div>
-              <label className="label">Max open positions</label>
+              <label className="label" htmlFor="settings-max-open">
+                Max open positions
+              </label>
               <input
+                id="settings-max-open"
                 type="number"
                 className="input w-full"
                 value={form.max_open_positions}
@@ -857,8 +882,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
               />
             </div>
             <div>
-              <label className="label">Max per symbol</label>
+              <label className="label" htmlFor="settings-max-per-symbol">
+                Max per symbol
+              </label>
               <input
+                id="settings-max-per-symbol"
                 type="number"
                 className="input w-full"
                 value={form.max_positions_per_symbol}
