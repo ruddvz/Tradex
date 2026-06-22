@@ -10,7 +10,7 @@
 
   .btn-primary {
     @apply px-4 py-2.5 rounded-[var(--tx-r-14)] font-bold text-[#04110d] transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px];
-    background: linear-gradient(135deg, var(--tx-profit-strong), var(--tx-profit));
+    background: linear-gradient(135deg, var(--tx-brand-strong), var(--tx-brand));
     box-shadow: var(--tx-shadow-button);
   }
   .btn-primary:hover {

@@ -70,6 +70,15 @@
   --tx-mode-disabled: #94a3b8;
   --tx-mode-danger: #ff6b6b;
 
+  /*
+   * Brand / primary — the interactive accent. Deliberately a deeper emerald,
+   * distinct from the mint --tx-profit so "primary action" never reads as
+   * "money positive". Brand = buttons/nav/focus; profit = P&L values only.
+   */
+  --tx-brand: #10b981;
+  --tx-brand-strong: #059669;
+  --tx-brand-soft: rgba(16, 185, 129, 0.12);
+
   /* Radius (canonical) */
   --tx-r-8: 8px;
   --tx-r-10: 10px;
@@ -95,7 +104,7 @@
   /* Shadows */
   --tx-shadow-card: 0 16px 42px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.045);
   --tx-shadow-float: 0 24px 70px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --tx-shadow-button: 0 10px 26px rgba(45, 212, 163, 0.18);
+  --tx-shadow-button: 0 10px 26px rgba(16, 185, 129, 0.22);
   --tx-shadow-danger: 0 14px 36px rgba(255, 107, 107, 0.12);
 
   /* Layout */
