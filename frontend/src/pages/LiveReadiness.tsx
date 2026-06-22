@@ -48,9 +48,6 @@ export function LiveReadiness() {
       <div className="page-shell p-6 space-y-6 max-w-3xl">
         <div className="flex flex-wrap items-center gap-2">
           <TxModePill mode="liveLocked" />
-          <span className="text-xs text-[var(--tx-loss)] font-semibold uppercase tracking-wide">
-            Live locked
-          </span>
         </div>
 
         <div className="card p-5 border border-red-500/20 bg-red-500/5">
