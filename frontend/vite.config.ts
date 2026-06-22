@@ -36,6 +36,7 @@ export default defineConfig(({ mode }) => {
           '.nojekyll',
         ],
         manifest: {
+          id: base,
           name: "Tradex — Trader's Performance Lab",
           short_name: 'Tradex',
           description: 'AI-Powered Trading Journal for Forex, Gold, Indices & Stock Traders.',

@@ -34,18 +34,13 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
     <link rel="apple-touch-icon" href="/pwa-192.png" sizes="192x192" />
-    <!-- iPhone splash (standalone launch) — dark brand background -->
-    <link
-      rel="apple-touch-startup-image"
-      href="/pwa-512.png"
-      media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)"
-    />
-    <link
-      rel="apple-touch-startup-image"
-      href="/pwa-512.png"
-      media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)"
-    />
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <!--
+      Manifest is injected by vite-plugin-pwa with the correct base path
+      (e.g. /Tradex/manifest.webmanifest on GitHub Pages). Do not hard-code a
+      second manifest link here — browsers honor the first one found, and a
+      base-less /manifest.webmanifest 404s under a project subpath, silently
+      breaking installability.
+    -->
 
     <title>Tradex | Trader's Performance Lab</title>
   </head>
