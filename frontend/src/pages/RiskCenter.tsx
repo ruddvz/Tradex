@@ -29,7 +29,8 @@ import { TxEmptyState } from '../components/ui/TxEmptyState';
 import { TxErrorState } from '../components/ui/TxErrorState';
 import { TxLoadingState } from '../components/ui/TxLoadingState';
 export function RiskCenter() {
-  const { dataMode, paperModeActive, botStatus, triggerKillSwitch, resumePaperTrading } = useStore();
+  const { dataMode, paperModeActive, botStatus, triggerKillSwitch, resumePaperTrading } =
+    useStore();
   const viewMode = resolveDataViewMode({ dataMode, paperModeActive });
   const isLiveSession = dataMode === 'live' && Boolean(getToken());
   const [profile, setProfile] = useState<RiskProfileRow | null>(null);
@@ -85,13 +86,24 @@ export function RiskCenter() {
 
   return (
     <div className="min-h-screen">
-      <Header title="Risk" subtitle="Profiles, limits, violations, and kill switch" showDateRange={false} compact />
+      <Header
+        title="Risk"
+        subtitle="Profiles, limits, violations, and kill switch"
+        showDateRange={false}
+        compact
+      />
       <ModeHeaderStrip />
 
       <TxPage density="dashboard" className="space-y-6 pb-28 md:pb-6">
         <RiskStatusHero
           state={
-            killed ? 'locked' : dataMode === 'demo' ? 'blocked' : profile && (profile.max_daily_loss_percent ?? 3) < 1 ? 'slow' : 'safe'
+            killed
+              ? 'locked'
+              : dataMode === 'demo'
+                ? 'blocked'
+                : profile && (profile.max_daily_loss_percent ?? 3) < 1
+                  ? 'slow'
+                  : 'safe'
           }
         />
         <DailyLossProgress usedPct={1.2} limitPct={profile?.max_daily_loss_percent ?? 3} />
@@ -113,7 +125,9 @@ export function RiskCenter() {
           />
         )}
 
-        {dataMode === 'live' && loading && <TxLoadingState label="Loading risk center…" variant="page" />}
+        {dataMode === 'live' && loading && (
+          <TxLoadingState label="Loading risk center…" variant="page" />
+        )}
 
         {dataMode === 'live' && error && (
           <TxErrorState description={error} onRetry={() => window.location.reload()} />
@@ -126,7 +140,11 @@ export function RiskCenter() {
               onToggle={() => void (killed ? resumePaperTrading() : triggerKillSwitch())}
             />
             {profile ? (
-              <RiskLimitsCard profile={profile} saving={saving} onPatch={(p) => void patchProfile(p)} />
+              <RiskLimitsCard
+                profile={profile}
+                saving={saving}
+                onPatch={(p) => void patchProfile(p)}
+              />
             ) : (
               <TxEmptyState
                 title="No risk profile yet"

@@ -14,15 +14,11 @@ import { TxPage } from '../components/ui/TxPage';
 import { TxButton } from '../components/ui/TxButton';
 import { TxSearchField } from '../components/ui/TxSearchField';
 import { PageToolbar } from '../components/layout/PageToolbar';
-import {
-  TradeFilterSheet,
-  type JournalFilterState,
-} from '../components/journal/TradeFilterSheet';
+import { TradeFilterSheet, type JournalFilterState } from '../components/journal/TradeFilterSheet';
 import { JournalTradeCard } from '../components/journal/JournalTradeCard';
 import { TradeDrawer } from '../components/journal/TradeDrawer';
 import { JournalFilterBar } from '../components/journal/JournalFilterBar';
 import { TxCard } from '../components/ui/TxCard';
-
 
 export function Journal() {
   const { trades, dataMode } = useStore();
@@ -107,7 +103,12 @@ export function Journal() {
 
   return (
     <div className="min-h-screen">
-      <Header title="Journal" subtitle={`${trades.length} trades recorded`} compact showDateRange={false} />
+      <Header
+        title="Journal"
+        subtitle={`${trades.length} trades recorded`}
+        compact
+        showDateRange={false}
+      />
 
       <ModeHeaderStrip />
 
@@ -203,9 +204,7 @@ export function Journal() {
               resetQuickFilters();
               setSearch('');
             }}
-            onSymbolFilter={(sym) =>
-              setSymbolFilter((prev) => (prev === sym ? 'all' : sym))
-            }
+            onSymbolFilter={(sym) => setSymbolFilter((prev) => (prev === sym ? 'all' : sym))}
             onDirFilter={setDirFilter}
             onOutFilter={setOutFilter}
             onGradeFilter={(g) => setGradeFilter(g)}

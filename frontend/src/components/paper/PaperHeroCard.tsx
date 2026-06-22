@@ -17,7 +17,11 @@ export function PaperHeroCard({
 }: PaperHeroCardProps) {
   return (
     <TxCard variant="info" title="Paper Bot" subtitle={statusLabel}>
-      <PaperAccountStats account={account} openPositions={openPositions} recentFills={recentFills} />
+      <PaperAccountStats
+        account={account}
+        openPositions={openPositions}
+        recentFills={recentFills}
+      />
     </TxCard>
   );
 }

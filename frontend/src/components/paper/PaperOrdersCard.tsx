@@ -14,7 +14,10 @@ export function PaperOrdersCard({ orders }: { orders: PaperOrderRow[] }) {
   return (
     <TxCard title="Orders" subtitle="Paper mode — not live fills">
       {orders.length === 0 ? (
-        <TxEmptyState title="No orders yet" description="Submit a paper order from the ticket above." />
+        <TxEmptyState
+          title="No orders yet"
+          description="Submit a paper order from the ticket above."
+        />
       ) : (
         <ul className="space-y-2">
           {orders.map((o) => (

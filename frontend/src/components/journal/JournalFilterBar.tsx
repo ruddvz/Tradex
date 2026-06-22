@@ -15,9 +15,7 @@ export interface JournalFilterBarProps {
   onDirFilter: (dir: 'all' | 'BUY' | 'SELL') => void;
   onOutFilter: (out: 'all' | 'WIN' | 'LOSS' | 'BREAKEVEN') => void;
   onGradeFilter: (grade: 'all' | 'A') => void;
-  onSourceFilter: (
-    src: 'all' | 'manual' | 'mt5' | 'paper' | 'backtest' | 'demo'
-  ) => void;
+  onSourceFilter: (src: 'all' | 'manual' | 'mt5' | 'paper' | 'backtest' | 'demo') => void;
 }
 
 const SOURCE_OPTIONS = [
@@ -90,7 +88,11 @@ export function JournalFilterBar({
         <TxChip selected={outFilter === 'WIN'} variant="success" onClick={() => onOutFilter('WIN')}>
           Winners
         </TxChip>
-        <TxChip selected={outFilter === 'LOSS'} variant="danger" onClick={() => onOutFilter('LOSS')}>
+        <TxChip
+          selected={outFilter === 'LOSS'}
+          variant="danger"
+          onClick={() => onOutFilter('LOSS')}
+        >
           Losses
         </TxChip>
         <TxChip

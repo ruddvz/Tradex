@@ -74,14 +74,8 @@ const TAB_ITEMS = [
 ];
 
 export function Reports() {
-  const {
-    trades,
-    selectedDateRange,
-    dataMode,
-    paperModeActive,
-    metrics,
-    refreshAnalyticsFromApi,
-  } = useStore();
+  const { trades, selectedDateRange, dataMode, paperModeActive, metrics, refreshAnalyticsFromApi } =
+    useStore();
 
   useEffect(() => {
     if (dataMode === 'live') void refreshAnalyticsFromApi();
@@ -351,7 +345,11 @@ export function Reports() {
         title="Reports"
         subtitle="Performance analytics for the selected range"
         compact
-        action={<span className="hidden md:inline-flex"><ExportReportButton /></span>}
+        action={
+          <span className="hidden md:inline-flex">
+            <ExportReportButton />
+          </span>
+        }
       />
 
       <ModeHeaderStrip />

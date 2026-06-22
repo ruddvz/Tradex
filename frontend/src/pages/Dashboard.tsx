@@ -198,72 +198,78 @@ export function Dashboard() {
 
           {!isMobile && (
             <>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <StatCard
-              title="Win Rate"
-              value={`${metrics.winRate}%`}
-              subtitle={`${metrics.winTrades}W / ${metrics.lossTrades}L`}
-              icon={Target}
-              variant={metrics.winRate >= 60 ? 'profit' : metrics.winRate >= 50 ? 'info' : 'loss'}
-            />
-            <StatCard
-              title="Profit Factor"
-              value={`${metrics.profitFactor}x`}
-              subtitle="Gross profit / loss"
-              icon={BarChart3}
-              variant={
-                metrics.profitFactor >= 2 ? 'profit' : metrics.profitFactor >= 1.5 ? 'info' : 'warn'
-              }
-            />
-            <StatCard
-              title="Avg R:R"
-              value={`1:${metrics.avgRR}`}
-              subtitle="Risk to reward"
-              icon={Zap}
-              variant={metrics.avgRR >= 2 ? 'profit' : 'info'}
-            />
-            <StatCard
-              title="Max Drawdown"
-              value={`${metrics.maxDrawdown.toFixed(1)}%`}
-              subtitle="Peak to trough"
-              icon={TrendingDown}
-              variant={
-                metrics.maxDrawdown < 5 ? 'profit' : metrics.maxDrawdown < 10 ? 'warn' : 'loss'
-              }
-            />
-          </div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <StatCard
+                  title="Win Rate"
+                  value={`${metrics.winRate}%`}
+                  subtitle={`${metrics.winTrades}W / ${metrics.lossTrades}L`}
+                  icon={Target}
+                  variant={
+                    metrics.winRate >= 60 ? 'profit' : metrics.winRate >= 50 ? 'info' : 'loss'
+                  }
+                />
+                <StatCard
+                  title="Profit Factor"
+                  value={`${metrics.profitFactor}x`}
+                  subtitle="Gross profit / loss"
+                  icon={BarChart3}
+                  variant={
+                    metrics.profitFactor >= 2
+                      ? 'profit'
+                      : metrics.profitFactor >= 1.5
+                        ? 'info'
+                        : 'warn'
+                  }
+                />
+                <StatCard
+                  title="Avg R:R"
+                  value={`1:${metrics.avgRR}`}
+                  subtitle="Risk to reward"
+                  icon={Zap}
+                  variant={metrics.avgRR >= 2 ? 'profit' : 'info'}
+                />
+                <StatCard
+                  title="Max Drawdown"
+                  value={`${metrics.maxDrawdown.toFixed(1)}%`}
+                  subtitle="Peak to trough"
+                  icon={TrendingDown}
+                  variant={
+                    metrics.maxDrawdown < 5 ? 'profit' : metrics.maxDrawdown < 10 ? 'warn' : 'loss'
+                  }
+                />
+              </div>
 
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-            <StatCard
-              title="Total Trades"
-              value={metrics.totalTrades}
-              subtitle="In range"
-              icon={BarChart3}
-              size="sm"
-            />
-            <StatCard
-              title="Best Trade"
-              value={`+$${metrics.bestTrade.toFixed(0)}`}
-              icon={Award}
-              variant="profit"
-              size="sm"
-            />
-            <StatCard
-              title="Avg Hold Time"
-              value={`${metrics.avgHoldTime}m`}
-              subtitle="Per trade"
-              icon={Clock}
-              size="sm"
-            />
-            <StatCard
-              title="Expectancy"
-              value={`$${metrics.expectancy.toFixed(0)}`}
-              subtitle="Per trade avg"
-              icon={Zap}
-              variant={metrics.expectancy > 0 ? 'profit' : 'loss'}
-              size="sm"
-            />
-          </div>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <StatCard
+                  title="Total Trades"
+                  value={metrics.totalTrades}
+                  subtitle="In range"
+                  icon={BarChart3}
+                  size="sm"
+                />
+                <StatCard
+                  title="Best Trade"
+                  value={`+$${metrics.bestTrade.toFixed(0)}`}
+                  icon={Award}
+                  variant="profit"
+                  size="sm"
+                />
+                <StatCard
+                  title="Avg Hold Time"
+                  value={`${metrics.avgHoldTime}m`}
+                  subtitle="Per trade"
+                  icon={Clock}
+                  size="sm"
+                />
+                <StatCard
+                  title="Expectancy"
+                  value={`$${metrics.expectancy.toFixed(0)}`}
+                  subtitle="Per trade avg"
+                  icon={Zap}
+                  variant={metrics.expectancy > 0 ? 'profit' : 'loss'}
+                  size="sm"
+                />
+              </div>
             </>
           )}
 

@@ -105,22 +105,38 @@ function TradeDrawerBody({ trade, onClose }: { trade: Trade; onClose: () => void
       </div>
 
       <div className="space-y-3 rounded-[var(--tx-r-20)] border border-[var(--tx-line-1)] bg-[var(--tx-surface-inset)] p-4">
-        <TxSelect label="Session" value={session} onChange={(e) => setSession(e.target.value as Trade['session'])}>
+        <TxSelect
+          label="Session"
+          value={session}
+          onChange={(e) => setSession(e.target.value as Trade['session'])}
+        >
           {SESSION_OPTIONS.map((s) => (
             <option key={s} value={s}>
               {s}
             </option>
           ))}
         </TxSelect>
-        <TxSelect label="Grade" value={grade} onChange={(e) => setGrade(e.target.value as Trade['grade'])}>
+        <TxSelect
+          label="Grade"
+          value={grade}
+          onChange={(e) => setGrade(e.target.value as Trade['grade'])}
+        >
           {GRADE_OPTIONS.map((g) => (
             <option key={g} value={g}>
               {g}
             </option>
           ))}
         </TxSelect>
-        <TxInput label="Strategy / setup" value={strategy} onChange={(e) => setStrategy(e.target.value)} />
-        <TxSelect label="Emotion" value={emotion} onChange={(e) => setEmotion(e.target.value as Trade['emotion'])}>
+        <TxInput
+          label="Strategy / setup"
+          value={strategy}
+          onChange={(e) => setStrategy(e.target.value)}
+        />
+        <TxSelect
+          label="Emotion"
+          value={emotion}
+          onChange={(e) => setEmotion(e.target.value as Trade['emotion'])}
+        >
           {Object.keys(emotionEmojis).map((e) => (
             <option key={e} value={e}>
               {emotionEmojis[e]} {e}
@@ -128,7 +144,9 @@ function TradeDrawerBody({ trade, onClose }: { trade: Trade; onClose: () => void
           ))}
         </TxSelect>
         <label className="block">
-          <span className="text-[13px] font-semibold text-[var(--tx-text-3)]">Discipline (1–10)</span>
+          <span className="text-[13px] font-semibold text-[var(--tx-text-3)]">
+            Discipline (1–10)
+          </span>
           <input
             type="range"
             min={1}
@@ -145,7 +163,13 @@ function TradeDrawerBody({ trade, onClose }: { trade: Trade; onClose: () => void
           rows={4}
           placeholder="What went well? What to improve?"
         />
-        <TxButton variant="primary" size="lg" fullWidth disabled={saving} onClick={() => void saveJournalFields()}>
+        <TxButton
+          variant="primary"
+          size="lg"
+          fullWidth
+          disabled={saving}
+          onClick={() => void saveJournalFields()}
+        >
           <Save className="h-4 w-4" />
           {saving ? 'Saving…' : 'Save journal'}
         </TxButton>
@@ -213,7 +237,14 @@ export function TradeDrawer({ trade, onClose }: { trade: Trade; onClose: () => v
   }
 
   return (
-    <TxDrawer open onClose={onClose} title={title} description={subtitle} width="lg" footer={footer}>
+    <TxDrawer
+      open
+      onClose={onClose}
+      title={title}
+      description={subtitle}
+      width="lg"
+      footer={footer}
+    >
       <TradeDrawerBody trade={trade} onClose={onClose} />
     </TxDrawer>
   );

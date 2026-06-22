@@ -59,8 +59,9 @@ export function LiveReadiness() {
             <div>
               <h2 className="font-semibold text-white">Live execution disabled</h2>
               <p className="text-sm text-slate-400 mt-1">
-                Live broker execution is disabled. TradeX must prove paper performance, risk controls,
-                audit logs, and manual safety checks before live execution is even considered.
+                Live broker execution is disabled. TradeX must prove paper performance, risk
+                controls, audit logs, and manual safety checks before live execution is even
+                considered.
               </p>
             </div>
           </div>

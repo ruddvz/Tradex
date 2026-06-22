@@ -10,7 +10,11 @@ interface KillSwitchCardProps {
 
 export function KillSwitchCard({ active, onToggle }: KillSwitchCardProps) {
   return (
-    <TxCard variant={active ? 'danger' : 'warning'} title="Kill switch" subtitle="Blocks new paper orders. Live broker execution is not available.">
+    <TxCard
+      variant={active ? 'danger' : 'warning'}
+      title="Kill switch"
+      subtitle="Blocks new paper orders. Live broker execution is not available."
+    >
       <div className="flex flex-wrap items-start gap-4 justify-between">
         <div className="flex items-start gap-3">
           {active ? (
