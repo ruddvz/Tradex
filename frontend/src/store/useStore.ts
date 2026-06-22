@@ -143,6 +143,8 @@ interface AppState {
   addTrade: (trade: Trade) => void;
   updateTrade: (id: string, updates: Partial<Trade>) => void;
   deleteTrade: (id: string) => Promise<void>;
+  /** Clears the locally held trade list (demo / non-live datasets only). */
+  clearLocalTrades: () => void;
   addNotebookEntry: (entry: NotebookEntry) => void;
   updateNotebookEntry: (id: string, updates: Partial<NotebookEntry>) => void;
   deleteNotebookEntry: (id: string) => void;
@@ -487,6 +489,7 @@ export const useStore = create<AppState>((set, get) => ({
     }
     set((state) => ({ trades: state.trades.filter((t) => t.id !== id) }));
   },
+  clearLocalTrades: () => set({ trades: [] }),
 
   addNotebookEntry: (entry) => set((state) => ({ notebook: [entry, ...state.notebook] })),
   updateNotebookEntry: (id, updates) =>

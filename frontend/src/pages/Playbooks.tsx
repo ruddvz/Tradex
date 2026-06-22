@@ -15,7 +15,18 @@ import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
 
 function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
   return (
-    <div className="card-hover p-5 cursor-pointer" onClick={onClick}>
+    <div
+      className="card-hover p-5 cursor-pointer"
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+    >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500/20 to-blue-500/20 flex items-center justify-center">
@@ -96,7 +107,9 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
+            aria-label="Close playbook details"
             className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white"
           >
             ✕

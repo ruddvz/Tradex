@@ -28,6 +28,7 @@ import {
 } from '../lib/api/settings';
 import { fetchImportBatches, type ImportBatch } from '../lib/api/imports';
 import { shouldShowInstallPrompt } from '../lib/pwa';
+import { exportTradesCsv } from '../lib/exportCsv';
 
 const brokers = [
   { name: 'Exness', logo: 'EX', connected: true },
@@ -48,6 +49,8 @@ export function Settings() {
     tradingAccounts,
     createTradingAccount,
     dataMode,
+    trades,
+    clearLocalTrades,
   } = useStore();
   const { showToast } = useToast();
   const [notifications, setNotifications] = useState({
@@ -69,6 +72,27 @@ export function Settings() {
   const [mt5Loading, setMt5Loading] = useState(true);
   const [importBatches, setImportBatches] = useState<ImportBatch[]>([]);
   const [importsLoading, setImportsLoading] = useState(false);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
+
+  const handleExportCsv = () => {
+    if (trades.length === 0) {
+      showToast('No trades to export yet.', 'info');
+      return;
+    }
+    const count = exportTradesCsv(trades);
+    showToast(`Exported ${count} trade${count === 1 ? '' : 's'} to CSV.`, 'success');
+  };
+
+  const handleDeleteAll = () => {
+    if (dataMode === 'live') {
+      showToast('Bulk delete is not available for live-synced data.', 'error');
+      setConfirmDeleteAll(false);
+      return;
+    }
+    clearLocalTrades();
+    setConfirmDeleteAll(false);
+    showToast('Cleared all local trade data. Reload to restore demo data.', 'success');
+  };
 
   useEffect(() => {
     void (async () => {
@@ -634,15 +658,46 @@ export function Settings() {
               <h3 className="font-semibold text-white">Data Management</h3>
             </div>
             <div className="space-y-2">
-              <button className="btn-secondary w-full justify-center">
+              <button
+                type="button"
+                onClick={handleExportCsv}
+                className="btn-secondary w-full justify-center"
+              >
                 <Database className="w-4 h-4" /> Export All Data (CSV)
               </button>
-              <button className="btn-secondary w-full justify-center">
+              <button
+                type="button"
+                onClick={() => navigate('/reports')}
+                className="btn-secondary w-full justify-center"
+              >
                 <Database className="w-4 h-4" /> Export Trade History (PDF)
               </button>
-              <button className="btn-danger w-full justify-center">
-                <Trash2 className="w-4 h-4" /> Delete All Trade Data
-              </button>
+              {confirmDeleteAll ? (
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleDeleteAll}
+                    className="btn-danger flex-1 justify-center"
+                  >
+                    <Trash2 className="w-4 h-4" /> Confirm delete
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDeleteAll(false)}
+                    className="btn-secondary flex-1 justify-center"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmDeleteAll(true)}
+                  className="btn-danger w-full justify-center"
+                >
+                  <Trash2 className="w-4 h-4" /> Delete All Trade Data
+                </button>
+              )}
             </div>
           </div>
         </div>
