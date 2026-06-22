@@ -23,6 +23,7 @@ import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { useToast } from '../components/ui/Toast';
 import { Badge } from '../components/ui/Badge';
 import { getToken } from '../lib/auth';
+import { CHART } from '../lib/chartColors';
 import {
   createBacktest,
   deleteBacktest,
@@ -412,7 +413,7 @@ export function Backtests() {
                         <Line
                           type="monotone"
                           dataKey="equity"
-                          stroke="#10b981"
+                          stroke={CHART.profit}
                           strokeWidth={2}
                           dot={false}
                         />

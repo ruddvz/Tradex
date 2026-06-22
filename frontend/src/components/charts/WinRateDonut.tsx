@@ -1,7 +1,8 @@
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { useStore } from '../../store/useStore';
+import { CHART } from '../../lib/chartColors';
 
-const COLORS = ['#10b981', '#ef4444', '#64748b'];
+const COLORS = [CHART.profit, CHART.loss, CHART.neutral];
 
 const CustomLabel = ({ cx, cy, value }: { cx?: number; cy?: number; value?: string | number }) => (
   <text

@@ -5,6 +5,7 @@ import { CreatePlaybookModal } from '../components/playbooks/CreatePlaybookModal
 import { useToast } from '../components/ui/Toast';
 import { AIInsightTrustMeta } from '../components/ai/AIInsightTrustMeta';
 import { sampleSizeLabel } from '../lib/formatters';
+import { CHART } from '../lib/chartColors';
 import { useStore } from '../store/useStore';
 import { Badge, PnlBadge } from '../components/ui/Badge';
 import { LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
@@ -53,7 +54,7 @@ function PlaybookCard({ pb, onClick }: { pb: Playbook; onClick: () => void }) {
             <Line
               type="monotone"
               dataKey="pnl"
-              stroke={pb.profit >= 0 ? '#10b981' : '#ef4444'}
+              stroke={pb.profit >= 0 ? CHART.profit : CHART.loss}
               strokeWidth={1.5}
               dot={false}
             />
@@ -141,7 +142,7 @@ function PlaybookDetail({ pb, onClose }: { pb: Playbook; onClose: () => void }) 
                   <Line
                     type="monotone"
                     dataKey="pnl"
-                    stroke="#10b981"
+                    stroke={CHART.profit}
                     strokeWidth={2}
                     dot={false}
                   />

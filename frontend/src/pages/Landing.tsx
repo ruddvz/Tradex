@@ -14,6 +14,7 @@ import {
   NotebookPen,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { CHART } from '../lib/chartColors';
 
 const features = [
   {
@@ -204,7 +205,10 @@ export function Landing() {
                   <div
                     key={i}
                     className="flex-1 rounded-sm opacity-75"
-                    style={{ height: `${height}%`, background: positive ? '#10b981' : '#ef4444' }}
+                    style={{
+                      height: `${height}%`,
+                      background: positive ? CHART.profit : CHART.loss,
+                    }}
                   />
                 );
               })}
