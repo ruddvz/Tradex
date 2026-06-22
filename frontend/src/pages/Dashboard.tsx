@@ -40,6 +40,21 @@ import type { AIInsight } from '../types';
 import { AIInsightTrustMeta } from '../components/ai/AIInsightTrustMeta';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
 
+/** Where the "View" action on an AI insight should take the trader. */
+function insightTarget(type: AIInsight['type']): string {
+  switch (type) {
+    case 'warning':
+      return '/risk';
+    case 'psychology':
+      return '/notebook';
+    case 'pattern':
+    case 'opportunity':
+      return '/playbooks';
+    default:
+      return '/reports';
+  }
+}
+
 export function Dashboard() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -181,6 +196,7 @@ export function Dashboard() {
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   type="button"
+                  onClick={() => navigate(insightTarget(topInsight.type))}
                   className="text-xs text-success hover:text-success/90 font-medium flex items-center gap-1"
                 >
                   View <ArrowUpRight className="w-3 h-3" />
