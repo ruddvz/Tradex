@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useStore } from '../../store/useStore';
 import { getToken } from '../../lib/auth';
 import { createTradeApi } from '../../lib/api/trades';
+import { trapFocus } from '../../lib/a11y';
 import type { Trade } from '../../types';
 
 const defaultTrade: Partial<Trade> = {
@@ -67,6 +68,21 @@ export function AddTradeModal({ onClose }: Props) {
   const [tagInput, setTagInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    const release = panelRef.current ? trapFocus(panelRef.current) : undefined;
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      release?.();
+    };
+  }, [onClose]);
 
   const set = (key: keyof Trade, value: unknown) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -192,19 +208,22 @@ export function AddTradeModal({ onClose }: Props) {
       role="presentation"
     >
       <div
+        ref={panelRef}
         className="bg-surface border border-surface-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto shadow-card-hover animate-slide-up"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="add-trade-title"
       >
         <div className="flex items-center justify-between p-5 border-b border-surface-border sticky top-0 bg-surface z-10">
-          <h2 className="font-bold text-white text-lg flex items-center gap-2">
+          <h2 id="add-trade-title" className="font-bold text-white text-lg flex items-center gap-2">
             <Plus className="w-5 h-5 text-brand-400" />
             Log New Trade
           </h2>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close"
             className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />

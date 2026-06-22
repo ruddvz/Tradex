@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   NotebookPen,
   Plus,
@@ -20,6 +20,7 @@ import { Badge } from '../components/ui/Badge';
 import { TxCard } from '../components/ui/TxCard';
 import { format } from 'date-fns';
 import { clsx } from 'clsx';
+import { trapFocus } from '../lib/a11y';
 import type { NotebookEntry } from '../types';
 
 const typeConfig = {
@@ -187,6 +188,21 @@ function NoteCard({
 function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => void }) {
   const cfg = typeConfig[note.type];
   const Icon = cfg.icon;
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    const release = panelRef.current ? trapFocus(panelRef.current) : undefined;
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      release?.();
+    };
+  }, [onClose]);
 
   const renderContent = (content: string) => {
     return content.split('\n').map((line, i) => {
@@ -246,10 +262,12 @@ function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => voi
       role="presentation"
     >
       <div
+        ref={panelRef}
         className="bg-surface border border-surface-border rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto shadow-card-hover animate-slide-up"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="note-viewer-title"
       >
         <div
           className={clsx(
@@ -262,7 +280,9 @@ function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => voi
               <Icon className={clsx('w-5 h-5', cfg.color)} />
             </div>
             <div>
-              <h2 className="font-bold text-white">{note.title}</h2>
+              <h2 id="note-viewer-title" className="font-bold text-white">
+                {note.title}
+              </h2>
               <div className="flex items-center gap-2 mt-0.5">
                 <Badge variant="neutral" size="xs">
                   {cfg.label}
@@ -278,6 +298,7 @@ function NoteViewer({ note, onClose }: { note: NotebookEntry; onClose: () => voi
             <button
               type="button"
               onClick={onClose}
+              aria-label="Close"
               className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white"
             >
               ✕
