@@ -21,7 +21,7 @@ export function BotStatusCard() {
       action={<TxModePill mode="paper" />}
     >
       <div className="flex items-start gap-3">
-        <div className="flex h-11 w-11 items-center justify-center rounded-[var(--tx-radius-sm)] bg-[var(--tx-info-soft)]">
+        <div className="flex h-11 w-11 items-center justify-center rounded-[var(--tx-r-14)] bg-[var(--tx-info-soft)]">
           <Activity className="h-5 w-5 text-[var(--tx-info)]" aria-hidden />
         </div>
         <div className="flex-1 min-w-0">

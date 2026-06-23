@@ -35,7 +35,9 @@ export function TxTabs({ items, value, onChange, variant = 'pill', className }: 
             className={clsx(
               'shrink-0 min-h-[40px] px-3 text-sm font-semibold transition-colors',
               variant === 'pill' && 'rounded-[var(--tx-r-pill)]',
-              variant === 'pill' && active && 'bg-[var(--tx-brand-soft)] text-[var(--tx-brand)]',
+              variant === 'pill' &&
+                active &&
+                'bg-[var(--tx-brand-soft)] text-[var(--tx-brand-text)]',
               variant === 'pill' && !active && 'text-[var(--tx-text-4)]',
               variant === 'underline' &&
                 active &&

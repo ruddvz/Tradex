@@ -39,7 +39,7 @@ export function TxModePill({ mode, className }: TxModePillProps) {
   return (
     <span
       className={clsx(
-        'inline-flex items-center rounded-[var(--tx-radius-pill)] border px-2.5 py-1',
+        'inline-flex items-center rounded-[var(--tx-r-pill)] border px-2.5 py-1',
         'text-[10px] font-bold uppercase tracking-wide',
         cfg.className,
         className

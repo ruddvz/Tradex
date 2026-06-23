@@ -28,7 +28,7 @@ export function TxChartCard({
   return (
     <section
       className={clsx(
-        'rounded-[var(--tx-radius-md)] border border-[var(--tx-line-1)] bg-[var(--tx-surface-1)]',
+        'rounded-[var(--tx-r-18)] border border-[var(--tx-line-1)] bg-[var(--tx-surface-1)]',
         className
       )}
     >
@@ -48,7 +48,7 @@ export function TxChartCard({
       </div>
       <div className="p-3 min-h-[180px]">
         {loading && (
-          <div className="h-[160px] animate-pulse rounded-[var(--tx-radius-sm)] bg-[var(--tx-surface-2)]" />
+          <div className="h-[160px] animate-pulse rounded-[var(--tx-r-14)] bg-[var(--tx-surface-2)]" />
         )}
         {!loading && error && (
           <p className="py-8 text-center text-sm text-[var(--tx-loss)]">{error}</p>

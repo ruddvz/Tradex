@@ -35,7 +35,7 @@ export function TxListRow({
       type={onClick ? 'button' : undefined}
       onClick={onClick}
       className={clsx(
-        'flex w-full items-center gap-3 rounded-[var(--tx-radius-sm)] border border-[var(--tx-line-1)]',
+        'flex w-full items-center gap-3 rounded-[var(--tx-r-14)] border border-[var(--tx-line-1)]',
         'bg-[var(--tx-surface-1)] px-3 py-3 min-h-[56px] text-left',
         onClick && 'active:scale-[0.99] transition-transform',
         className

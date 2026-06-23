@@ -13,7 +13,7 @@
   --c-loss-strong: 239 68 68; /* #ef4444 */
   --c-warning: 246 183 60; /* #f6b73c */
   --c-info: 74 157 255; /* #4a9dff */
-  --c-ai: 167 139 250; /* #a78bfa */
+  --c-ai: 192 132 252; /* #c084fc — magenta-violet, kept clear of indigo brand */
   --c-text-1: 248 250 252; /* #f8fafc */
   --c-text-2: 219 230 243; /* #dbe6f3 */
   --c-text-3: 170 184 206; /* #aab8ce */
@@ -66,7 +66,7 @@
   --tx-mode-demo: #f6b73c;
   --tx-mode-live-journal: #2dd4a3;
   --tx-mode-paper: #4a9dff;
-  --tx-mode-backtest: #a78bfa;
+  --tx-mode-backtest: #c084fc;
   --tx-mode-disabled: #94a3b8;
   --tx-mode-danger: #ff6b6b;
 
@@ -78,6 +78,9 @@
   --tx-brand: #6366f1;
   --tx-brand-strong: #4f46e5;
   --tx-brand-soft: rgba(99, 102, 241, 0.14);
+  /* Lighter indigo for brand-as-text on dark surfaces: brand-500 only clears
+   * AA-large (3.58:1), this (brand-400) clears AA for small text (5.36:1). */
+  --tx-brand-text: #818cf8;
 
   /* Radius (canonical) */
   --tx-r-8: 8px;
@@ -92,14 +95,6 @@
   --tx-r-32: 32px;
   --tx-r-36: 36px;
   --tx-r-pill: 999px;
-
-  /* Legacy radius aliases */
-  --tx-radius-xs: var(--tx-r-10);
-  --tx-radius-sm: var(--tx-r-14);
-  --tx-radius-md: var(--tx-r-18);
-  --tx-radius-lg: var(--tx-r-24);
-  --tx-radius-xl: var(--tx-r-32);
-  --tx-radius-pill: var(--tx-r-pill);
 
   /* Shadows */
   --tx-shadow-card: 0 16px 42px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.045);

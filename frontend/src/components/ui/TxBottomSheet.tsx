@@ -77,7 +77,7 @@ export function TxBottomSheet({
             type="button"
             aria-label="Close"
             onClick={onClose}
-            className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-[var(--tx-radius-sm)] text-[var(--tx-text-3)] hover:bg-[var(--tx-surface-1)]"
+            className="min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-[var(--tx-r-14)] text-[var(--tx-text-3)] hover:bg-[var(--tx-surface-1)]"
           >
             <X className="h-5 w-5" />
           </button>

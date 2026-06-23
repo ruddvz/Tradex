@@ -38,7 +38,7 @@ export function TxMetricCard({
   return (
     <div
       className={clsx(
-        'rounded-[var(--tx-radius-md)] border border-[var(--tx-line-1)] bg-[var(--tx-surface-1)] p-4',
+        'rounded-[var(--tx-r-18)] border border-[var(--tx-line-1)] bg-[var(--tx-surface-1)] p-4',
         hero && 'col-span-full p-5',
         className
       )}

@@ -34,7 +34,7 @@ export function HeroMetricCard({
   return (
     <div
       className={clsx(
-        'relative overflow-hidden rounded-[22px] border border-[rgba(126,146,185,0.2)] p-5 shadow-card',
+        'relative overflow-hidden rounded-card border border-[rgba(126,146,185,0.2)] p-5 shadow-card',
         'bg-gradient-to-b from-[rgba(24,34,58,0.94)] to-[rgba(15,23,42,0.96)]',
         'min-h-[200px] max-h-[280px] flex flex-col'
       )}

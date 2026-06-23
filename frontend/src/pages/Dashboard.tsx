@@ -159,7 +159,7 @@ export function Dashboard() {
           {!isMobile && topInsight && (
             <div
               className={clsx(
-                'p-4 rounded-[18px] border flex items-start gap-4 transition-all duration-300',
+                'p-4 rounded-[var(--tx-r-18)] border flex items-start gap-4 transition-all duration-300',
                 topInsight.impact === 'high'
                   ? 'bg-success/8 border-success/30'
                   : topInsight.impact === 'medium'
@@ -420,7 +420,7 @@ export function Dashboard() {
                     key={trade.id}
                     type="button"
                     onClick={() => navigate('/journal')}
-                    className="w-full text-left rounded-[18px] border border-[rgba(126,146,185,0.14)] bg-[rgba(16,24,42,0.35)] p-4 hover:border-success/25 transition-colors"
+                    className="w-full text-left rounded-[var(--tx-r-18)] border border-[rgba(126,146,185,0.14)] bg-[rgba(16,24,42,0.35)] p-4 hover:border-success/25 transition-colors"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>

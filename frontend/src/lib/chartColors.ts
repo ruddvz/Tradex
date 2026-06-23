@@ -8,7 +8,7 @@ export const CHART = {
   profit: '#2dd4a3', // --c-profit
   loss: '#ff6b6b', // --c-loss
   info: '#4a9dff', // --c-info
-  ai: '#a78bfa', // --c-ai
+  ai: '#c084fc', // --c-ai
   warning: '#f6b73c', // --c-warning
   neutral: '#64748b', // slate-500, axis ticks / no-data
   grid: 'rgba(42,53,80,0.6)',

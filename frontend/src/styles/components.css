@@ -9,8 +9,10 @@
   }
 
   .btn-primary {
-    @apply px-4 py-2.5 rounded-[var(--tx-r-14)] font-bold text-[#04110d] transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px];
-    background: linear-gradient(135deg, var(--tx-brand-strong), var(--tx-brand));
+    @apply px-4 py-2.5 rounded-[var(--tx-r-14)] font-bold text-white transition-all duration-200 flex items-center justify-center gap-2 min-h-[48px];
+    /* Solid brand-strong keeps white label at AA (6.29:1); the old gradient's
+     * light end (#6366f1) only reached 4.47:1. */
+    background: var(--tx-brand-strong);
     box-shadow: var(--tx-shadow-button);
   }
   .btn-primary:hover {
@@ -201,6 +203,6 @@
   background:
     radial-gradient(circle at 10% 0%, rgba(45, 212, 163, 0.1), transparent 28%),
     radial-gradient(circle at 100% 10%, rgba(74, 157, 255, 0.1), transparent 30%),
-    radial-gradient(circle at 50% 100%, rgba(167, 139, 250, 0.07), transparent 36%),
+    radial-gradient(circle at 50% 100%, rgba(192, 132, 252, 0.07), transparent 36%),
     linear-gradient(180deg, var(--tx-bg-1) 0%, var(--tx-bg-0) 100%);
 }
