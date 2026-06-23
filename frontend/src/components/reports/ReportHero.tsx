@@ -32,7 +32,11 @@ export function ReportHero({
         </p>
       )}
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-        <TxMetric label="Net P&L" value={netPnl} tone={netPnl.startsWith('+') ? 'profit' : 'loss'} />
+        <TxMetric
+          label="Net P&L"
+          value={netPnl}
+          tone={netPnl.startsWith('+') ? 'profit' : 'loss'}
+        />
         <TxMetric label="Profit factor" value={profitFactor} />
         <TxMetric label="Max drawdown" value={maxDrawdown} tone="warning" />
         <TxMetric label="Sample size" value={String(sampleSize)} subline="trades in period" />

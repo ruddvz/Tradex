@@ -23,6 +23,7 @@ import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { useToast } from '../components/ui/Toast';
 import { Badge } from '../components/ui/Badge';
 import { getToken } from '../lib/auth';
+import { CHART } from '../lib/chartColors';
 import {
   createBacktest,
   deleteBacktest,
@@ -210,8 +211,11 @@ export function Backtests() {
               <h2 className="font-semibold text-white">New backtest</h2>
             </div>
             <div>
-              <label className="label">Name</label>
+              <label className="label" htmlFor="bt-name">
+                Name
+              </label>
               <input
+                id="bt-name"
                 className="input w-full"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
@@ -219,8 +223,11 @@ export function Backtests() {
               />
             </div>
             <div>
-              <label className="label">Symbol</label>
+              <label className="label" htmlFor="bt-symbol">
+                Symbol
+              </label>
               <select
+                id="bt-symbol"
                 className="input w-full"
                 value={symbol}
                 onChange={(e) => setSymbol(e.target.value)}
@@ -232,8 +239,11 @@ export function Backtests() {
               </select>
             </div>
             <div>
-              <label className="label">Historical candles (CSV)</label>
+              <label className="label" htmlFor="bt-csv">
+                Historical candles (CSV)
+              </label>
               <input
+                id="bt-csv"
                 ref={csvInputRef}
                 type="file"
                 accept=".csv,text/csv"
@@ -403,7 +413,7 @@ export function Backtests() {
                         <Line
                           type="monotone"
                           dataKey="equity"
-                          stroke="#10b981"
+                          stroke={CHART.profit}
                           strokeWidth={2}
                           dot={false}
                         />

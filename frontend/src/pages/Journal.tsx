@@ -14,18 +14,17 @@ import { TxPage } from '../components/ui/TxPage';
 import { TxButton } from '../components/ui/TxButton';
 import { TxSearchField } from '../components/ui/TxSearchField';
 import { PageToolbar } from '../components/layout/PageToolbar';
-import {
-  TradeFilterSheet,
-  type JournalFilterState,
-} from '../components/journal/TradeFilterSheet';
+import { TradeFilterSheet, type JournalFilterState } from '../components/journal/TradeFilterSheet';
 import { JournalTradeCard } from '../components/journal/JournalTradeCard';
 import { TradeDrawer } from '../components/journal/TradeDrawer';
 import { JournalFilterBar } from '../components/journal/JournalFilterBar';
 import { TxCard } from '../components/ui/TxCard';
-
+import { useToast } from '../components/ui/Toast';
+import { exportTradesCsv } from '../lib/exportCsv';
 
 export function Journal() {
   const { trades, dataMode } = useStore();
+  const { showToast } = useToast();
   const [search, setSearch] = useState('');
   const [symbolFilter, setSymbolFilter] = useState<string>('all');
   const [dirFilter, setDirFilter] = useState<'all' | 'BUY' | 'SELL'>('all');
@@ -107,7 +106,12 @@ export function Journal() {
 
   return (
     <div className="min-h-screen">
-      <Header title="Journal" subtitle={`${trades.length} trades recorded`} compact showDateRange={false} />
+      <Header
+        title="Journal"
+        subtitle={`${trades.length} trades recorded`}
+        compact
+        showDateRange={false}
+      />
 
       <ModeHeaderStrip />
 
@@ -203,9 +207,7 @@ export function Journal() {
               resetQuickFilters();
               setSearch('');
             }}
-            onSymbolFilter={(sym) =>
-              setSymbolFilter((prev) => (prev === sym ? 'all' : sym))
-            }
+            onSymbolFilter={(sym) => setSymbolFilter((prev) => (prev === sym ? 'all' : sym))}
             onDirFilter={setDirFilter}
             onOutFilter={setOutFilter}
             onGradeFilter={(g) => setGradeFilter(g)}
@@ -213,7 +215,18 @@ export function Journal() {
           />
 
           <div className="flex flex-wrap gap-2 justify-end">
-            <button type="button" className="btn-secondary text-sm">
+            <button
+              type="button"
+              onClick={() => {
+                if (filtered.length === 0) {
+                  showToast('No trades match the current filters.', 'info');
+                  return;
+                }
+                const count = exportTradesCsv(filtered);
+                showToast(`Exported ${count} trade${count === 1 ? '' : 's'} to CSV.`, 'success');
+              }}
+              className="btn-secondary text-sm"
+            >
               <Download className="w-4 h-4" /> Export CSV
             </button>
           </div>

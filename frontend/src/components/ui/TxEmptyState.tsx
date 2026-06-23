@@ -22,7 +22,7 @@ export function TxEmptyState({
   return (
     <div
       className={clsx(
-        'flex flex-col items-center justify-center rounded-[var(--tx-radius-md)] border border-dashed border-[var(--tx-line-2)]',
+        'flex flex-col items-center justify-center rounded-[var(--tx-r-18)] border border-dashed border-[var(--tx-line-2)]',
         'bg-[var(--tx-surface-1)] px-6 py-10 text-center',
         className
       )}

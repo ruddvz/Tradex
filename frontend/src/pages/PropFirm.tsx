@@ -11,6 +11,7 @@ import {
 import { Header } from '../components/layout/Header';
 import { ProgressRing } from '../components/ui/ProgressRing';
 import { useStore } from '../store/useStore';
+import { CHART } from '../lib/chartColors';
 import { Badge } from '../components/ui/Badge';
 import { DataSourceBadge } from '../components/status/DataSourceBadge';
 import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
@@ -276,7 +277,7 @@ export function PropFirm() {
             <ProgressBar
               value={propChallenge.currentPnl}
               max={propChallenge.profitTarget}
-              color="linear-gradient(90deg, #059669, #10b981)"
+              color="linear-gradient(90deg, #4f46e5, #6366f1)"
               label="Profit Progress (8% Target)"
               sublabel={`Started: ${format(new Date(propChallenge.startDate), 'MMM d')}`}
             />
@@ -333,7 +334,7 @@ export function PropFirm() {
             <ProgressBar
               value={propChallenge.dailyLoss}
               max={propChallenge.dailyDrawdown}
-              color={dailyPct >= 80 ? '#ef4444' : '#3b82f6'}
+              color={dailyPct >= 80 ? CHART.loss : CHART.info}
               label="Daily Loss Limit (5% Max)"
               sublabel="Today"
             />

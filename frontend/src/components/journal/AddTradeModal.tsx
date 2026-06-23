@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X, Plus } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useStore } from '../../store/useStore';
 import { getToken } from '../../lib/auth';
 import { createTradeApi } from '../../lib/api/trades';
+import { trapFocus } from '../../lib/a11y';
 import type { Trade } from '../../types';
 
 const defaultTrade: Partial<Trade> = {
@@ -67,6 +68,21 @@ export function AddTradeModal({ onClose }: Props) {
   const [tagInput, setTagInput] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    const release = panelRef.current ? trapFocus(panelRef.current) : undefined;
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      release?.();
+    };
+  }, [onClose]);
 
   const set = (key: keyof Trade, value: unknown) => setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -192,19 +208,22 @@ export function AddTradeModal({ onClose }: Props) {
       role="presentation"
     >
       <div
+        ref={panelRef}
         className="bg-surface border border-surface-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[92vh] overflow-y-auto shadow-card-hover animate-slide-up"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="add-trade-title"
       >
         <div className="flex items-center justify-between p-5 border-b border-surface-border sticky top-0 bg-surface z-10">
-          <h2 className="font-bold text-white text-lg flex items-center gap-2">
+          <h2 id="add-trade-title" className="font-bold text-white text-lg flex items-center gap-2">
             <Plus className="w-5 h-5 text-brand-400" />
             Log New Trade
           </h2>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close"
             className="p-2 rounded-lg hover:bg-surface-light text-slate-400 hover:text-white transition-colors"
           >
             <X className="w-5 h-5" />
@@ -224,8 +243,11 @@ export function AddTradeModal({ onClose }: Props) {
           )}
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="label">Symbol</label>
+              <label className="label" htmlFor="at-symbol">
+                Symbol
+              </label>
               <select
+                id="at-symbol"
                 className="select"
                 value={form.symbol}
                 onChange={(e) => set('symbol', e.target.value)}
@@ -238,8 +260,8 @@ export function AddTradeModal({ onClose }: Props) {
               </select>
             </div>
             <div>
-              <label className="label">Direction</label>
-              <div className="flex gap-2">
+              <span className="label">Direction</span>
+              <div className="flex gap-2" role="group" aria-label="Direction">
                 {(['BUY', 'SELL'] as const).map((d) => (
                   <button
                     key={d}
@@ -271,8 +293,11 @@ export function AddTradeModal({ onClose }: Props) {
               ] as const
             ).map(({ key, label }) => (
               <div key={key}>
-                <label className="label">{label}</label>
+                <label className="label" htmlFor={`at-${key}`}>
+                  {label}
+                </label>
                 <input
+                  id={`at-${key}`}
                   type="number"
                   className="input"
                   step="0.00001"
@@ -285,8 +310,11 @@ export function AddTradeModal({ onClose }: Props) {
 
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="label">Lot Size</label>
+              <label className="label" htmlFor="at-lotSize">
+                Lot Size
+              </label>
               <input
+                id="at-lotSize"
                 type="number"
                 className="input"
                 step="0.01"
@@ -295,8 +323,11 @@ export function AddTradeModal({ onClose }: Props) {
               />
             </div>
             <div>
-              <label className="label">Strategy</label>
+              <label className="label" htmlFor="at-strategy">
+                Strategy
+              </label>
               <select
+                id="at-strategy"
                 className="select"
                 value={form.strategy}
                 onChange={(e) => set('strategy', e.target.value)}
@@ -307,8 +338,11 @@ export function AddTradeModal({ onClose }: Props) {
               </select>
             </div>
             <div>
-              <label className="label">Session</label>
+              <label className="label" htmlFor="at-session">
+                Session
+              </label>
               <select
+                id="at-session"
                 className="select"
                 value={form.session}
                 onChange={(e) => set('session', e.target.value as Trade['session'])}
@@ -324,8 +358,11 @@ export function AddTradeModal({ onClose }: Props) {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="label">Emotion</label>
+              <label className="label" htmlFor="at-emotion">
+                Emotion
+              </label>
               <select
+                id="at-emotion"
                 className="select"
                 value={form.emotion}
                 onChange={(e) => set('emotion', e.target.value as Trade['emotion'])}
@@ -338,8 +375,8 @@ export function AddTradeModal({ onClose }: Props) {
               </select>
             </div>
             <div>
-              <label className="label">Grade</label>
-              <div className="flex gap-1.5">
+              <span className="label">Grade</span>
+              <div className="flex gap-1.5" role="group" aria-label="Grade">
                 {(['A', 'B', 'C', 'D', 'F'] as const).map((g) => (
                   <button
                     key={g}
@@ -360,8 +397,11 @@ export function AddTradeModal({ onClose }: Props) {
           </div>
 
           <div>
-            <label className="label">Notes</label>
+            <label className="label" htmlFor="at-notes">
+              Notes
+            </label>
             <textarea
+              id="at-notes"
               className="input min-h-[80px] resize-y"
               placeholder="Trade rationale, observations..."
               value={form.notes}
@@ -370,9 +410,12 @@ export function AddTradeModal({ onClose }: Props) {
           </div>
 
           <div>
-            <label className="label">Tags</label>
+            <label className="label" htmlFor="at-tags">
+              Tags
+            </label>
             <div className="flex gap-2">
               <input
+                id="at-tags"
                 className="input flex-1"
                 placeholder="Add tag and press Enter"
                 value={tagInput}

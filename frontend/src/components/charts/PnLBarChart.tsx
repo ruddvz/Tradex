@@ -12,6 +12,7 @@ import {
 import { format, parseISO } from 'date-fns';
 import { useStore } from '../../store/useStore';
 import { mockDailyStats } from '../../data/mockData';
+import { CHART } from '../../lib/chartColors';
 
 const CustomTooltip = ({
   active,
@@ -74,7 +75,7 @@ export function PnLBarChart({ height = 180 }: { height?: number }) {
         <ReferenceLine y={0} stroke="#2a3550" strokeWidth={1} />
         <Bar dataKey="pnl" radius={[3, 3, 0, 0]}>
           {data.map((d, i) => (
-            <Cell key={i} fill={d.pnl >= 0 ? '#10b981' : '#ef4444'} opacity={0.85} />
+            <Cell key={i} fill={d.pnl >= 0 ? CHART.profit : CHART.loss} opacity={0.85} />
           ))}
         </Bar>
       </BarChart>

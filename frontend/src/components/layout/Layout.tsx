@@ -5,7 +5,7 @@ import { MobileNav } from './MobileNav';
 import { AppShellSkeleton } from './AppShellSkeleton';
 import { RouteFallback } from './RouteFallback';
 import { Mt5SyncModal } from '../mt5/Mt5SyncModal';
-import { IosInstallBanner } from '../pwa/IosInstallBanner';
+import { InstallBanner } from '../pwa/InstallBanner';
 import { useStore } from '../../store/useStore';
 import { clsx } from 'clsx';
 
@@ -92,7 +92,7 @@ export function Layout() {
         </main>
 
         <div className="block md:hidden">
-          <IosInstallBanner />
+          <InstallBanner />
           <MobileNav />
         </div>
       </div>

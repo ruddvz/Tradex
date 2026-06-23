@@ -1,6 +1,24 @@
 :root {
   color-scheme: dark;
 
+  /*
+   * Canonical color channels — the single source of truth for semantic + text
+   * colors. Stored as space-separated RGB so both the --tx-* tokens below and
+   * tailwind.config.js (via `rgb(var(--c-*) / <alpha-value>)`) derive from the
+   * exact same values, and Tailwind opacity modifiers keep working.
+   */
+  --c-profit: 45 212 163; /* #2dd4a3 */
+  --c-profit-strong: 24 201 145; /* #18c991 */
+  --c-loss: 255 107 107; /* #ff6b6b */
+  --c-loss-strong: 239 68 68; /* #ef4444 */
+  --c-warning: 246 183 60; /* #f6b73c */
+  --c-info: 74 157 255; /* #4a9dff */
+  --c-ai: 192 132 252; /* #c084fc — magenta-violet, kept clear of indigo brand */
+  --c-text-1: 248 250 252; /* #f8fafc */
+  --c-text-2: 219 230 243; /* #dbe6f3 */
+  --c-text-3: 170 184 206; /* #aab8ce */
+  --c-text-4: 137 152 176; /* #8998b0 — nudged lighter for AA on small text */
+
   /* Background */
   --tx-bg-0: #030611;
   --tx-bg-1: #050812;
@@ -19,38 +37,50 @@
   --tx-line-1: rgba(148, 163, 184, 0.14);
   --tx-line-2: rgba(148, 163, 184, 0.22);
   --tx-line-3: rgba(226, 232, 240, 0.28);
-  --tx-line-focus: rgba(45, 212, 163, 0.64);
+  --tx-line-focus: rgba(99, 102, 241, 0.7);
   --tx-line-strong: var(--tx-line-3);
 
-  /* Text */
-  --tx-text-1: #f8fafc;
-  --tx-text-2: #dbe6f3;
-  --tx-text-3: #aab8ce;
-  --tx-text-4: #7b8aa3;
+  /* Text (derived from canonical channels) */
+  --tx-text-1: rgb(var(--c-text-1));
+  --tx-text-2: rgb(var(--c-text-2));
+  --tx-text-3: rgb(var(--c-text-3));
+  --tx-text-4: rgb(var(--c-text-4));
   --tx-text-disabled: #526077;
 
-  /* Semantic */
-  --tx-profit: #2dd4a3;
-  --tx-profit-strong: #18c991;
-  --tx-profit-soft: rgba(45, 212, 163, 0.14);
-  --tx-loss: #ff6b6b;
-  --tx-loss-strong: #ef4444;
-  --tx-loss-soft: rgba(255, 107, 107, 0.14);
-  --tx-warning: #f6b73c;
-  --tx-warning-soft: rgba(246, 183, 60, 0.14);
-  --tx-info: #4a9dff;
-  --tx-info-soft: rgba(74, 157, 255, 0.14);
-  --tx-ai: #a78bfa;
-  --tx-ai-soft: rgba(167, 139, 250, 0.14);
+  /* Semantic (derived from canonical channels) */
+  --tx-profit: rgb(var(--c-profit));
+  --tx-profit-strong: rgb(var(--c-profit-strong));
+  --tx-profit-soft: rgb(var(--c-profit) / 0.14);
+  --tx-loss: rgb(var(--c-loss));
+  --tx-loss-strong: rgb(var(--c-loss-strong));
+  --tx-loss-soft: rgb(var(--c-loss) / 0.14);
+  --tx-warning: rgb(var(--c-warning));
+  --tx-warning-soft: rgb(var(--c-warning) / 0.14);
+  --tx-info: rgb(var(--c-info));
+  --tx-info-soft: rgb(var(--c-info) / 0.14);
+  --tx-ai: rgb(var(--c-ai));
+  --tx-ai-soft: rgb(var(--c-ai) / 0.14);
   --tx-muted-soft: rgba(148, 163, 184, 0.12);
 
   /* Mode colors */
   --tx-mode-demo: #f6b73c;
   --tx-mode-live-journal: #2dd4a3;
   --tx-mode-paper: #4a9dff;
-  --tx-mode-backtest: #a78bfa;
+  --tx-mode-backtest: #c084fc;
   --tx-mode-disabled: #94a3b8;
   --tx-mode-danger: #ff6b6b;
+
+  /*
+   * Brand / primary — indigo-iris interactive accent. Deliberately NOT green:
+   * green is reserved exclusively for profit so "primary action" never reads
+   * as "money positive". Brand = buttons/nav/focus; profit = P&L values only.
+   */
+  --tx-brand: #6366f1;
+  --tx-brand-strong: #4f46e5;
+  --tx-brand-soft: rgba(99, 102, 241, 0.14);
+  /* Lighter indigo for brand-as-text on dark surfaces: brand-500 only clears
+   * AA-large (3.58:1), this (brand-400) clears AA for small text (5.36:1). */
+  --tx-brand-text: #818cf8;
 
   /* Radius (canonical) */
   --tx-r-8: 8px;
@@ -66,18 +96,10 @@
   --tx-r-36: 36px;
   --tx-r-pill: 999px;
 
-  /* Legacy radius aliases */
-  --tx-radius-xs: var(--tx-r-10);
-  --tx-radius-sm: var(--tx-r-14);
-  --tx-radius-md: var(--tx-r-18);
-  --tx-radius-lg: var(--tx-r-24);
-  --tx-radius-xl: var(--tx-r-32);
-  --tx-radius-pill: var(--tx-r-pill);
-
   /* Shadows */
   --tx-shadow-card: 0 16px 42px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.045);
   --tx-shadow-float: 0 24px 70px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --tx-shadow-button: 0 10px 26px rgba(45, 212, 163, 0.18);
+  --tx-shadow-button: 0 10px 26px rgba(99, 102, 241, 0.3);
   --tx-shadow-danger: 0 14px 36px rgba(255, 107, 107, 0.12);
 
   /* Layout */

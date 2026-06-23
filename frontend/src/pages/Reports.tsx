@@ -11,6 +11,7 @@ import { SessionHeatmap } from '../components/charts/SessionHeatmap';
 import { Badge } from '../components/ui/Badge';
 import { SegmentedControl } from '../components/ui/SegmentedControl';
 import { computeMetrics } from '../lib/metricsFromTrades';
+import { CHART } from '../lib/chartColors';
 import {
   BarChart,
   Bar,
@@ -74,14 +75,8 @@ const TAB_ITEMS = [
 ];
 
 export function Reports() {
-  const {
-    trades,
-    selectedDateRange,
-    dataMode,
-    paperModeActive,
-    metrics,
-    refreshAnalyticsFromApi,
-  } = useStore();
+  const { trades, selectedDateRange, dataMode, paperModeActive, metrics, refreshAnalyticsFromApi } =
+    useStore();
 
   useEffect(() => {
     if (dataMode === 'live') void refreshAnalyticsFromApi();
@@ -210,7 +205,7 @@ export function Reports() {
           <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
           <Bar dataKey="pnl" radius={[4, 4, 0, 0]}>
             {strategyData.map((d, i) => (
-              <Cell key={i} fill={d.pnl >= 0 ? '#10b981' : '#ef4444'} opacity={0.85} />
+              <Cell key={i} fill={d.pnl >= 0 ? CHART.profit : CHART.loss} opacity={0.85} />
             ))}
           </Bar>
         </BarChart>
@@ -278,7 +273,7 @@ export function Reports() {
               {emotionData.map((d, i) => (
                 <Cell
                   key={i}
-                  fill={d.winRate >= 65 ? '#10b981' : d.winRate >= 50 ? '#3b82f6' : '#ef4444'}
+                  fill={d.winRate >= 65 ? CHART.profit : d.winRate >= 50 ? CHART.info : CHART.loss}
                   opacity={0.85}
                 />
               ))}
@@ -291,7 +286,13 @@ export function Reports() {
           <RadarChart data={radarData}>
             <PolarGrid stroke="rgba(42,53,80,0.8)" />
             <PolarAngleAxis dataKey="subject" tick={{ fill: '#64748b', fontSize: 10 }} />
-            <Radar dataKey="A" stroke="#10b981" fill="#10b981" fillOpacity={0.15} strokeWidth={2} />
+            <Radar
+              dataKey="A"
+              stroke={CHART.profit}
+              fill={CHART.profit}
+              fillOpacity={0.15}
+              strokeWidth={2}
+            />
           </RadarChart>
         </ResponsiveContainer>
       </ReportInsightCard>
@@ -351,7 +352,11 @@ export function Reports() {
         title="Reports"
         subtitle="Performance analytics for the selected range"
         compact
-        action={<span className="hidden md:inline-flex"><ExportReportButton /></span>}
+        action={
+          <span className="hidden md:inline-flex">
+            <ExportReportButton />
+          </span>
+        }
       />
 
       <ModeHeaderStrip />

@@ -39,7 +39,10 @@ export function ScreenshotUploadZone({
       if (Object.keys(patch).length > 0) onUploaded(patch);
       showToast('Screenshot saved');
     } catch (err) {
-      showToast(err instanceof Error ? err.message : 'Upload failed — is the API running?', 'warning');
+      showToast(
+        err instanceof Error ? err.message : 'Upload failed — is the API running?',
+        'warning'
+      );
     } finally {
       setBusy(false);
       e.target.value = '';
@@ -53,7 +56,11 @@ export function ScreenshotUploadZone({
         {label}
       </div>
       {url ? (
-        <img src={url} alt={label} className="mb-3 max-h-44 w-full rounded-[var(--tx-r-16)] object-contain" />
+        <img
+          src={url}
+          alt={label}
+          className="mb-3 max-h-44 w-full rounded-[var(--tx-r-16)] object-contain"
+        />
       ) : (
         <p className="mb-3 text-xs text-[var(--tx-text-4)]">No image yet</p>
       )}

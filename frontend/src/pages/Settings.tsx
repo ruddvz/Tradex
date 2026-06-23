@@ -1,14 +1,4 @@
-import {
-  Link,
-  Shield,
-  Bell,
-  Database,
-  User,
-  CheckCircle2,
-  RefreshCw,
-  Trash2,
-  History,
-} from 'lucide-react';
+import { Link, Shield, Bell, Database, User, RefreshCw, Trash2, History } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from '../components/layout/Header';
 import { ModeHeaderStrip } from '../components/layout/ModeHeaderStrip';
@@ -28,6 +18,7 @@ import {
 } from '../lib/api/settings';
 import { fetchImportBatches, type ImportBatch } from '../lib/api/imports';
 import { shouldShowInstallPrompt } from '../lib/pwa';
+import { exportTradesCsv } from '../lib/exportCsv';
 
 const brokers = [
   { name: 'Exness', logo: 'EX', connected: true },
@@ -48,6 +39,8 @@ export function Settings() {
     tradingAccounts,
     createTradingAccount,
     dataMode,
+    trades,
+    clearLocalTrades,
   } = useStore();
   const { showToast } = useToast();
   const [notifications, setNotifications] = useState({
@@ -56,7 +49,6 @@ export function Settings() {
     drawdownAlerts: true,
     dailyReport: false,
   });
-  const [connectedBrokers, setConnectedBrokers] = useState(['Exness']);
   const [newAccountName, setNewAccountName] = useState('');
   const [newAccountType, setNewAccountType] = useState('demo');
   const [newAccountBalance, setNewAccountBalance] = useState('10000');
@@ -69,6 +61,27 @@ export function Settings() {
   const [mt5Loading, setMt5Loading] = useState(true);
   const [importBatches, setImportBatches] = useState<ImportBatch[]>([]);
   const [importsLoading, setImportsLoading] = useState(false);
+  const [confirmDeleteAll, setConfirmDeleteAll] = useState(false);
+
+  const handleExportCsv = () => {
+    if (trades.length === 0) {
+      showToast('No trades to export yet.', 'info');
+      return;
+    }
+    const count = exportTradesCsv(trades);
+    showToast(`Exported ${count} trade${count === 1 ? '' : 's'} to CSV.`, 'success');
+  };
+
+  const handleDeleteAll = () => {
+    if (dataMode === 'live') {
+      showToast('Bulk delete is not available for live-synced data.', 'error');
+      setConfirmDeleteAll(false);
+      return;
+    }
+    clearLocalTrades();
+    setConfirmDeleteAll(false);
+    showToast('Cleared all local trade data. Reload to restore demo data.', 'success');
+  };
 
   useEffect(() => {
     void (async () => {
@@ -183,14 +196,6 @@ export function Settings() {
     }
   };
 
-  const toggleBroker = (name: string) => {
-    const wasConnected = connectedBrokers.includes(name);
-    setConnectedBrokers((prev) =>
-      wasConnected ? prev.filter((b) => b !== name) : [...prev, name]
-    );
-    showToast(wasConnected ? `${name} disconnected` : `${name} connected`);
-  };
-
   return (
     <div className="min-h-screen">
       <Header title="Settings" subtitle="Configure your trading environment" />
@@ -232,12 +237,16 @@ export function Settings() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="label">Display Name</label>
-                <input className="input" defaultValue="Trader Pro" />
+                <label className="label" htmlFor="settings-display-name">
+                  Display Name
+                </label>
+                <input id="settings-display-name" className="input" defaultValue="Trader Pro" />
               </div>
               <div>
-                <label className="label">Base Currency</label>
-                <select className="select">
+                <label className="label" htmlFor="settings-base-currency">
+                  Base Currency
+                </label>
+                <select id="settings-base-currency" className="select">
                   <option>USD</option>
                   <option>EUR</option>
                   <option>GBP</option>
@@ -298,8 +307,11 @@ export function Settings() {
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="sm:col-span-2">
-                  <label className="label">Account name</label>
+                  <label className="label" htmlFor="settings-account-name">
+                    Account name
+                  </label>
                   <input
+                    id="settings-account-name"
                     className="input"
                     value={newAccountName}
                     onChange={(e) => setNewAccountName(e.target.value)}
@@ -307,8 +319,11 @@ export function Settings() {
                   />
                 </div>
                 <div>
-                  <label className="label">Type</label>
+                  <label className="label" htmlFor="settings-account-type">
+                    Type
+                  </label>
                   <select
+                    id="settings-account-type"
                     className="select"
                     value={newAccountType}
                     onChange={(e) => setNewAccountType(e.target.value)}
@@ -320,8 +335,11 @@ export function Settings() {
                   </select>
                 </div>
                 <div>
-                  <label className="label">Starting balance</label>
+                  <label className="label" htmlFor="settings-account-balance">
+                    Starting balance
+                  </label>
                   <input
+                    id="settings-account-balance"
                     className="input"
                     type="number"
                     min={100}
@@ -476,30 +494,26 @@ export function Settings() {
               </div>
             </div>
 
-            <h4 className="text-sm font-semibold text-slate-400 mb-3">Connect Another Broker</h4>
+            <h4 className="text-sm font-semibold text-slate-400 mb-1">Other Brokers</h4>
+            <p className="text-xs text-slate-500 mb-3">
+              Direct integrations are on the way. For now, connect any MT5 broker above.
+            </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {brokers.map((b) => {
-                const connected = connectedBrokers.includes(b.name);
-                return (
-                  <button
-                    key={b.name}
-                    type="button"
-                    onClick={() => toggleBroker(b.name)}
-                    className={clsx(
-                      'flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-all text-left',
-                      connected
-                        ? 'border-brand-500/30 bg-brand-500/5'
-                        : 'border-surface-border bg-dark-300 hover:bg-surface-light'
-                    )}
-                  >
-                    <div className="w-7 h-7 rounded-lg bg-surface-light flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
-                      {b.logo}
-                    </div>
-                    <span className="text-sm text-slate-300">{b.name}</span>
-                    {connected && <CheckCircle2 className="w-3.5 h-3.5 text-brand-400 ml-auto" />}
-                  </button>
-                );
-              })}
+              {brokers.map((b) => (
+                <div
+                  key={b.name}
+                  className="flex items-center gap-2 p-3 rounded-lg border border-surface-border bg-dark-300 opacity-60 cursor-not-allowed text-left"
+                  aria-disabled="true"
+                >
+                  <div className="w-7 h-7 rounded-lg bg-surface-light flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0">
+                    {b.logo}
+                  </div>
+                  <span className="text-sm text-slate-300 truncate">{b.name}</span>
+                  <Badge variant="neutral" size="xs" className="ml-auto shrink-0">
+                    Soon
+                  </Badge>
+                </div>
+              ))}
             </div>
           </div>
 
@@ -634,15 +648,46 @@ export function Settings() {
               <h3 className="font-semibold text-white">Data Management</h3>
             </div>
             <div className="space-y-2">
-              <button className="btn-secondary w-full justify-center">
+              <button
+                type="button"
+                onClick={handleExportCsv}
+                className="btn-secondary w-full justify-center"
+              >
                 <Database className="w-4 h-4" /> Export All Data (CSV)
               </button>
-              <button className="btn-secondary w-full justify-center">
+              <button
+                type="button"
+                onClick={() => navigate('/reports')}
+                className="btn-secondary w-full justify-center"
+              >
                 <Database className="w-4 h-4" /> Export Trade History (PDF)
               </button>
-              <button className="btn-danger w-full justify-center">
-                <Trash2 className="w-4 h-4" /> Delete All Trade Data
-              </button>
+              {confirmDeleteAll ? (
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleDeleteAll}
+                    className="btn-danger flex-1 justify-center"
+                  >
+                    <Trash2 className="w-4 h-4" /> Confirm delete
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmDeleteAll(false)}
+                    className="btn-secondary flex-1 justify-center"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setConfirmDeleteAll(true)}
+                  className="btn-danger w-full justify-center"
+                >
+                  <Trash2 className="w-4 h-4" /> Delete All Trade Data
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -738,8 +783,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
         <>
           {profiles.length > 1 && (
             <div className="mb-4">
-              <label className="label">Profile</label>
+              <label className="label" htmlFor="settings-risk-profile">
+                Profile
+              </label>
               <select
+                id="settings-risk-profile"
                 className="input w-full"
                 value={activeId ?? ''}
                 onChange={(e) => {
@@ -767,8 +815,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
           )}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="label">Max risk per trade %</label>
+              <label className="label" htmlFor="settings-max-risk">
+                Max risk per trade %
+              </label>
               <input
+                id="settings-max-risk"
                 type="number"
                 step="0.1"
                 className="input w-full"
@@ -779,8 +830,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
               />
             </div>
             <div>
-              <label className="label">Max daily loss %</label>
+              <label className="label" htmlFor="settings-max-daily-loss">
+                Max daily loss %
+              </label>
               <input
+                id="settings-max-daily-loss"
                 type="number"
                 step="0.1"
                 className="input w-full"
@@ -791,8 +845,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
               />
             </div>
             <div>
-              <label className="label">Max open positions</label>
+              <label className="label" htmlFor="settings-max-open">
+                Max open positions
+              </label>
               <input
+                id="settings-max-open"
                 type="number"
                 className="input w-full"
                 value={form.max_open_positions}
@@ -802,8 +859,11 @@ function RiskProfileSettings({ showToast }: { showToast: (msg: string) => void }
               />
             </div>
             <div>
-              <label className="label">Max per symbol</label>
+              <label className="label" htmlFor="settings-max-per-symbol">
+                Max per symbol
+              </label>
               <input
+                id="settings-max-per-symbol"
                 type="number"
                 className="input w-full"
                 value={form.max_positions_per_symbol}

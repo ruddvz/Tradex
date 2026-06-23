@@ -19,7 +19,7 @@ interface TxButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const VARIANT: Record<TxButtonVariant, string> = {
-  primary: 'bg-[var(--tx-profit)] text-[#04110d] hover:brightness-110',
+  primary: 'bg-[var(--tx-brand-strong)] text-white hover:brightness-110',
   secondary:
     'bg-[var(--tx-surface-2)] text-[var(--tx-text-1)] border border-[var(--tx-line-2)] hover:bg-[var(--tx-surface-3)]',
   ghost: 'bg-transparent text-[var(--tx-text-2)] hover:bg-[var(--tx-surface-1)]',
@@ -53,9 +53,9 @@ export function TxButton({
       type={type}
       disabled={disabled || isDisabledLive}
       className={clsx(
-        'inline-flex items-center justify-center gap-2 rounded-[var(--tx-radius-sm)] font-semibold',
+        'inline-flex items-center justify-center gap-2 rounded-[var(--tx-r-14)] font-semibold',
         'transition-all duration-[var(--tx-motion-fast)] active:scale-[0.98]',
-        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--tx-profit)]',
+        'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--tx-brand)]',
         VARIANT[variant],
         SIZE[size],
         fullWidth && 'w-full',

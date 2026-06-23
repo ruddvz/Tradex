@@ -8,7 +8,18 @@
 
 ---
 
-## 2026-06-05 — cursor/pixel-perfect-ios26-977a — Completion pass (Journal/Paper/Risk/TxCard/QA)
+## 2026-06-22 — claude/pwa-audit-fixes-4etajy — PWA installability audit
+
+- Files touched: `frontend/index.html`, `frontend/vite.config.ts`, `frontend/src/hooks/useInstallPrompt.ts` (new), `frontend/src/components/pwa/InstallBanner.tsx` (new, replaces `IosInstallBanner.tsx`), `frontend/src/components/layout/Layout.tsx`
+- Build: pass (`npm run build` — tsc + vite, SW generated, 73 precache entries)
+- Status: done
+- Fixes:
+  - Removed the hard-coded `<link rel="manifest" href="/manifest.webmanifest">` from `index.html`. Under the `/Tradex/` GitHub Pages base it 404'd and, being first in the DOM, won out over the base-aware link vite-plugin-pwa injects — silently breaking installability. Now only the injected, base-correct manifest remains.
+  - Added `beforeinstallprompt` support (`useInstallPrompt`) so Android / desktop Chrome get a native "Install app" CTA; previously only iOS Safari had an install hint.
+  - Unified iOS + Android install UI into `InstallBanner` (replaces iOS-only `IosInstallBanner`).
+  - Added stable manifest `id` (recommended PWA identity field).
+  - Removed broken `apple-touch-startup-image` links that stretched a 512×512 icon as a splash for only two device sizes.
+- Next up: real iOS splash-screen image set; richer install UI via manifest `screenshots`.
 
 - Commit: 1ee3e51
 - Files touched: `frontend/src/components/journal/{TradeDrawer,ScreenshotUploadZone,JournalFilterBar}.tsx`, `frontend/src/components/paper/*`, `frontend/src/components/risk/{KillSwitchCard,RiskLimitsCard,RiskViolationCard,RiskEventTimeline}.tsx`, `frontend/src/components/reports/{ReportMetricGrid,ReportInsightCard}.tsx`, `frontend/src/pages/{Journal,PaperTrading,RiskCenter,Reports,Dashboard,PropFirm,Notebook}.tsx`, `e2e/tests/visual-viewports.spec.ts`, `planning/screenshots/pwa-emulated/*`, `planning/{DEVICE-QA,UI_UX_COMPONENT_PROGRESS}.md`

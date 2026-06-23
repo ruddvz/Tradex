@@ -168,8 +168,11 @@ export function StrategyRunsPanel({ paperAccountId }: Props) {
 
       {strategies.length > 0 && (
         <div>
-          <label className="label">Strategy</label>
+          <label className="label" htmlFor="run-strategy">
+            Strategy
+          </label>
           <select
+            id="run-strategy"
             className="input w-full max-w-md"
             value={selectedStrategyId}
             onChange={(e) => setSelectedStrategyId(e.target.value)}

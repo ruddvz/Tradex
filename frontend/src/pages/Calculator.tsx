@@ -184,12 +184,15 @@ export function Calculator() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className="label">Account Balance (USD)</label>
+                <label className="label" htmlFor="calc-balance">
+                  Account Balance (USD)
+                </label>
                 <div className="relative">
                   <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">
                     $
                   </span>
                   <input
+                    id="calc-balance"
                     type="number"
                     className="input pl-7 min-h-[52px]"
                     value={accountBalance}
@@ -199,8 +202,8 @@ export function Calculator() {
               </div>
 
               <div>
-                <label className="label">Risk Per Trade</label>
-                <div className="space-y-2">
+                <span className="label">Risk Per Trade</span>
+                <div className="space-y-2" role="group" aria-label="Risk per trade">
                   <div className="flex gap-1.5">
                     {presetRisks.map((r) => (
                       <button
@@ -238,8 +241,11 @@ export function Calculator() {
               </div>
 
               <div>
-                <label className="label">Instrument</label>
+                <label className="label" htmlFor="calc-instrument">
+                  Instrument
+                </label>
                 <select
+                  id="calc-instrument"
                   className="select min-h-[52px]"
                   value={symbol}
                   onChange={(e) => setSymbol(e.target.value)}
@@ -253,7 +259,7 @@ export function Calculator() {
               </div>
 
               <div>
-                <label className="label">Direction</label>
+                <span className="label">Direction</span>
                 <div
                   className={clsx(
                     'p-3 rounded-xl border text-sm font-semibold flex items-center gap-2 min-h-[52px]',
@@ -268,8 +274,11 @@ export function Calculator() {
               </div>
 
               <div>
-                <label className="label">Entry Price</label>
+                <label className="label" htmlFor="calc-entry">
+                  Entry Price
+                </label>
                 <input
+                  id="calc-entry"
                   type="number"
                   step="0.0001"
                   className="input min-h-[52px]"
@@ -279,8 +288,11 @@ export function Calculator() {
               </div>
 
               <div>
-                <label className="label">Stop Loss</label>
+                <label className="label" htmlFor="calc-sl">
+                  Stop Loss
+                </label>
                 <input
+                  id="calc-sl"
                   type="number"
                   step="0.0001"
                   className={clsx(
@@ -293,8 +305,11 @@ export function Calculator() {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="label">Take Profit</label>
+                <label className="label" htmlFor="calc-tp">
+                  Take Profit
+                </label>
                 <input
+                  id="calc-tp"
                   type="number"
                   step="0.0001"
                   className="input min-h-[52px] border-brand-500/30 focus:ring-brand-500/30"

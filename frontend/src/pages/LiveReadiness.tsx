@@ -48,9 +48,6 @@ export function LiveReadiness() {
       <div className="page-shell p-6 space-y-6 max-w-3xl">
         <div className="flex flex-wrap items-center gap-2">
           <TxModePill mode="liveLocked" />
-          <span className="text-xs text-[var(--tx-loss)] font-semibold uppercase tracking-wide">
-            Live locked
-          </span>
         </div>
 
         <div className="card p-5 border border-red-500/20 bg-red-500/5">
@@ -59,8 +56,9 @@ export function LiveReadiness() {
             <div>
               <h2 className="font-semibold text-white">Live execution disabled</h2>
               <p className="text-sm text-slate-400 mt-1">
-                Live broker execution is disabled. TradeX must prove paper performance, risk controls,
-                audit logs, and manual safety checks before live execution is even considered.
+                Live broker execution is disabled. TradeX must prove paper performance, risk
+                controls, audit logs, and manual safety checks before live execution is even
+                considered.
               </p>
             </div>
           </div>

@@ -52,7 +52,12 @@ export function PaperOrderTicket({
           />
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <TxInput label="Lots" value={lotSize} onChange={(e) => onLotSizeChange(e.target.value)} inputMode="decimal" />
+          <TxInput
+            label="Lots"
+            value={lotSize}
+            onChange={(e) => onLotSizeChange(e.target.value)}
+            inputMode="decimal"
+          />
           <TxInput
             label="Reference price"
             value={refPrice}

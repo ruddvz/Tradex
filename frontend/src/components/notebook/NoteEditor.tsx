@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X, Pin } from 'lucide-react';
 import { clsx } from 'clsx';
 import { format } from 'date-fns';
 import { useStore } from '../../store/useStore';
+import { trapFocus } from '../../lib/a11y';
 import type { NotebookEntry } from '../../types';
 
 interface Props {
@@ -21,6 +22,21 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
   const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
   const [tagInput, setTagInput] = useState('');
   const [pinned, setPinned] = useState(initial?.pinned ?? false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    const release = panelRef.current ? trapFocus(panelRef.current) : undefined;
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      release?.();
+    };
+  }, [onClose]);
 
   const addTag = () => {
     if (tagInput.trim()) {
@@ -58,18 +74,21 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
   return (
     <div className="modal-backdrop z-[60]" onClick={onClose} role="presentation">
       <div
+        ref={panelRef}
         className="bg-surface border border-surface-border rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[92vh] overflow-y-auto shadow-card-hover animate-slide-up"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
+        aria-labelledby="note-editor-title"
       >
         <div className="flex items-center justify-between p-5 border-b border-surface-border sticky top-0 bg-surface z-10">
-          <h2 className="font-bold text-white text-lg">
+          <h2 id="note-editor-title" className="font-bold text-white text-lg">
             {mode === 'create' ? 'New Entry' : 'Edit Entry'}
           </h2>
           <button
             type="button"
             onClick={onClose}
+            aria-label="Close"
             className="p-2 rounded-lg hover:bg-surface-light text-slate-400"
           >
             <X className="w-5 h-5" />
@@ -78,8 +97,11 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
 
         <div className="p-5 space-y-4">
           <div>
-            <label className="label">Title</label>
+            <label className="label" htmlFor="note-title">
+              Title
+            </label>
             <input
+              id="note-title"
               className="input"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -87,8 +109,11 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
             />
           </div>
           <div>
-            <label className="label">Type</label>
+            <label className="label" htmlFor="note-type">
+              Type
+            </label>
             <select
+              id="note-type"
               className="select"
               value={type}
               onChange={(e) => setType(e.target.value as NotebookEntry['type'])}
@@ -101,11 +126,14 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
             </select>
           </div>
           <div>
-            <label className="label">Content</label>
+            <label className="label" htmlFor="note-content">
+              Content
+            </label>
             <p className="text-[10px] text-slate-600 mb-1">
               Supports lines starting with #, ##, - for lists
             </p>
             <textarea
+              id="note-content"
               className="input min-h-[120px] resize-y font-mono text-sm"
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -113,9 +141,12 @@ export function NoteEditor({ mode, initial, onClose }: Props) {
             />
           </div>
           <div>
-            <label className="label">Tags</label>
+            <label className="label" htmlFor="note-tags">
+              Tags
+            </label>
             <div className="flex gap-2">
               <input
+                id="note-tags"
                 className="input flex-1"
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}

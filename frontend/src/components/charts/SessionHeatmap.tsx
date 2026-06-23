@@ -71,12 +71,18 @@ export function SessionHeatmap() {
                       cell.count === 0
                         ? 'rgba(42,53,80,0.3)'
                         : isProfit
-                          ? `rgba(16,185,129,${0.1 + intensity * 0.8})`
-                          : `rgba(239,68,68,${0.1 + intensity * 0.8})`,
+                          ? `rgb(var(--c-profit) / ${0.1 + intensity * 0.8})`
+                          : `rgb(var(--c-loss) / ${0.1 + intensity * 0.8})`,
                   }}
                 >
                   {cell.count > 0 && (
-                    <span className="text-[10px] font-bold text-white/80">{cell.count}</span>
+                    <span className="flex items-center gap-0.5 text-[10px] font-bold text-white/85">
+                      {/* Shape cue so profit/loss is distinguishable without color */}
+                      <span aria-hidden className="text-[8px] leading-none">
+                        {isProfit ? '▲' : '▼'}
+                      </span>
+                      {cell.count}
+                    </span>
                   )}
                   {cell.count > 0 && (
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 hidden group-hover:block z-50 pointer-events-none">
@@ -85,10 +91,7 @@ export function SessionHeatmap() {
                           {session} · {day}
                         </div>
                         <div
-                          className={clsx(
-                            'font-semibold',
-                            isProfit ? 'text-brand-400' : 'text-red-400'
-                          )}
+                          className={clsx('font-semibold', isProfit ? 'text-profit' : 'text-loss')}
                         >
                           {isProfit ? '+' : ''}${cell.pnl.toFixed(0)}
                         </div>

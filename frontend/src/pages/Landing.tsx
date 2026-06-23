@@ -14,6 +14,7 @@ import {
   NotebookPen,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { CHART } from '../lib/chartColors';
 
 const features = [
   {
@@ -105,10 +106,14 @@ export function Landing() {
             <span className="text-xs text-brand-400 hidden sm:block">Trader's Performance Lab</span>
           </div>
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate('/')} className="btn-secondary text-sm hidden sm:flex">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="btn-secondary text-sm hidden sm:flex"
+            >
               Sign In
             </button>
-            <button onClick={() => navigate('/')} className="btn-primary text-sm">
+            <button type="button" onClick={() => navigate('/')} className="btn-primary text-sm">
               Open demo
             </button>
           </div>
@@ -139,12 +144,14 @@ export function Landing() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-12">
             <button
+              type="button"
               onClick={() => navigate('/')}
               className="btn-primary text-base px-6 py-3 shadow-glow min-h-[52px]"
             >
               Open demo <ArrowRight className="w-4 h-4" />
             </button>
             <button
+              type="button"
               onClick={() => navigate('/auth')}
               className="btn-secondary text-base px-6 py-3 min-h-[52px]"
             >
@@ -198,7 +205,10 @@ export function Landing() {
                   <div
                     key={i}
                     className="flex-1 rounded-sm opacity-75"
-                    style={{ height: `${height}%`, background: positive ? '#10b981' : '#ef4444' }}
+                    style={{
+                      height: `${height}%`,
+                      background: positive ? CHART.profit : CHART.loss,
+                    }}
                   />
                 );
               })}
@@ -327,6 +337,7 @@ export function Landing() {
                   ))}
                 </ul>
                 <button
+                  type="button"
                   onClick={() => navigate('/')}
                   className={
                     p.highlight
@@ -350,6 +361,7 @@ export function Landing() {
             Join 500+ traders who transformed their trading with data-driven insights.
           </p>
           <button
+            type="button"
             onClick={() => navigate('/')}
             className="btn-primary text-lg px-8 py-4 shadow-glow-lg mx-auto"
           >

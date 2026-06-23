@@ -7,7 +7,11 @@ export function PaperRejectedCard({ orders }: { orders: PaperOrderRow[] }) {
   const rejected = orders.filter((o) => o.status === 'rejected');
 
   return (
-    <TxCard title="Rejected orders" subtitle="Risk blocked — useful safety feedback" variant="warning">
+    <TxCard
+      title="Rejected orders"
+      subtitle="Risk blocked — useful safety feedback"
+      variant="warning"
+    >
       {rejected.length === 0 ? (
         <TxEmptyState
           title="No rejected orders"
@@ -24,10 +28,16 @@ export function PaperRejectedCard({ orders }: { orders: PaperOrderRow[] }) {
                 <span className="font-semibold text-[var(--tx-text-1)]">
                   {o.symbol} {o.side.toUpperCase()} · {o.lot_size} lot
                 </span>
-                <span className="text-xs font-bold uppercase text-[var(--tx-loss)]">Risk blocked</span>
+                <span className="text-xs font-bold uppercase text-[var(--tx-loss)]">
+                  Risk blocked
+                </span>
               </div>
-              <p className="mt-1 text-xs text-[var(--tx-text-3)]">{o.rejection_reason ?? 'Rule breached'}</p>
-              <p className="mt-1 text-xs text-[var(--tx-text-4)]">Fix: review limits in Risk Center</p>
+              <p className="mt-1 text-xs text-[var(--tx-text-3)]">
+                {o.rejection_reason ?? 'Rule breached'}
+              </p>
+              <p className="mt-1 text-xs text-[var(--tx-text-4)]">
+                Fix: review limits in Risk Center
+              </p>
             </li>
           ))}
         </ul>

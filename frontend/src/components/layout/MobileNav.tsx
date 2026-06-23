@@ -60,10 +60,10 @@ export function MobileNav() {
             end={path === '/'}
             aria-current={isActive ? 'page' : undefined}
             className={clsx(
-              'relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[var(--tx-radius-sm)]',
+              'relative flex flex-1 flex-col items-center justify-center gap-0.5 rounded-[var(--tx-r-14)]',
               'min-h-[52px] min-w-[48px] px-0.5 py-1.5 transition-colors duration-[var(--tx-motion-fast)]',
               'active:scale-[0.97]',
-              isActive && !isRisk && 'bg-[var(--tx-profit-soft)] text-[var(--tx-profit)]',
+              isActive && !isRisk && 'bg-[var(--tx-brand-soft)] text-[var(--tx-brand-text)]',
               isActive && isRisk && 'bg-[var(--tx-warning-soft)] text-[var(--tx-warning)]',
               !isActive && 'text-[var(--tx-text-4)]'
             )}

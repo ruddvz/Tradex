@@ -108,7 +108,9 @@ export function PaperTrading() {
 
   const onCreate = async () => {
     if (!token) {
-      showToast(authUiEnabled ? 'Sign in to create a paper account.' : 'Save an API session token first.');
+      showToast(
+        authUiEnabled ? 'Sign in to create a paper account.' : 'Save an API session token first.'
+      );
       return;
     }
     setBusy(true);
@@ -165,7 +167,12 @@ export function PaperTrading() {
 
   return (
     <div className="min-h-screen">
-      <Header title="Paper Bot" subtitle="Simulated orders — no live execution" showDateRange={false} compact />
+      <Header
+        title="Paper Bot"
+        subtitle="Simulated orders — no live execution"
+        showDateRange={false}
+        compact
+      />
       <ModeHeaderStrip />
 
       <TxPage density="dashboard" className="space-y-6">
@@ -200,7 +207,12 @@ export function PaperTrading() {
         <TxCard
           title="Paper accounts"
           action={
-            <TxButton variant="primary" size="md" disabled={busy || !token} onClick={() => void onCreate()}>
+            <TxButton
+              variant="primary"
+              size="md"
+              disabled={busy || !token}
+              onClick={() => void onCreate()}
+            >
               <Plus className="h-4 w-4" />
               New account
             </TxButton>
@@ -231,7 +243,12 @@ export function PaperTrading() {
                   value={tab}
                   onChange={(id) => setTab(id as Tab)}
                 />
-                <TxButton variant="ghost" size="sm" disabled={loadingBook} onClick={() => void loadBook()}>
+                <TxButton
+                  variant="ghost"
+                  size="sm"
+                  disabled={loadingBook}
+                  onClick={() => void loadBook()}
+                >
                   Refresh
                 </TxButton>
               </div>
@@ -244,7 +261,11 @@ export function PaperTrading() {
 
         {!loadingBook && selected && tab === 'overview' && (
           <div className="space-y-6">
-            <PaperHeroCard account={selected} openPositions={positions.length} recentFills={fills.length} />
+            <PaperHeroCard
+              account={selected}
+              openPositions={positions.length}
+              recentFills={fills.length}
+            />
             <PaperOrderTicket
               symbol={symbol}
               side={side}

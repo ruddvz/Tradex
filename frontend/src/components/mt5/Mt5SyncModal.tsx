@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { X } from 'lucide-react';
 import { getToken } from '../../lib/auth';
 import { useStore } from '../../store/useStore';
 import { useToast } from '../ui/Toast';
+import { trapFocus } from '../../lib/a11y';
 import { clsx } from 'clsx';
 
 type Mt5SettingsResponse = {
@@ -19,6 +20,22 @@ export function Mt5SyncModal({ open }: { open: boolean }) {
   const [password, setPassword] = useState('');
   const [hasSavedPassword, setHasSavedPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeMt5SyncModal();
+    };
+    document.addEventListener('keydown', onKey);
+    document.body.style.overflow = 'hidden';
+    const release = panelRef.current ? trapFocus(panelRef.current) : undefined;
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = '';
+      release?.();
+    };
+  }, [open, closeMt5SyncModal]);
 
   useEffect(() => {
     if (!open) return;
@@ -79,6 +96,7 @@ export function Mt5SyncModal({ open }: { open: boolean }) {
       onMouseDown={handleBackdrop}
     >
       <div
+        ref={panelRef}
         className="w-full max-w-md rounded-xl border border-surface-border bg-dark-400 shadow-card"
         onMouseDown={(e) => e.stopPropagation()}
       >

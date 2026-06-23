@@ -108,7 +108,9 @@ export function Header({
           )}
           {dataMode === 'live' && <DataSourceBadge source="live" />}
           {showDateRange && (
-            <span className="text-xs text-[var(--tx-text-4)]">Use page toolbar for date range.</span>
+            <span className="text-xs text-[var(--tx-text-4)]">
+              Use page toolbar for date range.
+            </span>
           )}
           <div className="ml-auto">{desktopAction}</div>
         </div>
